@@ -89,7 +89,7 @@ export function validateCanTerima(bundle: Bundle, tahap: TahapKey): ValidationRe
 export function getQtyTerima(bundle: Bundle, tahap: TahapKey): number {
   const prevTahap = getPrevTahap(tahap);
   if (!prevTahap) return bundle.qtyBundle;
-  return bundle.statusTahap[prevTahap].qtySelesai;
+  return bundle.statusTahap[prevTahap].qtySelesai ?? 0;
 }
 
 /** Cek semua tahap, return status icon */
@@ -187,14 +187,14 @@ export function getWarnings(bundles: Bundle[], stuckThresholdHours: number = 24)
       }
 
       // 3. QTY Kurang (selesai < terima)
-      if (st.status === 'selesai' && st.qtySelesai < st.qtyTerima) {
+      if (st.status === 'selesai' && (st.qtySelesai ?? 0) < (st.qtyTerima ?? 0)) {
         warnings.push({
           id: `${b.barcode}-${t}-kurang`,
           barcode: b.barcode,
           po: b.po,
           tahap: t,
           jenis: 'kurang',
-          detail: `QTY kurang ${st.qtyTerima - st.qtySelesai} pcs (${st.koreksiAlasan || 'Tanpa alasan'})`,
+          detail: `QTY kurang ${(st.qtyTerima ?? 0) - (st.qtySelesai ?? 0)} pcs (${st.koreksiAlasan || 'Tanpa alasan'})`,
           waktu: st.waktuSelesai || ''
         });
       }

@@ -31,7 +31,7 @@ export default function MonitoringPerArtikel({ poList, bundles }: MonitoringPerA
         bundleCount: item.jumlahBundle,
         qtySelesai: bundles
           .filter(b => b.po === po.id && b.model === item.modelId && b.warna === item.warnaId && b.size === item.sizeId)
-          .reduce((acc, curr) => acc + (curr.statusTahap.packing.status === 'selesai' ? curr.statusTahap.packing.qtySelesai : 0), 0)
+          .reduce((acc, curr) => acc + (curr.statusTahap.packing.status === 'selesai' ? (curr.statusTahap.packing.qtySelesai ?? 0) : 0), 0)
       });
     });
   });
