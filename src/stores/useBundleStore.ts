@@ -7,6 +7,7 @@ interface BundleState {
   addBundle: (bundle: Bundle) => void;
   updateStatusTahap: (barcode: string, tahap: string, updates: Partial<StatusTahap>) => void;
   getBundleByBarcode: (barcode: string) => Bundle | undefined;
+  getBundlesByPO: (poId: string) => Bundle[];
 }
 
 const defaultStatus: StatusTahap = {
@@ -114,4 +115,5 @@ export const useBundleStore = create<BundleState>((set, get) => ({
     ),
   })),
   getBundleByBarcode: (barcode) => get().bundles.find((b) => b.barcode === barcode),
+  getBundlesByPO: (poId: string) => get().bundles.filter((b) => b.po === poId),
 }));
