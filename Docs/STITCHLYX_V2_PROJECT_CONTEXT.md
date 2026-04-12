@@ -11,13 +11,13 @@ Tagline        : Garment Operating System — Precision Engine
 Tipe           : Full-Stack Web Application (rencana dijual sebagai SaaS)
 Pemilik        : Owner konveksi skala menengah, omset miliaran
 Tujuan         : Menggantikan sistem Excel manual dengan sistem digital terintegrasi
-Status         : **REBUILD** dari versi monolith (V1) ke arsitektur modular
+Status         : **PHASE 1 & 2 SELESAI (95%)** — Saat ini berada di Sprint 6.5 (Final Polish)
 
-> **PENTING — KONTEKS REBUILD:**
-> Versi 1 (V1) dibangun sebagai satu file monolith (`StitchlixApp.jsx`, ~577KB, ~9000 baris).
-> Semua UI V1 sudah selesai 100%, tetapi arsitekturnya tidak scalable.
-> V2 ini adalah **rebuilddari nol** dengan arsitektur modular — mengambil semua business logic,
-> aturan, dan alur dari V1, tetapi dengan struktur kode yang benar sejak awal.
+> **PENTING — KONTEKS PROYEK SAAT INI:**
+> Aplikasi telah berhasil dipindahkan dari versi monolith ke arsitektur modular Next.js 15.
+> Saat ini, UI dan Logika Bisnis (State) secara frontend sudah **95% selesai**.
+> Sesi berikutnya harus menjalankan perintah yang ada di **`Docs/prompts/SPRINT_6.5_FINAL_POLISH.md`** 
+> untuk membereskan 5% sisa fitur (Print, Empty States, Validasi) sebelum masuk ke **Sprint 7** (Migrasi Database).
 > **File V1 TIDAK digunakan lagi.** Jangan referensi atau edit file V1.
 
 ---
