@@ -11,7 +11,7 @@ import { useInventoryStore } from '@/stores/useInventoryStore';
 import { useJurnalStore } from '@/stores/useJurnalStore';
 import { useLogStore } from '@/stores/useLogStore';
 import ProductionStatusCard from './components/ProductionStatusCard';
-import { Landmark, TrendingUp, AlertTriangle, FileText } from 'lucide-react';
+import { Landmark, TrendingUp, AlertTriangle, FileText, PackageOpen, Activity } from 'lucide-react';
 import styles from './MainDashboardView.module.css';
 
 export default function MainDashboardView() {
@@ -78,17 +78,25 @@ export default function MainDashboardView() {
       <div className={styles.grid}>
         <div className={styles.leftCol}>
           <Panel title="Progres Produksi Terbaru">
-            <div className={styles.productionGrid}>
-              {poList.slice(0, 2).map(po => (
-                <ProductionStatusCard 
-                  key={po.id}
-                  poNumber={po.nomorPO}
-                  piecesTotal={po.items.reduce((a, c) => a + c.qty, 0)}
-                  piecesDone={Math.floor(po.items.reduce((a, c) => a + c.qty, 0) * 0.4)}
-                  currentStation="Jahit (Assembly)"
-                />
-              ))}
-            </div>
+            {poList.length === 0 ? (
+              <div className={styles.emptyState}>
+                <PackageOpen size={32} />
+                <h4>Belum Ada Produksi</h4>
+                <p>Tidak ada batch produksi yang sedang berjalan saat ini.</p>
+              </div>
+            ) : (
+              <div className={styles.productionGrid}>
+                {poList.slice(0, 2).map(po => (
+                  <ProductionStatusCard 
+                    key={po.id}
+                    poNumber={po.nomorPO}
+                    piecesTotal={po.items.reduce((a, c) => a + c.qty, 0)}
+                    piecesDone={Math.floor(po.items.reduce((a, c) => a + c.qty, 0) * 0.4)}
+                    currentStation="Jahit (Assembly)"
+                  />
+                ))}
+              </div>
+            )}
           </Panel>
 
           <div className={styles.shortcuts}>
@@ -100,32 +108,40 @@ export default function MainDashboardView() {
 
         <div className={styles.rightCol}>
           <Panel title="Log Aktivitas Terbaru">
-            <div className={styles.logList}>
-              {logs.slice(0, 8).map(log => {
-                const isKeuangan = log.modul === 'keuangan';
-                return (
-                  <div key={log.id} className={styles.logItem}>
-                    <div className={styles.logDot} style={{ background: `var(--color-${isKeuangan ? 'red' : log.modul === 'inventory' ? 'yellow' : 'cyan'})` }} />
-                    <div className={styles.logContent}>
-                      <p>
-                        <strong>{log.user.nama}</strong> {log.aksi} - {log.target}
-                        {log.metadata?.nominal && <span className={styles.nominal}> [{isKeuangan ? '-' : '+'}{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(log.metadata.nominal)}]</span>}
-                      </p>
-                      <span>{new Date(log.timestamp).toLocaleTimeString()}</span>
+            {logs.length === 0 ? (
+              <div className={styles.emptyState}>
+                <Activity size={32} />
+                <h4>Belum Ada Aktivitas</h4>
+                <p>Sistem ini baru diinisiasi. Riwayat aktivitas pengguna akan muncul di sini.</p>
+              </div>
+            ) : (
+              <div className={styles.logList}>
+                {logs.slice(0, 8).map(log => {
+                  const isKeuangan = log.modul === 'keuangan';
+                  return (
+                    <div key={log.id} className={styles.logItem}>
+                      <div className={styles.logDot} style={{ background: `var(--color-${isKeuangan ? 'red' : log.modul === 'inventory' ? 'yellow' : 'cyan'})` }} />
+                      <div className={styles.logContent}>
+                        <p>
+                          <strong>{log.user.nama}</strong> {log.aksi} - {log.target}
+                          {log.metadata?.nominal && <span className={styles.nominal}> [{isKeuangan ? '-' : '+'}{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(log.metadata.nominal)}]</span>}
+                        </p>
+                        <span>{new Date(log.timestamp).toLocaleTimeString()}</span>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                fullWidth 
-                onClick={() => window.location.href='/audit-log'}
-                className={styles.viewMore}
-              >
-                Lihat Seluruh Log →
-              </Button>
-            </div>
+                  );
+                })}
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  fullWidth 
+                  onClick={() => window.location.href='/audit-log'}
+                  className={styles.viewMore}
+                >
+                  Lihat Seluruh Log →
+                </Button>
+              </div>
+            )}
           </Panel>
         </div>
       </div>
