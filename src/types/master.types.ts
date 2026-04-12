@@ -59,6 +59,7 @@ export interface Produk {
   warnaId: string;
   skuInternal: string;
   skuKlien: string;
+  nama?: string;
   aktif: boolean;
   hargaJual: number;
 }

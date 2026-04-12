@@ -27,34 +27,7 @@ interface KoreksiState {
 }
 
 export const useKoreksiStore = create<KoreksiState>((set, get) => ({
-  queue: [
-    {
-      id: 'KOR-001',
-      barcode: 'PO001-JAK-HIT-M-00003-BDL03-01-10-23',
-      tahap: 'cutting',
-      qtyTarget: 12,
-      qtyAktual: 14,
-      tipe: 'lebih',
-      alasan: 'Sisa bahan panjang',
-      status: 'pending',
-      diajukanOleh: 'KRY-001',
-      waktuAjukan: new Date().toISOString()
-    },
-    {
-      id: 'KOR-002',
-      barcode: 'PO001-JAK-HIT-M-00004-BDL04-01-10-23',
-      tahap: 'jahit',
-      qtyTarget: 12,
-      qtyAktual: 13,
-      tipe: 'lebih',
-      alasan: 'Part cadangan terpakai',
-      status: 'approved',
-      diajukanOleh: 'KRY-002',
-      waktuAjukan: new Date().toISOString(),
-      diReviewOleh: 'OWNER',
-      waktuReview: new Date().toISOString()
-    }
-  ],
+  queue: [],
   
   addToQueue: (item: KoreksiItem) => set((state: KoreksiState) => ({ queue: [...state.queue, item] })),
   

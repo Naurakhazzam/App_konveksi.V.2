@@ -189,21 +189,6 @@
 }
 
 @media print {
-  /* Sembunyikan semua elemen kecuali area print */
-  body {
-    background: white !important;
-    color: black !important;
-  }
-
-  /* Target element yang ingin dihilangkan secara global di layout dashboard */
-  nav, 
-  header,
-  aside,
-  button,
-  .no-print {
-    display: none !important;
-  }
-
   /* Reset container dan panel styles */
   .container, .mainGrid, .previewSection, .slipWrapper {
     display: block !important;

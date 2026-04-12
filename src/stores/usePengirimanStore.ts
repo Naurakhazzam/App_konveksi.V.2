@@ -11,21 +11,7 @@ interface PengirimanState {
 }
 
 export const usePengirimanStore = create<PengirimanState>((set, get) => ({
-  suratJalanList: [
-    {
-      id: 'SJ-0001',
-      nomorSJ: 'SJ/202310/001',
-      klienId: 'KLN-001',
-      tanggal: '2023-10-12T08:00:00Z',
-      items: [],
-      totalQty: 240,
-      totalBundle: 20,
-      catatan: 'Kirim via JNE',
-      status: 'dikirim',
-      dibuatOleh: 'ADMIN',
-      pengirim: 'Pak Budi'
-    }
-  ],
+  suratJalanList: [],
 
   addSuratJalan: (sj: SuratJalan) => set((state: PengirimanState) => ({ 
     suratJalanList: [...state.suratJalanList, sj] 

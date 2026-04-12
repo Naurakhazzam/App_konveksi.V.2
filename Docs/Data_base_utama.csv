@@ -1,0 +1,662 @@
+Client,SKU,Nama Produk,MODEL,WARNA,SIZE,Kategori,HPP Bahan,Upah Cutting,Upah Jahit,Upah Lubang-Kancing,Upah Buang Benang,Upah QC,Upah Steam,Upah Packing,oprasional Rumah,Oprasional Listrik,Oprasional Sehari-hari,Uang makan,Variasi,Karet,Tali,Stoper,Mata itik,Sleting Topi,Sleting Saku,Sleting Badan,Kain Keras,Kain saku,Kancing,Puring,Benang,Harga Jual
+Elyasr Kids,ely147,Abudzar Grey x Black - S,Abudzar,Grey x Black,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely148,Abudzar Grey x Black - M,Abudzar,Grey x Black,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely149,Abudzar Grey x Black - L,Abudzar,Grey x Black,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely150,Abudzar Grey x Black - XL,Abudzar,Grey x Black,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely151,Abudzar Grey x Black - XXL,Abudzar,Grey x Black,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely152,Abudzar Grey x Black - XXXL,Abudzar,Grey x Black,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely153,Abudzar White X Grey - S,Abudzar,White X Grey,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely154,Abudzar White X Grey - M,Abudzar,White X Grey,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely155,Abudzar White X Grey - L,Abudzar,White X Grey,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely156,Abudzar White X Grey - XL,Abudzar,White X Grey,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely157,Abudzar White X Grey - XXL,Abudzar,White X Grey,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely158,Abudzar White X Grey - XXXL,Abudzar,White X Grey,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely159,Abudzar Navy x SkyBlue - S,Abudzar,Navy x SkyBlue,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely160,Abudzar Navy x SkyBlue - M,Abudzar,Navy x SkyBlue,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely161,Abudzar Navy x SkyBlue - L,Abudzar,Navy x SkyBlue,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely162,Abudzar Navy x SkyBlue - XL,Abudzar,Navy x SkyBlue,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely163,Abudzar Navy x SkyBlue - XXL,Abudzar,Navy x SkyBlue,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely164,Abudzar Navy x SkyBlue - XXXL,Abudzar,Navy x SkyBlue,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely165,Abudzar Black X Maroon - S,Abudzar,Black X Maroon,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely166,Abudzar Black X Maroon - M,Abudzar,Black X Maroon,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely167,Abudzar Black X Maroon - L,Abudzar,Black X Maroon,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely168,Abudzar Black X Maroon - XL,Abudzar,Black X Maroon,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely169,Abudzar Black X Maroon - XXL,Abudzar,Black X Maroon,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely170,Abudzar Black X Maroon - XXXL,Abudzar,Black X Maroon,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely171,Abudzar Black X Mustard - S,Abudzar,Black X Mustard,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely172,Abudzar Black X Mustard - M,Abudzar,Black X Mustard,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely173,Abudzar Black X Mustard - L,Abudzar,Black X Mustard,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely174,Abudzar Black X Mustard - XL,Abudzar,Black X Mustard,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely175,Abudzar Black X Mustard - XXL,Abudzar,Black X Mustard,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely176,Abudzar Black X Mustard - XXXL,Abudzar,Black X Mustard,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely177,Abudzar Black x Grey - S,Abudzar,Black x Grey,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely178,Abudzar Black x Grey - M,Abudzar,Black x Grey,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely179,Abudzar Black x Grey - L,Abudzar,Black x Grey,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely180,Abudzar Black x Grey - XL,Abudzar,Black x Grey,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely181,Abudzar Black x Grey - XXL,Abudzar,Black x Grey,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely182,Abudzar Black x Grey - XXXL,Abudzar,Black x Grey,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely684,Abudzar Dark B x Light B - M,Abudzar,Dark B x Light B,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely685,Abudzar Dark B x Light B - L,Abudzar,Dark B x Light B,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely686,Abudzar Dark B x Light B - XL,Abudzar,Dark B x Light B,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely289,Airflow Black - S,Airflow,Black,S,Koko ,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,84012
+Elyasr Kids,ely290,Airflow Black - M,Airflow,Black,M,Koko ,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,84012
+Elyasr Kids,ely291,Airflow Black - L,Airflow,Black,L,Koko ,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,86221
+Elyasr Kids,ely292,Airflow Black - XL,Airflow,Black,XL,Koko ,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,86221
+Elyasr Kids,ely293,Airflow Black - XXL,Airflow,Black,XXL,Koko ,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,88000
+Elyasr Kids,ely294,Airflow Black - XXXL,Airflow,Black,XXXL,Koko ,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,88000
+Elyasr Kids,ely295,Airflow Light brown - S,Airflow,Light brown,S,Koko ,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,84012
+Elyasr Kids,ely296,Airflow Light brown - M,Airflow,Light brown,M,Koko ,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,84012
+Elyasr Kids,ely297,Airflow Light brown - L,Airflow,Light brown,L,Koko ,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,86221
+Elyasr Kids,ely298,Airflow Light brown - XL,Airflow,Light brown,XL,Koko ,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,86221
+Elyasr Kids,ely299,Airflow Light brown - XXL,Airflow,Light brown,XXL,Koko ,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,88000
+Elyasr Kids,ely300,Airflow Light brown - XXXL,Airflow,Light brown,XXXL,Koko ,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,88000
+Elyasr Kids,ely301,Airflow Skyblue - S,Airflow,Skyblue,S,Koko ,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,84012
+Elyasr Kids,ely302,Airflow Skyblue - M,Airflow,Skyblue,M,Koko ,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,84012
+Elyasr Kids,ely303,Airflow Skyblue - L,Airflow,Skyblue,L,Koko ,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,86221
+Elyasr Kids,ely304,Airflow Skyblue - XL,Airflow,Skyblue,XL,Koko ,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,86221
+Elyasr Kids,ely305,Airflow Skyblue - XXL,Airflow,Skyblue,XXL,Koko ,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,88000
+Elyasr Kids,ely306,Airflow Skyblue - XXXL,Airflow,Skyblue,XXXL,Koko ,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,88000
+Elyasr Kids,ely307,Airflow Tobacco - S,Airflow,Tobacco,S,Koko ,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,84012
+Elyasr Kids,ely308,Airflow Tobacco - M,Airflow,Tobacco,M,Koko ,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,84012
+Elyasr Kids,ely309,Airflow Tobacco - L,Airflow,Tobacco,L,Koko ,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,86221
+Elyasr Kids,ely310,Airflow Tobacco - XL,Airflow,Tobacco,XL,Koko ,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,86221
+Elyasr Kids,ely311,Airflow Tobacco - XXL,Airflow,Tobacco,XXL,Koko ,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,88000
+Elyasr Kids,ely312,Airflow Tobacco - XXXL,Airflow,Tobacco,XXXL,Koko ,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,88000
+Elyasr Kids,ely313,Airflow Khaki - S,Airflow,Khaki,S,Koko ,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,84012
+Elyasr Kids,ely314,Airflow Khaki - M,Airflow,Khaki,M,Koko ,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,84012
+Elyasr Kids,ely315,Airflow Khaki - L,Airflow,Khaki,L,Koko ,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,86221
+Elyasr Kids,ely316,Airflow Khaki - XL,Airflow,Khaki,XL,Koko ,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,86221
+Elyasr Kids,ely317,Airflow Khaki - XXL,Airflow,Khaki,XXL,Koko ,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,88000
+Elyasr Kids,ely318,Airflow Khaki - XXXL,Airflow,Khaki,XXXL,Koko ,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,88000
+Elyasr Kids,ely319,Airflow Navy - S,Airflow,navy,S,Koko ,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,84012
+Elyasr Kids,ely320,Airflow Navy - M,Airflow,navy,M,Koko ,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,84012
+Elyasr Kids,ely321,Airflow Navy - L,Airflow,navy,L,Koko ,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,86221
+Elyasr Kids,ely322,Airflow Navy - XL,Airflow,navy,XL,Koko ,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,86221
+Elyasr Kids,ely323,Airflow Navy - XXL,Airflow,navy,XXL,Koko ,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,88000
+Elyasr Kids,ely324,Airflow Navy - XXXL,Airflow,navy,XXXL,Koko ,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,6000,6250,0,0,0,8500,1000,88000
+Elyasr Kids,ely928,Airflow Dewasa Skyblue - M,Airflow Dewasa,Skyblue,M,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely929,Airflow Dewasa Skyblue - XL,Airflow Dewasa,Skyblue,XL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely930,Airflow Dewasa Skyblue - XXL,Airflow Dewasa,Skyblue,XXL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely931,Airflow Dewasa Black - M,Airflow Dewasa,Black,M,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely117,Alfarghani Black x Grey - S,Alfarghani,Black x Grey,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely118,Alfarghani Black x Grey - M,Alfarghani,Black x Grey,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely119,Alfarghani Black x Grey - L,Alfarghani,Black x Grey,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely120,Alfarghani Black x Grey - XL,Alfarghani,Black x Grey,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely121,Alfarghani Black x Grey - XXL,Alfarghani,Black x Grey,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely122,Alfarghani Black x Grey - XXXL,Alfarghani,Black x Grey,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely123,Alfarghani Black x Maroon - S,Alfarghani,Black x Maroon,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely124,Alfarghani Black x Maroon - M,Alfarghani,Black x Maroon,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely125,Alfarghani Black x Maroon - L,Alfarghani,Black x Maroon,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely126,Alfarghani Black x Maroon - XL,Alfarghani,Black x Maroon,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely127,Alfarghani Black x Maroon - XXL,Alfarghani,Black x Maroon,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely128,Alfarghani Black x Maroon - XXXL,Alfarghani,Black x Maroon,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely129,Alfarghani Maroon x Black - S,Alfarghani,Maroon x Black,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely130,Alfarghani Maroon x Black - M,Alfarghani,Maroon x Black,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely131,Alfarghani Maroon x Black - L,Alfarghani,Maroon x Black,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely132,Alfarghani Maroon x Black - XL,Alfarghani,Maroon x Black,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely133,Alfarghani Maroon x Black - XXL,Alfarghani,Maroon x Black,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely134,Alfarghani Maroon x Black - XXXL,Alfarghani,Maroon x Black,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely135,Alfarghani Navy x Sky Blue - S,Alfarghani,Navy x Sky Blue,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely136,Alfarghani Navy x Sky Blue - M,Alfarghani,Navy x Sky Blue,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely137,Alfarghani Navy x Sky Blue - L,Alfarghani,Navy x Sky Blue,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely138,Alfarghani Navy x Sky Blue - XL,Alfarghani,Navy x Sky Blue,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely139,Alfarghani Navy x Sky Blue - XXL,Alfarghani,Navy x Sky Blue,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely140,Alfarghani Navy x Sky Blue - XXXL,Alfarghani,Navy x Sky Blue,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely141,Alfarghani Mustard x Navy - S,Alfarghani,Mustard x Navy,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely142,Alfarghani Mustard x Navy - M,Alfarghani,Mustard x Navy,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely143,Alfarghani Mustard x Navy - L,Alfarghani,Mustard x Navy,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely144,Alfarghani Mustard x Navy - XL,Alfarghani,Mustard x Navy,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely145,Alfarghani Mustard x Navy - XXL,Alfarghani,Mustard x Navy,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely146,Alfarghani Mustard x Navy - XXXL,Alfarghani,Mustard x Navy,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely687,Alfarghani Maroon x White - S,Alfarghani,Maroon x White,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely688,Alfarghani Maroon x White - M,Alfarghani,Maroon x White,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely689,Alfarghani Maroon x White - L,Alfarghani,Maroon x White,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely690,Alfarghani Maroon x White - XL,Alfarghani,Maroon x White,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely691,Alfarghani Maroon x White - XXXL,Alfarghani,Maroon x White,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely692,Alfarghani Brown x Grey - S,Alfarghani,Brown x Grey,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely693,Alfarghani Brown x Grey - M,Alfarghani,Brown x Grey,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely694,Alfarghani Brown x Grey - L,Alfarghani,Brown x Grey,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely695,Alfarghani Brown x Grey - XL,Alfarghani,Brown x Grey,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely696,Alfarghani Brown x Grey - XXL,Alfarghani,Brown x Grey,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely697,Alfarghani Brown x Navy - S,Alfarghani,Brown x Navy,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely698,Alfarghani Brown x Navy - L,Alfarghani,Brown x Navy,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely699,Alfarghani Brown x Navy - XL,Alfarghani,Brown x Navy,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely932,Alfarghani Grey x White - S,Alfarghani,Grey x White,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely933,Alfarghani Grey x White - M,Alfarghani,Grey x White,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely934,Alfarghani Grey x White - L,Alfarghani,Grey x White,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely935,Alfarghani Grey x White - XL,Alfarghani,Grey x White,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely936,Alfarghani Grey x White - XXL,Alfarghani,Grey x White,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely937,Alfarghani Grey x White - XXXL,Alfarghani,Grey x White,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely403,Arden Beige x Black - S,Arden,Beige x Black,S,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely404,Arden Beige x Black - M,Arden,Beige x Black,M,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely405,Arden Beige x Black - L,Arden,Beige x Black,L,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely406,Arden Beige x Black - XL,Arden,Beige x Black,XL,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely407,Arden Beige x Black - XXL,Arden,Beige x Black,XXL,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely408,Arden Beige x Black - XXXL,Arden,Beige x Black,XXXL,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely409,Arden Black x Maroon - S,Arden,Black x Maroon,S,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely410,Arden Black x Maroon - M,Arden,Black x Maroon,M,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely411,Arden Black x Maroon - L,Arden,Black x Maroon,L,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely412,Arden Black x Maroon - XL,Arden,Black x Maroon,XL,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely413,Arden Black x Maroon - XXL,Arden,Black x Maroon,XXL,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely414,Arden Black x Maroon - XXXL,Arden,Black x Maroon,XXXL,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely415,Arden White x Almond - S,Arden,White x Almond,S,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely416,Arden White x Almond - M,Arden,White x Almond,M,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely417,Arden White x Almond - L,Arden,White x Almond,L,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely418,Arden White x Almond - XL,Arden,White x Almond,XL,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely419,Arden White x Almond - XXL,Arden,White x Almond,XXL,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely420,Arden White x Almond - XXXL,Arden,White x Almond,XXXL,,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely183,Arrazi Black x Grey - S,Arrazi,Black x Grey,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely184,Arrazi Black x Grey - M,Arrazi,Black x Grey,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely185,Arrazi Black x Grey - L,Arrazi,Black x Grey,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely186,Arrazi Black x Grey - XL,Arrazi,Black x Grey,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely187,Arrazi Black x Grey - XXL,Arrazi,Black x Grey,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely188,Arrazi Black x Grey - XXXL,Arrazi,Black x Grey,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely189,Arrazi Grey x White - S,Arrazi,Grey x White,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely190,Arrazi Grey x White - M,Arrazi,Grey x White,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely191,Arrazi Grey x White - L,Arrazi,Grey x White,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely192,Arrazi Grey x White - XL,Arrazi,Grey x White,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely193,Arrazi Grey x White - XXL,Arrazi,Grey x White,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely194,Arrazi Grey x White - XXXL,Arrazi,Grey x White,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely195,Arrazi Maroon x Black - S,Arrazi,Maroon x Black,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely196,Arrazi Maroon x Black - M,Arrazi,Maroon x Black,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely197,Arrazi Maroon x Black - L,Arrazi,Maroon x Black,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely198,Arrazi Maroon x Black - XL,Arrazi,Maroon x Black,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely199,Arrazi Maroon x Black - XXL,Arrazi,Maroon x Black,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely200,Arrazi Maroon x Black - XXXL,Arrazi,Maroon x Black,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely201,Arrazi Sky Blue x Navy - S,Arrazi,Sky Blue x Navy,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely202,Arrazi Sky Blue x Navy - M,Arrazi,Sky Blue x Navy,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely203,Arrazi Sky Blue x Navy - L,Arrazi,Sky Blue x Navy,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely204,Arrazi Sky Blue x Navy - XL,Arrazi,Sky Blue x Navy,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely205,Arrazi Sky Blue x Navy - XXL,Arrazi,Sky Blue x Navy,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely206,Arrazi Sky Blue x Navy - XXXL,Arrazi,Sky Blue x Navy,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely700,Arrazi Dark B x Light B - S,Arrazi,Dark B x Light B,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely701,Arrazi Dark B x Light B - M,Arrazi,Dark B x Light B,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely702,Arrazi Dark B x Light B - L,Arrazi,Dark B x Light B,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely703,Arrazi Dark B x Light B - XL,Arrazi,Dark B x Light B,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely704,Arrazi Dark B x Light B - XXL,Arrazi,Dark B x Light B,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely705,Arrazi Dark B x Light B - XXXL,Arrazi,Dark B x Light B,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely01,Arslan Black x Grey - S,Arslan,Black x Grey,S,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,38604
+Elyasr Kids,ely02,Arslan Black x Grey - M,Arslan,Black x Grey,M,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,38604
+Elyasr Kids,ely03,Arslan Black x Grey - L,Arslan,Black x Grey,L,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39593
+Elyasr Kids,ely04,Arslan Black x Grey - XL,Arslan,Black x Grey,XL,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39593
+Elyasr Kids,ely05,Arslan Black x Grey - XXL,Arslan,Black x Grey,XXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39659
+Elyasr Kids,ely06,Arslan Black x Grey - XXXL,Arslan,Black x Grey,XXXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39659
+Elyasr Kids,ely07,Arslan DarkGrey x Black - S,Arslan,DarkGrey x Black,S,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,38604
+Elyasr Kids,ely08,Arslan DarkGrey x Black - M,Arslan,DarkGrey x Black,M,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,38604
+Elyasr Kids,ely09,Arslan DarkGrey x Black - L,Arslan,DarkGrey x Black,L,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39593
+Elyasr Kids,ely10,Arslan DarkGrey x Black - XL,Arslan,DarkGrey x Black,XL,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39593
+Elyasr Kids,ely11,Arslan DarkGrey x Black - XXL,Arslan,DarkGrey x Black,XXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39659
+Elyasr Kids,ely12,Arslan DarkGrey x Black - XXXL,Arslan,DarkGrey x Black,XXXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39659
+Elyasr Kids,ely13,Arslan Mustard x Navy - S,Arslan,Mustard x Navy,S,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,38604
+Elyasr Kids,ely14,Arslan Mustard x Navy - M,Arslan,Mustard x Navy,M,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,38604
+Elyasr Kids,ely15,Arslan Mustard x Navy - L,Arslan,Mustard x Navy,L,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39593
+Elyasr Kids,ely16,Arslan Mustard x Navy - XL,Arslan,Mustard x Navy,XL,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39593
+Elyasr Kids,ely17,Arslan Mustard x Navy - XXL,Arslan,Mustard x Navy,XXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39659
+Elyasr Kids,ely18,Arslan Mustard x Navy - XXXL,Arslan,Mustard x Navy,XXXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39659
+Elyasr Kids,ely19,Arslan Navy x Mustard - S,Arslan,Navy x Mustard,S,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,38604
+Elyasr Kids,ely20,Arslan Navy x Mustard - M,Arslan,Navy x Mustard,M,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,38604
+Elyasr Kids,ely21,Arslan Navy x Mustard - L,Arslan,Navy x Mustard,L,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39593
+Elyasr Kids,ely22,Arslan Navy x Mustard - XL,Arslan,Navy x Mustard,XL,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39593
+Elyasr Kids,ely23,Arslan Navy x Mustard - XXL,Arslan,Navy x Mustard,XXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39659
+Elyasr Kids,ely24,Arslan Navy x Mustard - XXXL,Arslan,Navy x Mustard,XXXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39659
+Elyasr Kids,ely25,Arslan Navy x Grey - S,Arslan,Navy x Grey,S,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,38604
+Elyasr Kids,ely26,Arslan Navy x Grey - M,Arslan,Navy x Grey,M,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,38604
+Elyasr Kids,ely27,Arslan Navy x Grey - L,Arslan,Navy x Grey,L,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39593
+Elyasr Kids,ely28,Arslan Navy x Grey - XL,Arslan,Navy x Grey,XL,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39593
+Elyasr Kids,ely29,Arslan Navy x Grey - XXL,Arslan,Navy x Grey,XXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39659
+Elyasr Kids,ely30,Arslan Navy x Grey - XXXL,Arslan,Navy x Grey,XXXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39659
+Elyasr Kids,ely31,Arslan White x Black - S,Arslan,White x Black,S,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,38604
+Elyasr Kids,ely32,Arslan White x Black - M,Arslan,White x Black,M,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,38604
+Elyasr Kids,ely33,Arslan White x Black - L,Arslan,White x Black,L,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39593
+Elyasr Kids,ely34,Arslan White x Black - XL,Arslan,White x Black,XL,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39593
+Elyasr Kids,ely35,Arslan White x Black - XXL,Arslan,White x Black,XXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39659
+Elyasr Kids,ely36,Arslan White x Black - XXXL,Arslan,White x Black,XXXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,,500,,1000,39659
+Elyasr Kids,ely385,Asher Beige x Almond - S,Asher,Beige x Almond,S,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely386,Asher Beige x Almond - M,Asher,Beige x Almond,M,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely387,Asher Beige x Almond - L,Asher,Beige x Almond,L,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely388,Asher Beige x Almond - XL,Asher,Beige x Almond,XL,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely389,Asher Beige x Almond - XXL,Asher,Beige x Almond,XXL,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely390,Asher Beige x Almond - XXXL,Asher,Beige x Almond,XXXL,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely391,Asher Maroon x Black - S,Asher,Maroon x Black,S,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely392,Asher Maroon x Black - M,Asher,Maroon x Black,M,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely393,Asher Maroon x Black - L,Asher,Maroon x Black,L,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely394,Asher Maroon x Black - XL,Asher,Maroon x Black,XL,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely395,Asher Maroon x Black - XXL,Asher,Maroon x Black,XXL,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely396,Asher Maroon x Black - XXXL,Asher,Maroon x Black,XXXL,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely397,Asher Skyblue x Navy - S,Asher,Skyblue x Navy,S,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely398,Asher Skyblue x Navy - M,Asher,Skyblue x Navy,M,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely399,Asher Skyblue x Navy - L,Asher,Skyblue x Navy,L,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely400,Asher Skyblue x Navy - XL,Asher,Skyblue x Navy,XL,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely401,Asher Skyblue x Navy - XXL,Asher,Skyblue x Navy,XXL,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely402,Asher Skyblue x Navy - XXXL,Asher,Skyblue x Navy,XXXL,Polo Wangky,,1500,6000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,45167
+Elyasr Kids,ely259,Celana Arslan Black - S,Celana Arslan,Black,S,Celana Dril,17745,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,36163
+Elyasr Kids,ely260,Celana Arslan Black - M,Celana Arslan,Black,M,Celana Dril,17745,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,36163
+Elyasr Kids,ely261,Celana Arslan Black - L,Celana Arslan,Black,L,Celana Dril,21600,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,40872
+Elyasr Kids,ely262,Celana Arslan Black - XL,Celana Arslan,Black,XL,Celana Dril,21600,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,40872
+Elyasr Kids,ely263,Celana Arslan Black - XXL,Celana Arslan,Black,XXL,Celana Dril,31050,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,50682
+Elyasr Kids,ely264,Celana Arslan Black - XXXL,Celana Arslan,Black,XXXL,Celana Dril,31050,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,50682
+Elyasr Kids,ely265,Celana Arslan Navy - S,Celana Arslan,Navy,S,Celana Dril,17745,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,36163
+Elyasr Kids,ely266,Celana Arslan Navy - M,Celana Arslan,Navy,M,Celana Dril,17745,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,36163
+Elyasr Kids,ely267,Celana Arslan Navy - L,Celana Arslan,Navy,L,Celana Dril,21600,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,40872
+Elyasr Kids,ely268,Celana Arslan Navy - XL,Celana Arslan,Navy,XL,Celana Dril,21600,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,40872
+Elyasr Kids,ely269,Celana Arslan Navy - XXL,Celana Arslan,Navy,XXL,Celana Dril,31050,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,50682
+Elyasr Kids,ely270,Celana Arslan Navy - XXXL,Celana Arslan,Navy,XXXL,Celana Dril,31050,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,50682
+Elyasr Kids,ely271,Celana Arslan DARK Grey - S,Celana Arslan,DARK Grey,S,Celana Dril,17745,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,36163
+Elyasr Kids,ely272,Celana Arslan DARK Grey - M,Celana Arslan,DARK Grey,M,Celana Dril,17745,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,36163
+Elyasr Kids,ely273,Celana Arslan DARK Grey - L,Celana Arslan,DARK Grey,L,Celana Dril,21600,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,40872
+Elyasr Kids,ely274,Celana Arslan DARK Grey - XL,Celana Arslan,DARK Grey,XL,Celana Dril,21600,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,40872
+Elyasr Kids,ely275,Celana Arslan DARK Grey - XXL,Celana Arslan,DARK Grey,XXL,Celana Dril,31050,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,50682
+Elyasr Kids,ely276,Celana Arslan DARK Grey - XXXL,Celana Arslan,DARK Grey,XXXL,Celana Dril,31050,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,50682
+Elyasr Kids,ely277,Celana Arslan LIGHT Grey - S,Celana Arslan,LIGHT Grey,S,Celana Dril,17745,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,36163
+Elyasr Kids,ely278,Celana Arslan LIGHT Grey - M,Celana Arslan,LIGHT Grey,M,Celana Dril,17745,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,36163
+Elyasr Kids,ely279,Celana Arslan LIGHT Grey - L,Celana Arslan,LIGHT Grey,L,Celana Dril,21600,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,40872
+Elyasr Kids,ely280,Celana Arslan LIGHT Grey - XL,Celana Arslan,LIGHT Grey,XL,Celana Dril,21600,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,40872
+Elyasr Kids,ely281,Celana Arslan LIGHT Grey - XXL,Celana Arslan,LIGHT Grey,XXL,Celana Dril,31050,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,50682
+Elyasr Kids,ely282,Celana Arslan LIGHT Grey - XXXL,Celana Arslan,LIGHT Grey,XXXL,Celana Dril,31050,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,50682
+Elyasr Kids,ely283,Celana Arslan Mustard - S,Celana Arslan,Mustard,S,Celana Dril,17745,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,36163
+Elyasr Kids,ely284,Celana Arslan Mustard - M,Celana Arslan,Mustard,M,Celana Dril,17745,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,36163
+Elyasr Kids,ely285,Celana Arslan Mustard - L,Celana Arslan,Mustard,L,Celana Dril,21600,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,40872
+Elyasr Kids,ely286,Celana Arslan Mustard - XL,Celana Arslan,Mustard,XL,Celana Dril,21600,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,40872
+Elyasr Kids,ely287,Celana Arslan Mustard - XXL,Celana Arslan,Mustard,XXL,Celana Dril,31050,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,50682
+Elyasr Kids,ely288,Celana Arslan Mustard - XXXL,Celana Arslan,Mustard,XXXL,Celana Dril,31050,1500,7000,,200,250,200,150,1000,500,1000,750,0,2000,0,0,0,0,0,0,0,500,0,,1000,50682
+Elyasr Kids,ely350,Dravo Black - M,Dravo,Black,M,Jacket,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,1000,2000,1500,800,500,0,2500,6250,0,0,0,8500,1000,81364
+Elyasr Kids,ely351,Dravo Black - L,Dravo,Black,L,Jacket,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,1000,2000,1500,800,500,0,2500,6250,0,0,0,8500,1000,83580
+Elyasr Kids,ely352,Dravo Black - XL,Dravo,Black,XL,Jacket,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,1000,2000,1500,800,500,0,2500,6250,0,0,0,8500,1000,83580
+Elyasr Kids,ely353,Dravo Black - XXL,Dravo,Black,XXL,Jacket,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,1000,2000,1500,800,500,0,2500,6250,0,0,0,8500,1000,89148
+Elyasr Kids,ely354,Dravo Black - XXXL,Dravo,Black,XXXL,Jacket,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,1000,2000,1500,800,500,0,2500,6250,0,0,0,8500,1000,89148
+Elyasr Kids,ely355,Dravo Navy - M,Dravo,Navy,M,Jacket,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,1000,2000,1500,800,500,0,2500,6250,0,0,0,8500,1000,81364
+Elyasr Kids,ely356,Dravo Navy - L,Dravo,Navy,L,Jacket,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,1000,2000,1500,800,500,0,2500,6250,0,0,0,8500,1000,83580
+Elyasr Kids,ely357,Dravo Navy - XL,Dravo,Navy,XL,Jacket,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,1000,2000,1500,800,500,0,2500,6250,0,0,0,8500,1000,83580
+Elyasr Kids,ely358,Dravo Navy - XXL,Dravo,Navy,XXL,Jacket,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,1000,2000,1500,800,500,0,2500,6250,0,0,0,8500,1000,89148
+Elyasr Kids,ely359,Dravo Navy - XXXL,Dravo,Navy,XXXL,Jacket,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,1000,2000,1500,800,500,0,2500,6250,0,0,0,8500,1000,89148
+Elyasr Kids,ely360,El Anorax Black Grey - M,El Anorax,Black Grey,M,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely361,El Anorax Black Grey - L,El Anorax,Black Grey,L,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely362,El Anorax Black Grey - XL,El Anorax,Black Grey,XL,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely363,El Anorax Black Grey - XXL,El Anorax,Black Grey,XXL,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely364,El Anorax Black Grey - XXXL,El Anorax,Black Grey,XXXL,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely365,El Anorax Black Turkish - M,El Anorax,Black Turkish,M,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely366,El Anorax Black Turkish - L,El Anorax,Black Turkish,L,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely367,El Anorax Black Turkish - XL,El Anorax,Black Turkish,XL,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely368,El Anorax Black Turkish - XXL,El Anorax,Black Turkish,XXL,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely369,El Anorax Black Turkish - XXXL,El Anorax,Black Turkish,XXXL,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely370,El Anorax Mustard Black - M,El Anorax,Mustard Black,M,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely371,El Anorax Mustard Black - L,El Anorax,Mustard Black,L,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely372,El Anorax Mustard Black - XL,El Anorax,Mustard Black,XL,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely373,El Anorax Mustard Black - XXL,El Anorax,Mustard Black,XXL,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely374,El Anorax Mustard Black - XXXL,El Anorax,Mustard Black,XXXL,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely375,El Anorax Mustard Grey - M,El Anorax,Mustard Grey,M,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely376,El Anorax Mustard Grey - L,El Anorax,Mustard Grey,L,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely377,El Anorax Mustard Grey - XL,El Anorax,Mustard Grey,XL,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely378,El Anorax Mustard Grey - XXL,El Anorax,Mustard Grey,XXL,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely379,El Anorax Mustard Grey - XXXL,El Anorax,Mustard Grey,XXXL,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely380,El Anorax Turkish Grey - M,El Anorax,Turkish Grey,M,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely381,El Anorax Turkish Grey - L,El Anorax,Turkish Grey,L,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely382,El Anorax Turkish Grey - XL,El Anorax,Turkish Grey,XL,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely383,El Anorax Turkish Grey - XXL,El Anorax,Turkish Grey,XXL,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely384,El Anorax Turkish Grey - XXXL,El Anorax,Turkish Grey,XXXL,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely726,El Anorax Navy Grey - M,El Anorax,Navy Grey,M,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely727,El Anorax Navy Grey - L,El Anorax,Navy Grey,L,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely728,El Anorax Navy Mustard - L,El Anorax,Navy Mustard,L,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely729,El Anorax Petrol Grey - M,El Anorax,Petrol Grey,M,Jacket,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely439,Heritage Beige Panjang - S,Heritage Panjang,Beige Panjang,S,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely440,Heritage Beige Panjang - M,Heritage Panjang,Beige,M,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely441,Heritage Beige Panjang - L,Heritage Panjang,Beige,L,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely442,Heritage Beige Panjang - XL,Heritage Panjang,Beige,XL,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely443,Heritage Beige Panjang - XXL,Heritage Panjang,Beige,XXL,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely444,Heritage Beige Panjang - XXXL,Heritage Panjang,Beige,XXXL,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely445,Heritage Black Panjang - S,Heritage Panjang,Black,S,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely446,Heritage Black Panjang - M,Heritage Panjang,Black,M,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely447,Heritage Black Panjang - L,Heritage Panjang,Black,L,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely448,Heritage Black Panjang - XL,Heritage Panjang,Black,XL,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely449,Heritage Black Panjang - XXL,Heritage Panjang,Black,XXL,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely450,Heritage Black Panjang - XXXL,Heritage Panjang,Black,XXXL,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely451,Heritage Navy Panjang - S,Heritage Panjang,Navy,S,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely452,Heritage Navy Panjang - M,Heritage Panjang,Navy,M,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely453,Heritage Navy Panjang - L,Heritage Panjang,Navy,L,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely454,Heritage Navy Panjang - XL,Heritage Panjang,Navy,XL,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely455,Heritage Navy Panjang - XXL,Heritage Panjang,Navy,XXL,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely456,Heritage Navy Panjang - XXXL,Heritage Panjang,Navy,XXXL,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely457,Heritage Olive Panjang - S,Heritage Panjang,Olive,S,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely458,Heritage Olive Panjang - M,Heritage Panjang,Olive,M,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely459,Heritage Olive Panjang - L,Heritage Panjang,Olive,L,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely460,Heritage Olive Panjang - XL,Heritage Panjang,Olive,XL,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely461,Heritage Olive Panjang - XXL,Heritage Panjang,Olive,XXL,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely462,Heritage Olive Panjang - XXXL,Heritage Panjang,Olive,XXXL,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,1000,0,1500,,1000,50000
+Elyasr Kids,ely463,Heritage Beige Pendek - S,Heritage Pendek,Beige,S,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely464,Heritage Beige Pendek - M,Heritage Pendek,Beige,M,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely465,Heritage Beige Pendek - L,Heritage Pendek,Beige,L,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely466,Heritage Beige Pendek - XL,Heritage Pendek,Beige,XL,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely467,Heritage Beige Pendek - XXL,Heritage Pendek,Beige,XXL,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely468,Heritage Beige Pendek - XXXL,Heritage Pendek,Beige,XXXL,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely469,Heritage Black Pendek - S,Heritage Pendek,Black,S,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely470,Heritage Black Pendek - M,Heritage Pendek,Black,M,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely471,Heritage Black Pendek - L,Heritage Pendek,Black,L,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely472,Heritage Black Pendek - XL,Heritage Pendek,Black,XL,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely473,Heritage Black Pendek - XXL,Heritage Pendek,Black,XXL,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely474,Heritage Black Pendek - XXXL,Heritage Pendek,Black,XXXL,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely475,Heritage Navy Pendek - S,Heritage Pendek,Navy,S,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely476,Heritage Navy Pendek - M,Heritage Pendek,Navy,M,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely477,Heritage Navy Pendek - L,Heritage Pendek,Navy,L,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely478,Heritage Navy Pendek - XL,Heritage Pendek,Navy,XL,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely479,Heritage Navy Pendek - XXL,Heritage Pendek,Navy,XXL,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely480,Heritage Navy Pendek - XXXL,Heritage Pendek,Navy,XXXL,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely481,Heritage Olive Pendek - S,Heritage Pendek,Olive,S,Kemeja Polo,,1500,10000,1200,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely482,Heritage Olive Pendek - M,Heritage Pendek,Olive,M,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely483,Heritage Olive Pendek - L,Heritage Pendek,Olive,L,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely484,Heritage Olive Pendek - XL,Heritage Pendek,Olive,XL,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely485,Heritage Olive Pendek - XXL,Heritage Pendek,Olive,XXL,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely486,Heritage Olive Pendek - XXXL,Heritage Pendek,Olive,XXXL,Kemeja Polo,,1500,8500,900,350,250,400,150,1500,1000,1000,1000,1500,0,0,0,0,0,0,0,500,0,1200,,1000,46722
+Elyasr Kids,ely535,Hino Black Panjang - S,Hino Panjang,Black,S,Chinos,18525,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,45913
+Elyasr Kids,ely536,Hino Black Panjang - M,Hino Panjang,Black,M,Chinos,18525,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,45913
+Elyasr Kids,ely537,Hino Black Panjang - L,Hino Panjang,Black,L,Chinos,21375,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,49266
+Elyasr Kids,ely538,Hino Black Panjang - XL,Hino Panjang,Black,XL,Chinos,24225,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,52619
+Elyasr Kids,ely539,Hino Black Panjang - XXL,Hino Panjang,Black,XXL,Chinos,25650,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,54295
+Elyasr Kids,ely540,Hino Black Panjang - XXXL,Hino Panjang,Black,XXXL,Chinos,29925,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,59325
+Elyasr Kids,ely541,Hino Grey Panjang - S,Hino Panjang,Grey,S,Chinos,18525,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,45913
+Elyasr Kids,ely542,Hino Grey Panjang - M,Hino Panjang,Grey,M,Chinos,18525,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,45913
+Elyasr Kids,ely543,Hino Grey Panjang - L,Hino Panjang,Grey,L,Chinos,21375,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,49266
+Elyasr Kids,ely544,Hino Grey Panjang - XL,Hino Panjang,Grey,XL,Chinos,24225,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,52619
+Elyasr Kids,ely545,Hino Grey Panjang - XXL,Hino Panjang,Grey,XXL,Chinos,25650,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,54295
+Elyasr Kids,ely546,Hino Grey Panjang - XXXL,Hino Panjang,Grey,XXXL,Chinos,29925,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,59325
+Elyasr Kids,ely547,Hino Army Panjang - S,Hino Panjang,Army,S,Chinos,18525,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,45913
+Elyasr Kids,ely548,Hino Army Panjang - M,Hino Panjang,Army,M,Chinos,18525,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,45913
+Elyasr Kids,ely549,Hino Army Panjang - L,Hino Panjang,Army,L,Chinos,21375,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,49266
+Elyasr Kids,ely550,Hino Army Panjang - XL,Hino Panjang,Army,XL,Chinos,24225,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,52619
+Elyasr Kids,ely551,Hino Army Panjang - XXL,Hino Panjang,Army,XXL,Chinos,25650,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,54295
+Elyasr Kids,ely552,Hino Army Panjang - XXXL,Hino Panjang,Army,XXXL,Chinos,29925,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,59325
+Elyasr Kids,ely553,Hino Khaki Panjang - S,Hino Panjang,Khaki,S,Chinos,18525,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,45913
+Elyasr Kids,ely554,Hino Khaki Panjang - M,Hino Panjang,Khaki,M,Chinos,18525,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,45913
+Elyasr Kids,ely555,Hino Khaki Panjang - L,Hino Panjang,Khaki,L,Chinos,21375,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,49266
+Elyasr Kids,ely556,Hino Khaki Panjang - XL,Hino Panjang,Khaki,XL,Chinos,24225,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,52619
+Elyasr Kids,ely557,Hino Khaki Panjang - XXL,Hino Panjang,Khaki,XXL,Chinos,25650,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,54295
+Elyasr Kids,ely558,Hino Khaki Panjang - XXXL,Hino Panjang,Khaki,XXXL,Chinos,29925,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,59325
+Elyasr Kids,ely559,Hino Black Pendek - S,Hino Pendek,Black,S,Chinos,15675,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,41383
+Elyasr Kids,ely560,Hino Black Pendek - M,Hino Pendek,Black,M,Chinos,15675,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,41383
+Elyasr Kids,ely561,Hino Black Pendek - L,Hino Pendek,Black,L,Chinos,17100,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,43060
+Elyasr Kids,ely562,Hino Black Pendek - XL,Hino Pendek,Black,XL,Chinos,18525,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,44736
+Elyasr Kids,ely563,Hino Black Pendek - XXL,Hino Pendek,Black,XXL,Chinos,21660,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,48424
+Elyasr Kids,ely564,Hino Black Pendek - XXXL,Hino Pendek,Black,XXXL,Chinos,24510,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,51777
+Elyasr Kids,ely565,Hino Grey Pendek - S,Hino Pendek,Grey,S,Chinos,15675,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,41383
+Elyasr Kids,ely566,Hino Grey Pendek - M,Hino Pendek,Grey,M,Chinos,15675,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,41383
+Elyasr Kids,ely567,Hino Grey Pendek - L,Hino Pendek,Grey,L,Chinos,17100,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,43060
+Elyasr Kids,ely568,Hino Grey Pendek - XL,Hino Pendek,Grey,XL,Chinos,18525,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,44736
+Elyasr Kids,ely569,Hino Grey Pendek - XXL,Hino Pendek,Grey,XXL,Chinos,21660,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,48424
+Elyasr Kids,ely570,Hino Grey Pendek - XXXL,Hino Pendek,Grey,XXXL,Chinos,24510,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,51777
+Elyasr Kids,ely571,Hino Army Pendek - S,Hino Pendek,Army,S,Chinos,15675,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,41383
+Elyasr Kids,ely572,Hino Army Pendek - M,Hino Pendek,Army,M,Chinos,15675,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,41383
+Elyasr Kids,ely573,Hino Army Pendek - L,Hino Pendek,Army,L,Chinos,17100,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,43060
+Elyasr Kids,ely574,Hino Army Pendek - XL,Hino Pendek,Army,XL,Chinos,18525,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,44736
+Elyasr Kids,ely575,Hino Army Pendek - XXL,Hino Pendek,Army,XXL,Chinos,21660,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,48424
+Elyasr Kids,ely576,Hino Army Pendek - XXXL,Hino Pendek,Army,XXXL,Chinos,24510,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,51777
+Elyasr Kids,ely577,Hino Khaki Pendek - S,Hino Pendek,Khaki,S,Chinos,15675,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,41383
+Elyasr Kids,ely578,Hino Khaki Pendek - M,Hino Pendek,Khaki,M,Chinos,15675,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,41383
+Elyasr Kids,ely579,Hino Khaki Pendek - L,Hino Pendek,Khaki,L,Chinos,17100,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,43060
+Elyasr Kids,ely580,Hino Khaki Pendek - XL,Hino Pendek,Khaki,XL,Chinos,18525,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,44736
+Elyasr Kids,ely581,Hino Khaki Pendek - XXL,Hino Pendek,Khaki,XXL,Chinos,21660,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,48424
+Elyasr Kids,ely582,Hino Khaki Pendek - XXXL,Hino Pendek,Khaki,XXXL,Chinos,24510,2000,8000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,51777
+Elyasr Kids,ely583,Jimo Black Panjang - S,Jimo Panjang,Black,S,Chinos,24510,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,48265
+Elyasr Kids,ely584,Jimo Black Panjang - M,Jimo Panjang,Black,M,Chinos,27960,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,48265
+Elyasr Kids,ely585,Jimo Black Panjang - L,Jimo Panjang,Black,L,Chinos,21375,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,51619
+Elyasr Kids,ely586,Jimo Black Panjang - XL,Jimo Panjang,Black,XL,Chinos,24225,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,54972
+Elyasr Kids,ely587,Jimo Black Panjang - XXL,Jimo Panjang,Black,XXL,Chinos,25650,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,56648
+Elyasr Kids,ely588,Jimo Black Panjang - XXXL,Jimo Panjang,Black,XXXL,Chinos,29925,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,61678
+Elyasr Kids,ely589,Jimo Grey Panjang - S,Jimo Panjang,Grey,S,Chinos,24510,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,48265
+Elyasr Kids,ely590,Jimo Grey Panjang - M,Jimo Panjang,Grey,M,Chinos,27960,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,48265
+Elyasr Kids,ely591,Jimo Grey Panjang - L,Jimo Panjang,Grey,L,Chinos,21375,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,51619
+Elyasr Kids,ely592,Jimo Grey Panjang - XL,Jimo Panjang,Grey,XL,Chinos,24225,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,54972
+Elyasr Kids,ely593,Jimo Grey Panjang - XXL,Jimo Panjang,Grey,XXL,Chinos,25650,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,56648
+Elyasr Kids,ely594,Jimo Grey Panjang - XXXL,Jimo Panjang,Grey,XXXL,Chinos,29925,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,61678
+Elyasr Kids,ely595,Jimo Army Panjang - S,Jimo Panjang,Army,S,Chinos,24510,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,48265
+Elyasr Kids,ely596,Jimo Army Panjang - M,Jimo Panjang,Army,M,Chinos,27960,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,48265
+Elyasr Kids,ely597,Jimo Army Panjang - L,Jimo Panjang,Army,L,Chinos,21375,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,51619
+Elyasr Kids,ely598,Jimo Army Panjang - XL,Jimo Panjang,Army,XL,Chinos,24225,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,54972
+Elyasr Kids,ely599,Jimo Army Panjang - XXL,Jimo Panjang,Army,XXL,Chinos,25650,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,56648
+Elyasr Kids,ely600,Jimo Army Panjang - XXXL,Jimo Panjang,Army,XXXL,Chinos,29925,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,61678
+Elyasr Kids,ely601,Jimo Khaki Panjang - S,Jimo Panjang,Khaki,S,Chinos,24510,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,48265
+Elyasr Kids,ely602,Jimo Khaki Panjang - M,Jimo Panjang,Khaki,M,Chinos,27960,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,48265
+Elyasr Kids,ely603,Jimo Khaki Panjang - L,Jimo Panjang,Khaki,L,Chinos,21375,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,51619
+Elyasr Kids,ely604,Jimo Khaki Panjang - XL,Jimo Panjang,Khaki,XL,Chinos,24225,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,54972
+Elyasr Kids,ely605,Jimo Khaki Panjang - XXL,Jimo Panjang,Khaki,XXL,Chinos,25650,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,56648
+Elyasr Kids,ely606,Jimo Khaki Panjang - XXXL,Jimo Panjang,Khaki,XXXL,Chinos,29925,2000,9000,0,200,250,200,150,1500,1000,1000,1500,250,2000,0,0,0,0,0,0,0,500,0,,1500,61678
+Elyasr Kids,ely677,Jubah Mumtaz Navy - L,Jubah Mumtaz,Navy,L,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely678,Jubah Mumtaz Navy - XL,Jubah Mumtaz,Navy,XL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely679,Jubah Mumtaz Black - XXL,Jubah Mumtaz,Black,XXL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely680,Jubah Mumtaz Brown - M,Jubah Mumtaz,Brown,M,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely681,Jubah Mumtaz Brown - L,Jubah Mumtaz,Brown,L,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely682,Jubah Mumtaz Brown - XL,Jubah Mumtaz,Brown,XL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely683,Jubah Mumtaz Brown - XXL,Jubah Mumtaz,Brown,XXL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely67,Khalid Brown - S,Khalid,Brown,S,Koko Set,29600,3000,11000,450,350,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,73430
+Elyasr Kids,ely68,Khalid Brown - M,Khalid,Brown,M,Koko Set,29600,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,73430
+Elyasr Kids,ely69,Khalid Brown - L,Khalid,Brown,L,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,78808
+Elyasr Kids,ely70,Khalid Brown - XL,Khalid,Brown,XL,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,78808
+Elyasr Kids,ely71,Khalid Brown - XXL,Khalid,Brown,XXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,83324
+Elyasr Kids,ely72,Khalid Brown - XXXL,Khalid,Brown,XXXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,83324
+Elyasr Kids,ely73,Khalid Navy - S,Khalid,Navy,S,Koko Set,29600,3000,11000,450,350,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,73430
+Elyasr Kids,ely74,Khalid Navy - M,Khalid,Navy,M,Koko Set,29600,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,73430
+Elyasr Kids,ely75,Khalid Navy - L,Khalid,Navy,L,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,78808
+Elyasr Kids,ely76,Khalid Navy - XL,Khalid,Navy,XL,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,78808
+Elyasr Kids,ely77,Khalid Navy - XXL,Khalid,Navy,XXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,83324
+Elyasr Kids,ely78,Khalid Navy - XXXL,Khalid,Navy,XXXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,83324
+Elyasr Kids,ely79,Khalid Black - S,Khalid,Black,S,Koko Set,29600,3000,11000,450,350,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,73430
+Elyasr Kids,ely80,Khalid Black - M,Khalid,Black,M,Koko Set,29600,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,73430
+Elyasr Kids,ely81,Khalid Black - L,Khalid,Black,L,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,78808
+Elyasr Kids,ely82,Khalid Black - XL,Khalid,Black,XL,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,78808
+Elyasr Kids,ely83,Khalid Black - XXL,Khalid,Black,XXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,83324
+Elyasr Kids,ely84,Khalid Black - XXXL,Khalid,Black,XXXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,83324
+Elyasr Kids,ely85,Khalid White - S,Khalid,White,S,Koko Set,29600,3000,11000,450,350,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,73430
+Elyasr Kids,ely86,Khalid White - M,Khalid,White,M,Koko Set,29600,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,73430
+Elyasr Kids,ely87,Khalid White - L,Khalid,White,L,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,78808
+Elyasr Kids,ely88,Khalid White - XL,Khalid,White,XL,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,78808
+Elyasr Kids,ely89,Khalid White - XXL,Khalid,White,XXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,83324
+Elyasr Kids,ely90,Khalid White - XXXL,Khalid,White,XXXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,83324
+Elyasr Kids,ely91,Khalid Denim - S,Khalid,Denim,S,Koko Set,29600,3000,11000,450,350,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,73430
+Elyasr Kids,ely92,Khalid Denim - M,Khalid,Denim,M,Koko Set,29600,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,73430
+Elyasr Kids,ely93,Khalid Denim - L,Khalid,Denim,L,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,78808
+Elyasr Kids,ely94,Khalid Denim - XL,Khalid,Denim,XL,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,78808
+Elyasr Kids,ely95,Khalid Denim - XXL,Khalid,Denim,XXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,83324
+Elyasr Kids,ely96,Khalid Denim - XXXL,Khalid,Denim,XXXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,0,0,500,500,,1500,83324
+Elyasr Kids,ely325,Jaket Neck Black - M,Neck,Black,M,Jacket,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,2500,9000,6250,0,0,0,8500,1000,86300
+Elyasr Kids,ely326,Jaket Neck Black - L,Neck,Black,L,Jacket,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,2500,9000,6250,0,0,0,8500,1000,86300
+Elyasr Kids,ely327,Jaket Neck Black - XL,Neck,Black,XL,Jacket,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,2500,9000,6250,0,0,0,8500,1000,86300
+Elyasr Kids,ely328,Jaket Neck Black - XXL,Neck,Black,XXL,Jacket,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,2500,9000,6250,0,0,0,8500,1000,86300
+Elyasr Kids,ely329,Jaket Neck Black - XXXL,Neck,Black,XXXL,Jacket,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,2500,9000,6250,0,0,0,8500,1000,86300
+Elyasr Kids,ely330,Jaket Neck Navy - M,Neck,Navy,M,Jacket,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,2500,9000,6250,0,0,0,8500,1000,86300
+Elyasr Kids,ely331,Jaket Neck Navy - L,Neck,Navy,L,Jacket,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,2500,9000,6250,0,0,0,8500,1000,86300
+Elyasr Kids,ely332,Jaket Neck Navy - XL,Neck,Navy,XL,Jacket,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,2500,9000,6250,0,0,0,8500,1000,86300
+Elyasr Kids,ely333,Jaket Neck Navy - XXL,Neck,Navy,XXL,Jacket,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,2500,9000,6250,0,0,0,8500,1000,86300
+Elyasr Kids,ely334,Jaket Neck Navy - XXXL,Neck,Navy,XXXL,Jacket,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,2500,9000,6250,0,0,0,8500,1000,86300
+Elyasr Kids,ely335,Jaket Neck Skyblue - M,Neck,Skyblue,M,Jacket,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,2500,9000,6250,0,0,0,8500,1000,86300
+Elyasr Kids,ely336,Jaket Neck Skyblue - L,Neck,Skyblue,L,Jacket,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,2500,9000,6250,0,0,0,8500,1000,86300
+Elyasr Kids,ely337,Jaket Neck Skyblue - XL,Neck,Skyblue,XL,Jacket,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,2500,9000,6250,0,0,0,8500,1000,86300
+Elyasr Kids,ely338,Jaket Neck Skyblue - XXL,Neck,Skyblue,XXL,Jacket,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,2500,9000,6250,0,0,0,8500,1000,86300
+Elyasr Kids,ely339,Jaket Neck Skyblue - XXXL,Neck,Skyblue,XXXL,Jacket,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,2500,9000,6250,0,0,0,8500,1000,86300
+Elyasr Kids,ely340,Storma Black - M,Storma,Black,M,Jacket,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,2500,4500,0,0,0,8500,1000,79500
+Elyasr Kids,ely341,Storma Black - L,Storma,Black,L,Jacket,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,2500,4500,0,0,0,8500,1000,79500
+Elyasr Kids,ely342,Storma Black - XL,Storma,Black,XL,Jacket,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,2500,4500,0,0,0,8500,1000,79500
+Elyasr Kids,ely343,Storma Black - XXL,Storma,Black,XXL,Jacket,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,2500,4500,0,0,0,8500,1000,79500
+Elyasr Kids,ely344,Storma Black - XXXL,Storma,Black,XXXL,Jacket,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,2500,4500,0,0,0,8500,1000,79500
+Elyasr Kids,ely345,Storma Navy - M,Storma,Navy,M,Jacket,22425,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,2500,4500,0,0,0,8500,1000,79500
+Elyasr Kids,ely346,Storma Navy - L,Storma,Navy,L,Jacket,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,2500,4500,0,0,0,8500,1000,79500
+Elyasr Kids,ely347,Storma Navy - XL,Storma,Navy,XL,Jacket,26325,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,2500,4500,0,0,0,8500,1000,79500
+Elyasr Kids,ely348,Storma Navy - XXL,Storma,Navy,XXL,Jacket,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,2500,4500,0,0,0,8500,1000,79500
+Elyasr Kids,ely349,Storma Navy - XXXL,Storma,Navy,XXXL,Jacket,30225,3000,21000,0,350,250,0,150,2000,1000,1000,2000,0,2000,1500,800,500,0,2500,4500,0,0,0,8500,1000,79500
+Elyasr Kids,ely219,Tameem Black x Dark Grey - M,Tameem,Black x Dark Grey,M,Koko ,15170,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,52000
+Elyasr Kids,ely220,Tameem Black x Dark Grey - L,Tameem,Black x Dark Grey,L,Koko ,18500,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,56000
+Elyasr Kids,ely221,Tameem Black x Dark Grey - XL,Tameem,Black x Dark Grey,XL,Koko ,18500,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,56000
+Elyasr Kids,ely222,Tameem Black x Dark Grey - XXL,Tameem,Black x Dark Grey,XXL,Koko ,23125,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,61500
+Elyasr Kids,ely223,Tameem Black x Dark Grey - XXXL,Tameem,Black x Dark Grey,XXXL,Koko ,23125,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,61500
+Elyasr Kids,ely224,Tameem White x Black - M,Tameem,White x Black,M,Koko ,15170,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,52000
+Elyasr Kids,ely225,Tameem White x Black - L,Tameem,White x Black,L,Koko ,18500,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,56000
+Elyasr Kids,ely226,Tameem White x Black - XL,Tameem,White x Black,XL,Koko ,18500,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,56000
+Elyasr Kids,ely227,Tameem White x Black - XXL,Tameem,White x Black,XXL,Koko ,23125,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,61500
+Elyasr Kids,ely228,Tameem White x Black - XXXL,Tameem,White x Black,XXXL,Koko ,23125,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,61500
+Elyasr Kids,ely229,Tameem Brown x Black - M,Tameem,Brown x Black,M,Koko ,15170,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,52000
+Elyasr Kids,ely230,Tameem Brown x Black - L,Tameem,Brown x Black,L,Koko ,18500,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,56000
+Elyasr Kids,ely231,Tameem Brown x Black - XL,Tameem,Brown x Black,XL,Koko ,18500,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,56000
+Elyasr Kids,ely232,Tameem Brown x Black - XXL,Tameem,Brown x Black,XXL,Koko ,23125,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,61500
+Elyasr Kids,ely233,Tameem Brown x Black - XXXL,Tameem,Brown x Black,XXXL,Koko ,23125,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,61500
+Elyasr Kids,ely234,Tameem Navy x Mustard - M,Tameem,Navy x Mustard,M,Koko ,15170,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,52000
+Elyasr Kids,ely235,Tameem Navy x Mustard - L,Tameem,Navy x Mustard,L,Koko ,18500,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,56000
+Elyasr Kids,ely236,Tameem Navy x Mustard - XL,Tameem,Navy x Mustard,XL,Koko ,18500,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,56000
+Elyasr Kids,ely237,Tameem Navy x Mustard - XXL,Tameem,Navy x Mustard,XXL,Koko ,23125,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,61500
+Elyasr Kids,ely238,Tameem Navy x Mustard - XXXL,Tameem,Navy x Mustard,XXXL,Koko ,23125,1500,16000,1500,350,250,400,150,1500,1000,1000,1500,500,0,0,0,0,0,0,0,1000,0,1700,,1500,61500
+Elyasr Kids,ely207,Thalhah Black x Grey - S,Thalhah,Black x Grey,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely208,Thalhah Black x Grey - M,Thalhah,Black x Grey,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely209,Thalhah Black x Grey - L,Thalhah,Black x Grey,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely210,Thalhah Black x Grey - XL,Thalhah,Black x Grey,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely211,Thalhah Black x Grey - XXL,Thalhah,Black x Grey,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely212,Thalhah Black x Grey - XXXL,Thalhah,Black x Grey,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely213,Thalhah Grey x Black - S,Thalhah,Grey x Black,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely214,Thalhah Grey x Black - M,Thalhah,Grey x Black,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely215,Thalhah Grey x Black - L,Thalhah,Grey x Black,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely216,Thalhah Grey x Black - XL,Thalhah,Grey x Black,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely217,Thalhah Grey x Black - XXL,Thalhah,Grey x Black,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely218,Thalhah Grey x Black - XXXL,Thalhah,Grey x Black,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely656,Thalhah Maroon x Grey - S,Thalhah,Maroon x Grey,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely657,Thalhah Maroon x Grey - XL,Thalhah,Maroon x Grey,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely658,Thalhah Maroon x Grey - XXXL,Thalhah,Maroon x Grey,XXXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely659,Thalhah Navy x Sky Blue - S,Thalhah,Navy x Sky Blue,S,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely660,Thalhah Navy x Sky Blue - M,Thalhah,Navy x Sky Blue,M,Koko ,15200,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,46105
+Elyasr Kids,ely661,Thalhah Navy x Sky Blue - L,Thalhah,Navy x Sky Blue,L,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely662,Thalhah Navy x Sky Blue - XL,Thalhah,Navy x Sky Blue,XL,Koko ,16150,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,47209
+Elyasr Kids,ely663,Thalhah Navy x Sky Blue - XXL,Thalhah,Navy x Sky Blue,XXL,Koko ,18240,2000,12000,1050,350,250,400,150,1500,1000,1000,1500,0,0,0,0,0,0,0,0,750,0,1500,,1500,49640
+Elyasr Kids,ely421,Tricolor Beige - S,Tricolor,Beige,S,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely422,Tricolor Beige - M,Tricolor,Beige,M,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely423,Tricolor Beige - L,Tricolor,Beige,L,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely424,Tricolor Beige - XL,Tricolor,Beige,XL,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely425,Tricolor Beige - XXL,Tricolor,Beige,XXL,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely426,Tricolor Beige - XXXL,Tricolor,Beige,XXXL,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely427,Tricolor Maroon - S,Tricolor,Maroon,S,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely428,Tricolor Maroon - M,Tricolor,Maroon,M,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely429,Tricolor Maroon - L,Tricolor,Maroon,L,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely430,Tricolor Maroon - XL,Tricolor,Maroon,XL,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely431,Tricolor Maroon - XXL,Tricolor,Maroon,XXL,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely432,Tricolor Maroon - XXXL,Tricolor,Maroon,XXXL,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely433,Tricolor Oceanblue - S,Tricolor,Oceanblue,S,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely434,Tricolor Oceanblue - M,Tricolor,Oceanblue,M,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely435,Tricolor Oceanblue - L,Tricolor,Oceanblue,L,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely436,Tricolor Oceanblue - XL,Tricolor,Oceanblue,XL,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely437,Tricolor Oceanblue - XXL,Tricolor,Oceanblue,XXL,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely438,Tricolor Oceanblue - XXXL,Tricolor,Oceanblue,XXXL,Polo Wangky,,1500,7000,450,350,250,400,150,1000,500,1000,1000,1500,0,0,0,0,0,0,0,0,0,600,0,1000,46278
+Elyasr Kids,ely100,Utsman Brown x Black - XXL,Utsman,Brown x Black,XXL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely101,Utsman Brown x Black - XXXL,Utsman,Brown x Black,XXXL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely102,Utsman White x Black - M,Utsman,White x Black,M,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely103,Utsman White x Black - L,Utsman,White x Black,L,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely104,Utsman White x Black - XL,Utsman,White x Black,XL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely105,Utsman White x Black - XXL,Utsman,White x Black,XXL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely106,Utsman White x Black - XXXL,Utsman,White x Black,XXXL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely107,Utsman Black x Grey - M,Utsman,Black x Grey,M,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely108,Utsman Black x Grey - L,Utsman,Black x Grey,L,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely109,Utsman Black x Grey - XL,Utsman,Black x Grey,XL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely110,Utsman Black x Grey - XXL,Utsman,Black x Grey,XXL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely111,Utsman Black x Grey - XXXL,Utsman,Black x Grey,XXXL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely112,Utsman Grey x Black - M,Utsman,Grey x Black,M,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely113,Utsman Grey x Black - L,Utsman,Grey x Black,L,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely114,Utsman Grey x Black - XL,Utsman,Grey x Black,XL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely115,Utsman Grey x Black - XXL,Utsman,Grey x Black,XXL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely116,Utsman Grey x Black - XXXL,Utsman,Grey x Black,XXXL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely652,Utsman Sage x Black - L,Utsman,Sage x Black,L,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely653,Utsman Navy x Grey - M,Utsman,Navy x Grey,M,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely654,Utsman Navy x Grey - L,Utsman,Navy x Grey,L,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely655,Utsman Navy x Grey - XL,Utsman,Navy x Grey,XL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely97,Utsman Brown x Black - M,Utsman,Brown x Black,M,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely98,Utsman Brown x Black - L,Utsman,Brown x Black,L,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely99,Utsman Brown x Black - XL,Utsman,Brown x Black,XL,Koko ,,,,,,,,,,,,,,,,,,,,,,,,,,
+Elyasr Kids,ely239,Zayyan Black - M,Zayyan,Black,M,Koko Set,29600,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,73430
+Elyasr Kids,ely240,Zayyan Black - L,Zayyan,Black,L,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,78808
+Elyasr Kids,ely241,Zayyan Black - XL,Zayyan,Black,XL,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,78808
+Elyasr Kids,ely242,Zayyan Black - XXL,Zayyan,Black,XXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,83324
+Elyasr Kids,ely243,Zayyan Black - XXXL,Zayyan,Black,XXXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,83324
+Elyasr Kids,ely244,Zayyan Brown - M,Zayyan,Brown,M,Koko Set,29600,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,73430
+Elyasr Kids,ely245,Zayyan Brown - L,Zayyan,Brown,L,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,78808
+Elyasr Kids,ely246,Zayyan Brown - XL,Zayyan,Brown,XL,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,78808
+Elyasr Kids,ely247,Zayyan Brown - XXL,Zayyan,Brown,XXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,83324
+Elyasr Kids,ely248,Zayyan Brown - XXXL,Zayyan,Brown,XXXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,83324
+Elyasr Kids,ely249,Zayyan White - M,Zayyan,White,M,Koko Set,29600,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,73430
+Elyasr Kids,ely250,Zayyan White - L,Zayyan,White,L,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,78808
+Elyasr Kids,ely251,Zayyan White - XL,Zayyan,White,XL,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,78808
+Elyasr Kids,ely252,Zayyan White - XXL,Zayyan,White,XXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,83324
+Elyasr Kids,ely253,Zayyan White - XXXL,Zayyan,White,XXXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,83324
+Elyasr Kids,ely254,Zayyan Dark Grey - M,Zayyan,Dark Grey,M,Koko Set,29600,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,73430
+Elyasr Kids,ely255,Zayyan Dark Grey - L,Zayyan,Dark Grey,L,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,78808
+Elyasr Kids,ely256,Zayyan Dark Grey - XL,Zayyan,Dark Grey,XL,Koko Set,34225,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,78808
+Elyasr Kids,ely257,Zayyan Dark Grey - XXL,Zayyan,Dark Grey,XXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,83324
+Elyasr Kids,ely258,Zayyan Dark Grey - XXXL,Zayyan,Dark Grey,XXXL,Koko Set,39775,3000,11000,450,550,250,600,150,2000,1000,1000,2000,500,2000,0,0,0,0,0,1500,0,500,0,,1500,83324
+Elyasr Kids,ely37,Zubair Maroon x Navy - S,Zubair,Maroon x Navy,S,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,38604
+Elyasr Kids,ely38,Zubair Maroon x Navy - M,Zubair,Maroon x Navy,M,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,38604
+Elyasr Kids,ely39,Zubair Maroon x Navy - L,Zubair,Maroon x Navy,L,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39593
+Elyasr Kids,ely40,Zubair Maroon x Navy - XL,Zubair,Maroon x Navy,XL,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39593
+Elyasr Kids,ely41,Zubair Maroon x Navy - XXL,Zubair,Maroon x Navy,XXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39659
+Elyasr Kids,ely42,Zubair Maroon x Navy - XXXL,Zubair,Maroon x Navy,XXXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39659
+Elyasr Kids,ely43,Zubair DarkGrey x Black - S,Zubair,DarkGrey x Black,S,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,38604
+Elyasr Kids,ely44,Zubair DarkGrey x Black - M,Zubair,DarkGrey x Black,M,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,38604
+Elyasr Kids,ely45,Zubair DarkGrey x Black - L,Zubair,DarkGrey x Black,L,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39593
+Elyasr Kids,ely46,Zubair DarkGrey x Black - XL,Zubair,DarkGrey x Black,XL,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39593
+Elyasr Kids,ely47,Zubair DarkGrey x Black - XXL,Zubair,DarkGrey x Black,XXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39659
+Elyasr Kids,ely48,Zubair DarkGrey x Black - XXXL,Zubair,DarkGrey x Black,XXXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39659
+Elyasr Kids,ely49,Zubair Brown x Black - S,Zubair,Brown x Black,S,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,38604
+Elyasr Kids,ely50,Zubair Brown x Black - M,Zubair,Brown x Black,M,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,38604
+Elyasr Kids,ely51,Zubair Brown x Black - L,Zubair,Brown x Black,L,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39593
+Elyasr Kids,ely52,Zubair Brown x Black - XL,Zubair,Brown x Black,XL,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39593
+Elyasr Kids,ely53,Zubair Brown x Black - XXL,Zubair,Brown x Black,XXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39659
+Elyasr Kids,ely54,Zubair Brown x Black - XXXL,Zubair,Brown x Black,XXXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39659
+Elyasr Kids,ely55,Zubair Navy x Grey - S,Zubair,Navy x Grey,S,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,38604
+Elyasr Kids,ely56,Zubair Navy x Grey - M,Zubair,Navy x Grey,M,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,38604
+Elyasr Kids,ely57,Zubair Navy x Grey - L,Zubair,Navy x Grey,L,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39593
+Elyasr Kids,ely58,Zubair Navy x Grey - XL,Zubair,Navy x Grey,XL,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39593
+Elyasr Kids,ely59,Zubair Navy x Grey - XXL,Zubair,Navy x Grey,XXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39659
+Elyasr Kids,ely60,Zubair Navy x Grey - XXXL,Zubair,Navy x Grey,XXXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39659
+Elyasr Kids,ely61,Zubair Black x Grey - S,Zubair,Black x Grey,S,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,38604
+Elyasr Kids,ely62,Zubair Black x Grey - M,Zubair,Black x Grey,M,Koko ,12950,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,38604
+Elyasr Kids,ely63,Zubair Black x Grey - L,Zubair,Black x Grey,L,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39593
+Elyasr Kids,ely64,Zubair Black x Grey - XL,Zubair,Black x Grey,XL,Koko ,13875,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39593
+Elyasr Kids,ely65,Zubair Black x Grey - XXL,Zubair,Black x Grey,XXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39659
+Elyasr Kids,ely66,Zubair Black x Grey - XXXL,Zubair,Black x Grey,XXXL,Koko ,14800,1500,11000,600,350,250,400,150,1000,1000,1000,1500,2300,0,0,0,0,0,0,0,500,0,500,,1000,39659
+Elyasr Kids,ely487,Zuno Black Panjang - S,Zuno Panjang,Black,S,Chinos,21375,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,60207
+Elyasr Kids,ely488,Zuno Black Panjang - M,Zuno Panjang,Black,M,Chinos,22800,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,61883
+Elyasr Kids,ely489,Zuno Black Panjang - L,Zuno Panjang,Black,L,Chinos,22800,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,65236
+Elyasr Kids,ely490,Zuno Black Panjang - XL,Zuno Panjang,Black,XL,Chinos,25650,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,68589
+Elyasr Kids,ely491,Zuno Black Panjang - XXL,Zuno Panjang,Black,XXL,Chinos,28500,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,71942
+Elyasr Kids,ely492,Zuno Black Panjang - XXXL,Zuno Panjang,Black,XXXL,Chinos,31350,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,75296
+Elyasr Kids,ely493,Zuno Grey Panjang - S,Zuno Panjang,Grey,S,Chinos,21375,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,60207
+Elyasr Kids,ely494,Zuno Grey Panjang - M,Zuno Panjang,Grey,M,Chinos,22800,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,61883
+Elyasr Kids,ely495,Zuno Grey Panjang - L,Zuno Panjang,Grey,L,Chinos,22800,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,65236
+Elyasr Kids,ely496,Zuno Grey Panjang - XL,Zuno Panjang,Grey,XL,Chinos,25650,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,68589
+Elyasr Kids,ely497,Zuno Grey Panjang - XXL,Zuno Panjang,Grey,XXL,Chinos,28500,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,71942
+Elyasr Kids,ely498,Zuno Grey Panjang - XXXL,Zuno Panjang,Grey,XXXL,Chinos,31350,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,75296
+Elyasr Kids,ely499,Zuno Army Panjang - S,Zuno Panjang,Army,S,Chinos,21375,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,60207
+Elyasr Kids,ely500,Zuno Army Panjang - M,Zuno Panjang,Army,M,Chinos,22800,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,61883
+Elyasr Kids,ely501,Zuno Army Panjang - L,Zuno Panjang,Army,L,Chinos,22800,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,65236
+Elyasr Kids,ely502,Zuno Army Panjang - XL,Zuno Panjang,Army,XL,Chinos,25650,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,68589
+Elyasr Kids,ely503,Zuno Army Panjang - XXL,Zuno Panjang,Army,XXL,Chinos,28500,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,71942
+Elyasr Kids,ely504,Zuno Army Panjang - XXXL,Zuno Panjang,Army,XXXL,Chinos,31350,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,75296
+Elyasr Kids,ely505,Zuno Khaki Panjang - S,Zuno Panjang,Khaki,S,Chinos,21375,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,60207
+Elyasr Kids,ely506,Zuno Khaki Panjang - M,Zuno Panjang,Khaki,M,Chinos,22800,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,61883
+Elyasr Kids,ely507,Zuno Khaki Panjang - L,Zuno Panjang,Khaki,L,Chinos,22800,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,65236
+Elyasr Kids,ely508,Zuno Khaki Panjang - XL,Zuno Panjang,Khaki,XL,Chinos,25650,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,68589
+Elyasr Kids,ely509,Zuno Khaki Panjang - XXL,Zuno Panjang,Khaki,XXL,Chinos,28500,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,71942
+Elyasr Kids,ely510,Zuno Khaki Panjang - XXXL,Zuno Panjang,Khaki,XXXL,Chinos,31350,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,75296
+Elyasr Kids,ely511,Zuno Black Pendek - S,Zuno Pendek,Black,S,Chinos,21375,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,60207
+Elyasr Kids,ely512,Zuno Black Pendek - M,Zuno Pendek,Black,M,Chinos,22800,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,61883
+Elyasr Kids,ely513,Zuno Black Pendek - L,Zuno Pendek,Black,L,Chinos,22800,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,65236
+Elyasr Kids,ely514,Zuno Black Pendek - XL,Zuno Pendek,Black,XL,Chinos,25650,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,68589
+Elyasr Kids,ely515,Zuno Black Pendek - XXL,Zuno Pendek,Black,XXL,Chinos,28500,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,71942
+Elyasr Kids,ely516,Zuno Black Pendek - XXXL,Zuno Pendek,Black,XXXL,Chinos,31350,2000,17000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,75296
+Elyasr Kids,ely517,Zuno Grey Pendek - S,Zuno Pendek,Grey,S,Chinos,34200,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,55030
+Elyasr Kids,ely518,Zuno Grey Pendek - M,Zuno Pendek,Grey,M,Chinos,18525,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,55030
+Elyasr Kids,ely519,Zuno Grey Pendek - L,Zuno Pendek,Grey,L,Chinos,18525,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,56687
+Elyasr Kids,ely520,Zuno Grey Pendek - XL,Zuno Pendek,Grey,XL,Chinos,19950,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,59007
+Elyasr Kids,ely521,Zuno Grey Pendek - XXL,Zuno Pendek,Grey,XXL,Chinos,21945,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,61990
+Elyasr Kids,ely522,Zuno Grey Pendek - XXXL,Zuno Pendek,Grey,XXXL,Chinos,21945,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,65303
+Elyasr Kids,ely523,Zuno Army Pendek - S,Zuno Pendek,Army,S,Chinos,34200,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,55030
+Elyasr Kids,ely524,Zuno Army Pendek - M,Zuno Pendek,Army,M,Chinos,18525,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,55030
+Elyasr Kids,ely525,Zuno Army Pendek - L,Zuno Pendek,Army,L,Chinos,18525,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,56687
+Elyasr Kids,ely526,Zuno Army Pendek - XL,Zuno Pendek,Army,XL,Chinos,19950,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,59007
+Elyasr Kids,ely527,Zuno Army Pendek - XXL,Zuno Pendek,Army,XXL,Chinos,21945,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,61990
+Elyasr Kids,ely528,Zuno Army Pendek - XXXL,Zuno Pendek,Army,XXXL,Chinos,21945,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,65303
+Elyasr Kids,ely529,Zuno Khaki Pendek - S,Zuno Pendek,Khaki,S,Chinos,34200,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,55030
+Elyasr Kids,ely530,Zuno Khaki Pendek - M,Zuno Pendek,Khaki,M,Chinos,18525,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,55030
+Elyasr Kids,ely531,Zuno Khaki Pendek - L,Zuno Pendek,Khaki,L,Chinos,18525,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,56687
+Elyasr Kids,ely532,Zuno Khaki Pendek - XL,Zuno Pendek,Khaki,XL,Chinos,19950,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,59007
+Elyasr Kids,ely533,Zuno Khaki Pendek - XXL,Zuno Pendek,Khaki,XXL,Chinos,21945,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,61990
+Elyasr Kids,ely534,Zuno Khaki Pendek - XXXL,Zuno Pendek,Khaki,XXXL,Chinos,21945,2000,14000,300,200,250,200,150,1500,1000,1000,1500,0,2000,0,0,0,0,0,0,500,500,800,,1000,65303

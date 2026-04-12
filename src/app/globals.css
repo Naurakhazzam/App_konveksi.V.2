@@ -118,6 +118,30 @@ select option {
     display: none !important;
   }
 
+  /* Modal Print Fixes */
+  [class*="Modal_backdrop"], 
+  [class*="Modal_header"] button, 
+  [class*="Modal_footer"] button:not([class*="print-only"]) {
+    display: none !important;
+  }
+
+  [class*="Modal_content"] {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: white !important;
+    color: black !important;
+    display: block !important;
+    transform: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
   main, [class*="mainContent"] {
     margin: 0 !important;
     padding: 0 !important;

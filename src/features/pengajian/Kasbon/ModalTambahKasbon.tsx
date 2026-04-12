@@ -3,6 +3,9 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '@/components/organis
 import Button from '@/components/atoms/Button';
 import { Label } from '@/components/atoms/Typography';
 import { useMasterStore } from '@/stores/useMasterStore';
+import { usePayrollStore } from '@/stores/usePayrollStore';
+import { useToast } from '@/components/molecules/Toast';
+import { formatRupiah } from '@/lib/utils/formatters';
 import styles from './ModalTambahKasbon.module.css';
 
 interface ModalTambahKasbonProps {
@@ -12,6 +15,9 @@ interface ModalTambahKasbonProps {
 
 export default function ModalTambahKasbon({ onClose, onConfirm }: ModalTambahKasbonProps) {
   const { karyawan } = useMasterStore();
+  const { calculateUpah } = usePayrollStore();
+  const { error } = useToast();
+  
   const [formData, setFormData] = useState({
     karyawanId: '',
     jumlah: 0,
@@ -22,6 +28,19 @@ export default function ModalTambahKasbon({ onClose, onConfirm }: ModalTambahKas
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.karyawanId || formData.jumlah <= 0) return;
+
+    // Advanced Validation (Sprint 6.5)
+    // Check if the requested kasbon exceeds the current estimated unpaid earnings
+    const upahData = calculateUpah(formData.karyawanId);
+    const availableUpah = upahData.upahBersih - upahData.kasbonSisa;
+
+    if (formData.jumlah > availableUpah) {
+      error(
+        'Kasbon Ditolak', 
+        `Jumlah pinjaman melebihi sisa gaji berjalan. Maks pinjaman saat ini: ${formatRupiah(availableUpah > 0 ? availableUpah : 0)}`
+      );
+      return;
+    }
 
     onConfirm({
       id: `KSB-${Date.now()}`,

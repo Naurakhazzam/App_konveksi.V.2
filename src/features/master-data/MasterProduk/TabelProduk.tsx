@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import DataTable, { Column } from '@/components/organisms/DataTable';
 import Button from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
+import Pagination from '@/components/molecules/Pagination';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { Produk } from '@/types';
 import { formatRupiah } from '@/lib/utils/formatters';
@@ -10,21 +11,99 @@ import { useFinanceAccess } from '@/lib/hooks/useFinanceAccess';
 export interface TabelProdukProps {
   onSelect: (produkId: string) => void;
   selectedId: string | null;
+  filterModelId?: string | null;
 }
 
-export default function TabelProduk({ onSelect, selectedId }: TabelProdukProps) {
-  const { produk, model, sizes, warna, getTotalHPP, getMargin, updateProduk } = useMasterStore();
+export default function TabelProduk({ onSelect, selectedId, filterModelId }: TabelProdukProps) {
+  const { produk, model, sizes, warna, kategori, getTotalHPP, getMargin, updateProduk } = useMasterStore();
   const { canSeeFinance } = useFinanceAccess();
+
+  // Filter products by model if provided
+  const filteredSource = useMemo(() => {
+    if (!filterModelId) return produk;
+    return produk.filter(p => p.modelId === filterModelId);
+  }, [produk, filterModelId]);
+
+  // Settings
+  const itemsPerPage = 20;
+  
+  // State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortKey, setSortKey] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   const handleToggleAktif = (e: React.MouseEvent, p: Produk) => {
     e.stopPropagation();
     updateProduk(p.id, { aktif: !p.aktif });
   };
 
+  const handleSort = (key: string) => {
+    if (sortKey === key) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortKey(key);
+      setSortDirection('asc');
+    }
+  };
+
+  // Logic to get resolved names for sorting
+  const getSortValue = (row: Produk, key: string) => {
+    switch (key) {
+      case 'model': return model.find(m => m.id === row.modelId)?.nama || '';
+      case 'kategori': {
+        const m = model.find(m => m.id === row.modelId);
+        return kategori.find(kat => kat.id === m?.kategoriId)?.nama || '';
+      }
+      case 'size': return sizes.find(s => s.id === row.sizeId)?.nama || '';
+      case 'warna': return warna.find(w => w.id === row.warnaId)?.nama || '';
+      case 'hpp': return getTotalHPP(row.id);
+      case 'margin': return getMargin(row.id).nominal;
+      default: return (row as any)[key] || '';
+    }
+  };
+
+  const sortedData = useMemo(() => {
+    if (!sortKey) return filteredSource;
+    
+    return [...filteredSource].sort((a, b) => {
+      const valA = getSortValue(a, sortKey);
+      const valB = getSortValue(b, sortKey);
+      
+      if (typeof valA === 'string' && typeof valB === 'string') {
+        return sortDirection === 'asc' 
+          ? valA.localeCompare(valB)
+          : valB.localeCompare(valA);
+      }
+      
+      return sortDirection === 'asc' 
+        ? (valA > valB ? 1 : -1)
+        : (valA < valB ? 1 : -1);
+    });
+  }, [produk, sortKey, sortDirection, model, kategori, sizes, warna]);
+
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
+  const paginatedData = sortedData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   const columns: Column<Produk>[] = [
+    { 
+      key: 'no', 
+      header: 'No', 
+      width: '40px',
+      sortable: false,
+      render: (_, __, index) => <span style={{ color: 'var(--color-text-sub)', fontSize: '11px' }}>{(currentPage - 1) * itemsPerPage + index + 1}</span> 
+    },
     { key: 'skuInternal', header: 'SKU Internal', render: (val) => <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-cyan)', fontWeight: 600 }}>{val}</span> },
     { key: 'skuKlien', header: 'SKU Klien', render: (val) => <span style={{ fontFamily: 'var(--font-mono)' }}>{val}</span> },
+    { key: 'nama', header: 'Nama Produk', render: (val) => val || '-' },
     { key: 'model', header: 'Model', render: (_, row) => model.find(m => m.id === row.modelId)?.nama },
+    { key: 'kategori', header: 'Kategori', render: (_, row) => {
+      const m = model.find(m => m.id === row.modelId);
+      const k = kategori.find(kat => kat.id === m?.kategoriId);
+      return k?.nama || '-';
+    }},
     { key: 'size', header: 'Size', render: (_, row) => sizes.find(s => s.id === row.sizeId)?.nama },
     { key: 'warna', header: 'Warna', render: (_, row) => {
       const w = warna.find(w => w.id === row.warnaId);
@@ -64,12 +143,26 @@ export default function TabelProduk({ onSelect, selectedId }: TabelProdukProps) 
   ];
 
   return (
-    <DataTable 
-      columns={columns} 
-      data={produk} 
-      keyField="id" 
-      onRowClick={(row) => onSelect(row.id)}
-      striped={false}
-    />
+    <div>
+      <DataTable 
+        columns={columns} 
+        data={paginatedData} 
+        keyField="id" 
+        onRowClick={(row) => onSelect(row.id)}
+        striped={false}
+        onSort={handleSort}
+        sortKey={sortKey}
+        sortDirection={sortDirection}
+        compact
+      />
+      <Pagination 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={sortedData.length}
+        itemsPerPage={itemsPerPage}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
+    </div>
   );
 }
+

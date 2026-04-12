@@ -29,7 +29,7 @@ export default function DetailPO({ poId }: DetailPOProps) {
   if (!po) return <div>PO not found</div>;
 
   const hasStartedProduction = bundles.some(b => 
-    Object.values(b.statusTahap).some(s => s.status === 'selesai' || s.qtySelesai > 0)
+    Object.values(b.statusTahap).some(s => s.status === 'selesai' || (s.qtySelesai && s.qtySelesai > 0))
   );
 
   const handleDelete = () => {

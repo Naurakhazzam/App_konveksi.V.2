@@ -12,7 +12,7 @@ interface JurnalState {
 }
 
 export const useJurnalStore = create<JurnalState>((set, get) => ({
-  entries: dummyJurnal,
+  entries: [],
   
   addEntry: (entry) => set((state) => ({ entries: [...state.entries, entry] })),
   

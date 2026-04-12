@@ -23,6 +23,9 @@ export interface DataTableProps<T> {
   compact?: boolean;
   maxHeight?: string;
   stickyHeader?: boolean;
+  onSort?: (key: string) => void;
+  sortKey?: string | null;
+  sortDirection?: 'asc' | 'desc';
 }
 
 import EmptyState from '../../molecules/EmptyState';
@@ -38,6 +41,9 @@ export default function DataTable<T extends Record<string, any>>({
   compact = false,
   maxHeight,
   stickyHeader = false,
+  onSort,
+  sortKey,
+  sortDirection,
 }: DataTableProps<T>) {
   return (
     <div 
@@ -45,7 +51,12 @@ export default function DataTable<T extends Record<string, any>>({
       style={{ maxHeight, overflowY: maxHeight ? 'auto' : 'visible' }}
     >
       <table className={`${styles.table} ${striped ? styles.striped : ''} ${compact ? styles.compact : ''}`}>
-        <DataTableHeader columns={columns} />
+        <DataTableHeader 
+          columns={columns} 
+          onSort={onSort} 
+          sortKey={sortKey} 
+          sortDirection={sortDirection} 
+        />
         <tbody className={styles.tbody}>
           {loading ? (
             <tr>

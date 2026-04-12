@@ -6,6 +6,7 @@ import Panel from '@/components/molecules/Panel';
 import KpiCard from '@/components/molecules/KpiCard';
 import DataTable, { Column } from '@/components/organisms/DataTable';
 import Badge from '@/components/atoms/Badge';
+import Button from '@/components/atoms/Button';
 import { usePOStore } from '@/stores/usePOStore';
 import { useJurnalStore } from '@/stores/useJurnalStore';
 import { useMasterStore } from '@/stores/useMasterStore';
@@ -121,6 +122,32 @@ export default function LaporanPerPOView() {
       title="Laporan HPP Aktual per PO" 
       subtitle="Analisa perbandingan anggaran vs pengeluaran riil"
       kpiRow={kpiRow}
+      action={
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Button variant="ghost" onClick={() => {
+            import('@/lib/utils/export-utils').then(({ downloadCSV }) => {
+              const exportData = reportData.map(r => ({
+                'No PO': r.poId,
+                'Klien': r.klienNama,
+                'Status': r.status,
+                'HPP Estimasi': r.hppEstimasi,
+                'Biaya Bahan Real': r.biayaBahanReal,
+                'Biaya Upah Real': r.biayaUpahReal,
+                'Biaya Overhead Real': r.biayaOverheadReal,
+                'Total Realisasi': r.totalRealisasi,
+                'Profit': r.profit,
+                'Gap': r.gap
+              }));
+              downloadCSV(exportData, 'Laporan_HPP_Actual_Per_PO');
+            });
+          }}>
+            Download CSV
+          </Button>
+          <Button variant="primary" onClick={() => window.print()}>
+            🖨️ Cetak Laporan
+          </Button>
+        </div>
+      }
     >
       <div className={styles.container}>
         <Panel title="Daftar Analisa PO Active">

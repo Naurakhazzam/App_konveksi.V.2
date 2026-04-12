@@ -5,6 +5,7 @@ import PageWrapper from '@/components/templates/PageWrapper';
 import Panel from '@/components/molecules/Panel';
 import KpiCard from '@/components/molecules/KpiCard';
 import Badge from '@/components/atoms/Badge';
+import Button from '@/components/atoms/Button';
 import { useJurnalStore } from '@/stores/useJurnalStore';
 import { formatRupiah } from '@/lib/utils/formatters';
 import styles from './LaporanBulanView.module.css';
@@ -43,6 +44,31 @@ export default function LaporanBulanView() {
       title="Laporan Laba Rugi Eksekutif" 
       subtitle="Analisa performa finansial berdasarkan standar akuntansi konveksi"
       kpiRow={kpiRow}
+      action={
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Button variant="ghost" onClick={() => {
+            import('@/lib/utils/export-utils').then(({ downloadCSV }) => {
+              const exportData = [{
+                'Periode': selectedMonth,
+                'Pendapatan': pAndL.pendapatan,
+                'HPP Bahan': pAndL.hppBahan,
+                'HPP Upah': pAndL.hppUpah,
+                'Total HPP': pAndL.hppTotal,
+                'Laba Kotor': pAndL.labaKotor,
+                'Overhead': pAndL.overhead,
+                'Laba Bersih': pAndL.labaBersih,
+                'Net Profit Margin (%)': pAndL.netMargin.toFixed(2)
+              }];
+              downloadCSV(exportData, `Laporan_Bulanan_${selectedMonth}`);
+            });
+          }}>
+            Download CSV
+          </Button>
+          <Button variant="primary" onClick={() => window.print()}>
+            🖨️ Cetak Laporan
+          </Button>
+        </div>
+      }
     >
       <div className={styles.container}>
         <div className={styles.filterBar}>

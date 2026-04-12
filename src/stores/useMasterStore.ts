@@ -2,9 +2,11 @@ import { create } from 'zustand';
 import { 
   Kategori, Model, Size, Warna, Karyawan, Klien, JenisReject, KategoriTrx, Satuan, Produk, HPPKomponen, ProdukHPPItem
 } from '../types';
+import { 
+  initialClients, initialKategori, initialModels, initialWarna, initialSizes, initialHPPKomponen, initialProduk, initialProdukHPPItems 
+} from '../data/initial-production-data';
 import {
-  dummyKategori, dummyModel, dummySize, dummyWarna, dummyKaryawan, 
-  dummyKlien, dummyJenisReject, dummyKategoriTrx, dummySatuan, dummyProduk, dummyHPPKomponen, dummyProdukHPPItems
+  dummyJenisReject, dummyKategoriTrx, dummySatuan
 } from '../data/dummy-master';
 
 interface MasterState {
@@ -20,77 +22,95 @@ interface MasterState {
   produk: Produk[];
   hppKomponen: HPPKomponen[];
   produkHPPItems: ProdukHPPItem[];
+  importProdukBulk: (data: {
+    kategori: Kategori[],
+    klien: Klien[],
+    model: Model[],
+    warna: Warna[],
+    sizes: Size[],
+    hppKomponen: HPPKomponen[],
+    produk: Produk[],
+    produkHPPItems: ProdukHPPItem[]
+  }) => void;
   addKategori: (item: Kategori) => void;
   updateKategori: (id: string, data: Partial<Kategori>) => void;
   removeKategori: (id: string) => void;
-
   addModel: (item: Model) => void;
   updateModel: (id: string, data: Partial<Model>) => void;
   removeModel: (id: string) => void;
-
   addSize: (item: Size) => void;
   updateSize: (id: string, data: Partial<Size>) => void;
   removeSize: (id: string) => void;
-
   addWarna: (item: Warna) => void;
   updateWarna: (id: string, data: Partial<Warna>) => void;
   removeWarna: (id: string) => void;
-
   addKaryawan: (item: Karyawan) => void;
   updateKaryawan: (id: string, data: Partial<Karyawan>) => void;
   removeKaryawan: (id: string) => void;
-
   addKlien: (item: Klien) => void;
   updateKlien: (id: string, data: Partial<Klien>) => void;
   removeKlien: (id: string) => void;
-
   addJenisReject: (item: JenisReject) => void;
   updateJenisReject: (id: string, data: Partial<JenisReject>) => void;
   removeJenisReject: (id: string) => void;
-
   addKategoriTrx: (item: KategoriTrx) => void;
   updateKategoriTrx: (id: string, data: Partial<KategoriTrx>) => void;
   removeKategoriTrx: (id: string) => void;
-
   addSatuan: (item: Satuan) => void;
   updateSatuan: (id: string, data: Partial<Satuan>) => void;
   removeSatuan: (id: string) => void;
-
   addProduk: (item: Produk) => void;
   updateProduk: (id: string, data: Partial<Produk>) => void;
   removeProduk: (id: string) => void;
-
   addHPPKomponen: (item: HPPKomponen) => void;
   updateHPPKomponen: (id: string, data: Partial<HPPKomponen>) => void;
   removeHPPKomponen: (id: string) => void;
-
   addProdukHPPItem: (item: ProdukHPPItem) => void;
   updateProdukHPPItem: (id: string, data: Partial<ProdukHPPItem>) => void;
   removeProdukHPPItem: (id: string) => void;
-
   getHPPItemsByProduk: (produkId: string) => ProdukHPPItem[];
   getTotalHPP: (produkId: string) => number;
   getTotalHPPByKategori: (produkId: string, kategori: string) => number;
   getMargin: (produkId: string) => { nominal: number; persen: number };
-
   copyHPP: (fromProdukId: string, toProdukId: string) => void;
   copyHPPToAllSizes: (fromProdukId: string) => void;
 }
 
 export const useMasterStore = create<MasterState>((set, get) => ({
-  kategori: dummyKategori,
-  model: dummyModel,
-  sizes: dummySize,
-  warna: dummyWarna,
-  karyawan: dummyKaryawan,
-  klien: dummyKlien,
+  kategori: initialKategori,
+  model: initialModels,
+  sizes: initialSizes,
+  warna: initialWarna,
+  karyawan: [],
+  klien: initialClients,
   jenisReject: dummyJenisReject,
   kategoriTrx: dummyKategoriTrx,
   satuan: dummySatuan,
-  produk: dummyProduk,
-  hppKomponen: dummyHPPKomponen,
-  produkHPPItems: dummyProdukHPPItems,
+  produk: initialProduk,
+  hppKomponen: initialHPPKomponen,
+  produkHPPItems: initialProdukHPPItems,
   
+  importProdukBulk: (data) => set((state) => {
+    // Helper to merge arrays and avoid duplicates by ID
+    const merge = <T extends { id: string }>(original: T[], incoming: T[]): T[] => {
+      const map = new Map();
+      original.forEach(item => map.set(item.id, item));
+      incoming.forEach(item => map.set(item.id, { ...map.get(item.id), ...item }));
+      return Array.from(map.values());
+    };
+
+    return {
+      kategori: merge(state.kategori, data.kategori),
+      klien: merge(state.klien, data.klien),
+      model: merge(state.model, data.model),
+      warna: merge(state.warna, data.warna),
+      sizes: merge(state.sizes, data.sizes),
+      hppKomponen: merge(state.hppKomponen, data.hppKomponen),
+      produk: merge(state.produk, data.produk),
+      produkHPPItems: merge(state.produkHPPItems, data.produkHPPItems)
+    };
+  }),
+
   addKategori: (item) => set((state) => ({ kategori: [...state.kategori, item] })),
   updateKategori: (id, data) => set((state) => ({ kategori: state.kategori.map(i => i.id === id ? { ...i, ...data } : i) })),
   removeKategori: (id) => set((state) => ({ kategori: state.kategori.filter(i => i.id !== id) })),

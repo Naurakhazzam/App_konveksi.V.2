@@ -25,8 +25,8 @@ import { useLogStore } from './useLogStore';
 import { useAuthStore } from './useAuthStore';
 
 export const usePayrollStore = create<PayrollState>((set, get) => ({
-  ledger: dummyGajiLedger,
-  kasbon: dummyKasbon,
+  ledger: [],
+  kasbon: [],
   
   addLedgerEntry: (entry) => set((state) => ({ ledger: [...state.ledger, entry] })),
   

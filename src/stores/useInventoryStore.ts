@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { InventoryItem, TransaksiMasuk, TransaksiKeluar } from '../types';
-import { dummyInventory, dummyTrxMasuk, dummyTrxKeluar } from '../data/dummy-inventory';
+import { initialInventoryItems } from '../data/initial-production-data';
 
 interface InventoryState {
   items: InventoryItem[];
@@ -15,9 +15,9 @@ interface InventoryState {
 }
 
 export const useInventoryStore = create<InventoryState>((set, get) => ({
-  items: dummyInventory,
-  trxKeluar: dummyTrxKeluar,
-  trxMasuk: dummyTrxMasuk,
+  items: initialInventoryItems,
+  trxKeluar: [],
+  trxMasuk: [],
   
   addItem: (item) => set((state) => ({ items: [...state.items, item] })),
   
