@@ -11,6 +11,7 @@ import { usePayrollStore } from '@/stores/usePayrollStore';
 import { useJurnalStore } from '@/stores/useJurnalStore';
 import RekapGajiTable from './RekapGajiTable';
 import ModalBayar from './ModalBayar';
+import { formatRupiah } from '@/lib/utils/formatters';
 import styles from './RekapGajiView.module.css';
 
 export default function RekapGajiView() {
@@ -73,6 +74,7 @@ export default function RekapGajiView() {
     return entries.some(e => e.jenis === 'direct_upah' && e.keterangan.includes(periodStr));
   }, [entries, dateRange]);
 
+  const handleRekapJurnal = () => {
     if (stats.totalBelum > 0) {
       if (!confirm(`Terdapat ${formatRupiah(stats.totalBelum)} gaji belum dibayar. Tetap rekap total biaya (${formatRupiah(stats.totalUpah)}) ke Jurnal Umum?`)) return;
     } else {
