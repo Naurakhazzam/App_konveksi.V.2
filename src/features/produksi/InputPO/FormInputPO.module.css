@@ -48,8 +48,9 @@
   padding: 8px 12px;
   border-radius: 8px;
   border: 1px solid var(--color-border);
-  background-color: var(--color-bg-primary);
-  font-family: var(--font-sans);
+  background-color: var(--color-card);
+  color: var(--color-text);
+  font-family: var(--font-body);
   min-height: 38px;
 }
 
@@ -65,7 +66,7 @@
   border: 1px solid var(--color-border);
   padding: 16px;
   border-radius: 12px;
-  background-color: var(--color-bg-primary);
+  background-color: var(--color-card2);
 }
 
 .itemIndex {
@@ -74,7 +75,7 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  background-color: var(--color-surface);
+  background-color: var(--color-card);
   border-radius: 12px;
   font-size: 12px;
   font-weight: bold;
@@ -95,7 +96,7 @@
 }
 
 .delBtn {
-  color: var(--color-danger);
+  color: var(--color-red);
 }
 
 .footer {
@@ -103,7 +104,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  background-color: var(--color-bg-secondary);
+  background-color: var(--color-card2);
   border-radius: 12px;
 }
 
@@ -116,4 +117,42 @@
 .actions {
   display: flex;
   gap: 12px;
+}
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .itemRow {
+    flex-direction: column;
+    padding: 12px;
+  }
+  .itemGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .footer {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+  }
+  .summary {
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 13px;
+  }
+  .actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .actions > * {
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .itemGrid {
+    grid-template-columns: 1fr;
+  }
 }

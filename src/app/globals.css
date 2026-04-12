@@ -21,25 +21,25 @@
 }
 
 :root[data-theme="light"] {
-  /* Hybrid Light Mode (Warm Off-White Content) */
-  --color-bg: #F5F3EF;
+  /* Hybrid Light Mode — Warm Ivory */
+  --color-bg: #EDEBE7;
   --color-sidebar: #111315;        /* Sidebar stays dark */
-  --color-content-bg: #FAFAF8;
+  --color-content-bg: #F5F3EF;
   --color-card: #FFFFFF;
-  --color-card2: #F0EDE8;
-  --color-border: #E0DDD8;
-  --color-border2: #D1CEC9;
+  --color-card2: #F7F5F0;
+  --color-border: #D6D2CC;
+  --color-border2: #C4BFB8;
   
   /* Text */
   --color-text: #1A1D1F;
-  --color-text-sub: #6B7280;
+  --color-text-sub: #5F6368;
   --color-text-mid: #9CA3AF;
 
-  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-bg: rgba(255, 255, 255, 0.85);
   --glass-bg-hover: rgba(255, 255, 255, 0.95);
-  --glass-border: rgba(0, 0, 0, 0.05);
-  --glass-border-bright: rgba(0, 0, 0, 0.1);
-  --glass-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.1);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-border-bright: rgba(0, 0, 0, 0.14);
+  --glass-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04);
 }
 
 :root {
