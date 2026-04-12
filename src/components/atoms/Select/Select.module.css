@@ -22,6 +22,11 @@
   border-color: var(--color-cyan);
 }
 
+.select option {
+  background-color: var(--color-card);
+  color: var(--color-text);
+}
+
 .select:disabled, .disabled {
   opacity: 0.5;
   cursor: not-allowed;

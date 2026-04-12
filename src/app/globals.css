@@ -68,3 +68,13 @@ input, textarea, [contenteditable="true"] {
 button, a, [role="button"], summary {
   cursor: pointer;
 }
+/* Global Dropdown Fix */
+select {
+  background-color: var(--color-card);
+  color: var(--color-text);
+}
+
+select option {
+  background-color: var(--color-card);
+  color: var(--color-text);
+}
