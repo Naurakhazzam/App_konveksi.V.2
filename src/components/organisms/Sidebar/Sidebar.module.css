@@ -19,6 +19,25 @@
   width: 70px;
 }
 
+.sidebarOpen {
+  transform: translateX(0) !important;
+}
+
+@media (max-width: 1024px) {
+  .sidebar:not(.sidebarOpen) {
+    width: 70px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 260px !important;
+    transform: translateX(-100%);
+    box-shadow: 20px 0 50px rgba(0, 0, 0, 0.5);
+    z-index: 200;
+  }
+}
+
 .header {
   display: flex;
   align-items: center;

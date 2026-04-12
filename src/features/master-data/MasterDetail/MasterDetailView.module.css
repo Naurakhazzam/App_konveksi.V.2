@@ -9,33 +9,53 @@
   border-bottom: 1px solid var(--color-border);
   padding-bottom: 16px;
   margin-bottom: 24px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tab {
-  padding: 8px 16px;
-  border-radius: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-lg);
   border: 1px solid transparent;
   background: transparent;
   color: var(--color-text-sub);
-  font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 500;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
 }
 
 .tab:hover {
-  background: var(--color-bg-tertiary);
   color: var(--color-text);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .tab.active {
   background: var(--color-cyan);
-  color: #000;
-  font-weight: 600;
+  color: #111;
+  box-shadow: 0 4px 15px rgba(229, 193, 123, 0.3);
 }
 
 .content {
   display: flex;
   flex-direction: column;
+}
+
+:global([data-theme="light"]) .tab:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+:global([data-theme="light"]) .tab.active {
+  background: var(--color-cyan-dim);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(175, 130, 96, 0.2);
+}
+
+@media (max-width: 640px) {
+  .tab {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
 }

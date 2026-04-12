@@ -4,15 +4,18 @@ import React, { useState } from 'react';
 import { Menu, User, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import SidebarItem from './SidebarItem';
+import ThemeToggle from '../../atoms/ThemeToggle/ThemeToggle';
 import { NAV } from '../../../lib/constants/navigation';
 import { useAuthStore } from '@/stores/useAuthStore';
 import styles from './Sidebar.module.css';
 
 export interface SidebarProps {
   currentPath: string;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-export default function Sidebar({ currentPath }: SidebarProps) {
+export default function Sidebar({ currentPath, isOpen, onClose }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
   const { logout } = useAuthStore();
@@ -31,7 +34,7 @@ export default function Sidebar({ currentPath }: SidebarProps) {
   };
 
   return (
-    <aside className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ''}`}>
+    <aside className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ''} ${isOpen ? styles.sidebarOpen : ''}`}>
       <div className={styles.header}>
         {!collapsed && (
           <div className={styles.brand}>
@@ -82,6 +85,8 @@ export default function Sidebar({ currentPath }: SidebarProps) {
       </div>
 
       <div className={styles.footer}>
+        <ThemeToggle collapsed={collapsed} />
+        
         <div className={styles.userProfile}>
           <div className={styles.userAvatar}>
             <User size={18} />

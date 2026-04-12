@@ -1,30 +1,60 @@
-:root {
-  /* Refined Charcoal Theme */
+:root[data-theme="dark"] {
+  /* Refined Charcoal Theme (Dark) */
   --color-bg: #111315;
-  --color-sidebar: #16181A;
+  --color-sidebar: #0D0E10;
+  --color-content-bg: #16181A;
   --color-card: #1A1D1F;
   --color-card2: #1E2124;
   --color-border: #2A2D31;
   --color-border2: #33363A;
-  
-  /* Muted Copper Theme */
-  --color-cyan: #d49b6a;      /* Main copper */
-  --color-cyan-dim: #7a5130;  /* Dark copper */
-  --color-cyan-bg: #2b1f14;   /* Very dark copper tinted background */
-  
-  /* Other Accent Colors (muted slightly to fit the theme) */
-  --color-green: #6ab082;
-  --color-yellow: #d4b86a;
-  --color-red: #d46a6a;
-  --color-purple: #9b6ad4;
-  --color-blue: #6a9bd4;
-  --color-orange: #d48b6a;
   
   /* Text */
   --color-text: #e8eaed;
   --color-text-sub: #9aa0a6;
   --color-text-mid: #5f6368;
 
+  --glass-bg: rgba(26, 29, 31, 0.6);
+  --glass-bg-hover: rgba(30, 33, 36, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-border-bright: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.7);
+}
+
+:root[data-theme="light"] {
+  /* Hybrid Light Mode (Warm Off-White Content) */
+  --color-bg: #F5F3EF;
+  --color-sidebar: #111315;        /* Sidebar stays dark */
+  --color-content-bg: #FAFAF8;
+  --color-card: #FFFFFF;
+  --color-card2: #F0EDE8;
+  --color-border: #E0DDD8;
+  --color-border2: #D1CEC9;
+  
+  /* Text */
+  --color-text: #1A1D1F;
+  --color-text-sub: #6B7280;
+  --color-text-mid: #9CA3AF;
+
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-bg-hover: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  --glass-border-bright: rgba(0, 0, 0, 0.1);
+  --glass-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.1);
+}
+
+:root {
+  /* Shared Executive Bronze Accent Colors */
+  --color-cyan: #e5c17b;      /* Metallic Gold */
+  --color-cyan-dim: #af8260;  /* Polished Bronze */
+  --color-cyan-bg: #2b2318;   
+  
+  --color-green: #52a46d;
+  --color-yellow: #f0bd66;
+  --color-red: #e65c5c;
+  --color-purple: #a87ff3;
+  --color-blue: #5c9ce6;
+  --color-orange: #f38d5c;
+  
   --status-parsial-bg: #1a2600;
   --status-parsial-text: #4ade80;
   --status-belum-bg: #1a1040;
@@ -32,8 +62,8 @@
   --status-selesai-bg: #001a20;
   --status-selesai-text: #22d3ee;
 
-  --font-heading: var(--font-syne);
-  --font-body: var(--font-instrument-sans);
+  --font-heading: var(--font-manrope);
+  --font-body: var(--font-dm-sans);
   --font-mono: var(--font-geist-mono);
 
   --radius-sm: 0.25rem;
@@ -42,12 +72,6 @@
   --radius-xl: 0.75rem;
   --radius-2xl: 1.5rem;
   
-  /* Glassmorphism Tokens - Refined for Charcoal */
-  --glass-bg: rgba(26, 29, 31, 0.6);
-  --glass-bg-hover: rgba(30, 33, 36, 0.8);
-  --glass-border: rgba(255, 255, 255, 0.05);
-  --glass-border-bright: rgba(255, 255, 255, 0.12);
-  --glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.7);
   --glass-blur: blur(20px);
   
   --spacing-1: 0.25rem;
@@ -60,6 +84,30 @@
   
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-cyan-dim);
+}
+
+html {
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }

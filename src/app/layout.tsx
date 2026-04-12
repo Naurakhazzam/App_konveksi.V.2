@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
-import { Syne, Instrument_Sans, Geist_Mono } from "next/font/google";
+import { Manrope, DM_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const syne = Syne({
+const manrope = Manrope({
   subsets: ["latin"],
-  weight: ["700", "800"],
-  variable: "--font-syne",
+  weight: ["600", "700", "800"],
+  variable: "--font-manrope",
 });
 
-const instrumentSans = Instrument_Sans({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-instrument-sans",
+  weight: ["400", "500", "600"],
+  variable: "--font-dm-sans",
 });
 
 const geistMono = Geist_Mono({
@@ -33,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${syne.variable} ${instrumentSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`${manrope.variable} ${dmSans.variable} ${geistMono.variable}`}>
       <body>
         <ToastProvider>
           {children}

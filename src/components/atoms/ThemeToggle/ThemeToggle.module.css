@@ -1,0 +1,49 @@
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: var(--color-text-sub);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-cyan);
+  border-color: var(--color-cyan-dim);
+}
+
+.collapsed {
+  padding: 10px;
+  justify-content: center;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+:global([data-theme="light"]) .toggle {
+  background: rgba(0, 0, 0, 0.2);
+  color: #9aa0a6;
+}
+
+:global([data-theme="light"]) .toggle:hover {
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--color-cyan);
+}

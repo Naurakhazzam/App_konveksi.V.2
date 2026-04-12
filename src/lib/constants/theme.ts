@@ -8,16 +8,16 @@ export const C = {
   border: '#2A2D31',
   border2: '#33363A',
   
-  cyan: '#d49b6a',      // Actually Copper now
-  cyanDim: '#7a5130',
-  cyanBg: '#2b1f14',
+  cyan: '#e5c17b',      // Metallic Gold
+  cyanDim: '#af8260',   // Polished Bronze
+  cyanBg: '#2b2318',
   
-  green: '#6ab082',
-  yellow: '#d4b86a',
-  red: '#d46a6a',
-  purple: '#9b6ad4',
-  blue: '#6a9bd4',
-  orange: '#d48b6a',
+  green: '#52a46d',
+  yellow: '#f0bd66',
+  red: '#e65c5c',
+  purple: '#a87ff3',
+  blue: '#5c9ce6',
+  orange: '#f38d5c',
   
   text: '#e8eaed',
   textSub: '#9aa0a6',

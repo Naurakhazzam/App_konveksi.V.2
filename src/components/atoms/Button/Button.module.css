@@ -72,67 +72,81 @@
 
 /* Glassmorphism Variants - Realistic Clear Glass */
 
+/* Glassmorphism Variants - Realistic Clear Glass */
+
 .variant-primary {
-  /* Slightly cyan tinted glass */
-  background: linear-gradient(135deg, rgba(34, 211, 238, 0.25), rgba(34, 211, 238, 0.05));
+  /* Dynamic Gold Gradient */
+  background: linear-gradient(135deg, rgba(229, 193, 123, 0.4), rgba(229, 193, 123, 0.2));
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   border-top: 1px solid rgba(255, 255, 255, 0.6);
   border-left: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.5), 0 8px 20px rgba(34, 211, 238, 0.15);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.5), 0 8px 20px rgba(229, 193, 123, 0.15);
 }
 
 .variant-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, rgba(34, 211, 238, 0.4), rgba(34, 211, 238, 0.1));
-  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.7), 0 10px 25px rgba(34, 211, 238, 0.25);
+  background: linear-gradient(135deg, rgba(229, 193, 123, 0.6), rgba(229, 193, 123, 0.3));
+  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.8), 0 10px 30px rgba(229, 193, 123, 0.3);
   transform: translateY(-2px);
 }
 
 .variant-secondary {
-  /* Clear transparent glass */
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
   color: var(--color-text);
-  border-top: 1px solid rgba(255, 255, 255, 0.4);
-  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--color-border);
 }
 
 .variant-secondary:hover:not(:disabled) {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: var(--color-border);
   transform: translateY(-2px);
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.5), 0 8px 24px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .variant-ghost {
   background: transparent;
   color: var(--color-text-sub);
-  border: 1px solid transparent; /* Override base borders */
-  box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  border: 1px solid transparent; 
 }
+
 .variant-ghost:hover:not(:disabled) {
   color: var(--color-text);
-  /* Very faint glass on hover */
-  background: rgba(255, 255, 255, 0.05);
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .variant-danger {
-  /* Red tinted glass */
-  background: linear-gradient(135deg, rgba(248, 113, 113, 0.25), rgba(248, 113, 113, 0.05));
+  background: linear-gradient(135deg, rgba(230, 92, 92, 0.3), rgba(230, 92, 92, 0.1));
   color: #fff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  border-top: 1px solid rgba(255, 255, 255, 0.5);
-  border-left: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.4), 0 8px 20px rgba(248, 113, 113, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .variant-danger:hover:not(:disabled) {
-  background: linear-gradient(135deg, rgba(248, 113, 113, 0.4), rgba(248, 113, 113, 0.1));
-  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.6), 0 10px 25px rgba(248, 113, 113, 0.25);
+  background: linear-gradient(135deg, rgba(230, 92, 92, 0.5), rgba(230, 92, 92, 0.2));
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(230, 92, 92, 0.2);
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.96) !important;
+  transition: transform 0.1s ease;
+}
+
+/* Light Mode Specific Adjustments */
+:global([data-theme="light"]) .variant-secondary {
+  background: #FFF;
+  border-color: #D1CEC9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+:global([data-theme="light"]) .variant-secondary:hover:not(:disabled) {
+  background: #F8F7F5;
+  border-color: var(--color-cyan-dim);
+}
+
+:global([data-theme="light"]) .variant-ghost:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+:global([data-theme="light"]) .variant-primary {
+  background: linear-gradient(135deg, #af8260, #e5c17b);
+  box-shadow: 0 4px 12px rgba(175, 130, 96, 0.3);
 }

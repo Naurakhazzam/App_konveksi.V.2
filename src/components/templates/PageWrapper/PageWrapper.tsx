@@ -1,5 +1,6 @@
 import React from 'react';
 import { Heading, Label } from '../../atoms/Typography';
+import PageTransition from '../../atoms/PageTransition'; // Import transition
 import styles from './PageWrapper.module.css';
 
 export interface PageWrapperProps {
@@ -13,21 +14,23 @@ export interface PageWrapperProps {
 
 export default function PageWrapper({ title, subtitle, children, kpiRow, filterBar, action }: PageWrapperProps) {
   return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.titleWrap}>
-          <Heading level={2}>{title}</Heading>
-          {subtitle && <Label color="sub" size="sm">{subtitle}</Label>}
-        </div>
-        {action && <div className={styles.actions}>{action}</div>}
-      </header>
+    <PageTransition type="driftNatural">
+      <div className={styles.page}>
+        <header className={styles.header}>
+          <div className={styles.titleWrap}>
+            <Heading level={2}>{title}</Heading>
+            {subtitle && <Label color="sub" size="sm">{subtitle}</Label>}
+          </div>
+          {action && <div className={styles.actions}>{action}</div>}
+        </header>
 
-      {kpiRow && <div className={styles.kpiRow}>{kpiRow}</div>}
-      {filterBar && <div className={styles.filterBar}>{filterBar}</div>}
-      
-      <div className={styles.content}>
-        {children}
+        {kpiRow && <div className={styles.kpiRow}>{kpiRow}</div>}
+        {filterBar && <div className={styles.filterBar}>{filterBar}</div>}
+        
+        <div className={styles.content}>
+          {children}
+        </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }
