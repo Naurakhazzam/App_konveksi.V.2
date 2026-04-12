@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-bg-tertiary);
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+}
+
+.label {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-sub);
+}

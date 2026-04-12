@@ -1,0 +1,124 @@
+.container {
+  position: relative;
+  width: 100%;
+}
+
+.select {
+  width: 100%;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 12px;
+  padding: 9px 36px 9px 14px;
+  border-radius: 8px;
+  transition: border-color 0.15s ease;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.select:focus {
+  border-color: var(--color-cyan);
+}
+
+.select:disabled, .disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error {
+  border-color: var(--color-red);
+}
+
+.placeholderSelect {
+  color: var(--color-text-sub);
+}
+
+.icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-sub);
+  pointer-events: none;
+  transition: transform 0.2s;
+}
+.iconOpen {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* MultiSelect */
+.multiContainer {
+  position: relative;
+  width: 100%;
+}
+
+.multiControl {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 36px 6px 8px;
+  min-height: 38px;
+}
+
+.tagsArea {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tagWrapper {
+  display: inline-flex;
+}
+
+.removeTagBtn {
+  background: transparent;
+  border: none;
+  color: currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+  padding: 2px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.removeTagBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+  padding: 4px;
+}
+
+.option {
+  padding: 8px 12px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  color: var(--color-text);
+}
+.option:hover {
+  background: var(--color-border);
+}
+
+.noOptions {
+  padding: 8px 12px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-text-sub);
+  text-align: center;
+}

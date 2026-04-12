@@ -1,0 +1,100 @@
+.container {
+  padding: 20px;
+  background: var(--color-bg-secondary);
+  border-radius: 0 0 12px 12px;
+  border: 1px solid var(--color-border);
+  border-top: none;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+
+.articleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.articleCard {
+  background: var(--color-bg-primary);
+  border-radius: 10px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.articleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.articleHeader strong {
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+
+.articleHeader span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-sub);
+  background: var(--color-bg-secondary);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.komponenList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.komponenItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.komponenItem span {
+  color: var(--color-text-secondary);
+}
+
+.komponenItem strong {
+  color: var(--color-text-primary);
+}
+
+.articleFooter {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.articleFooter span {
+  font-size: 11px;
+  color: var(--color-text-sub);
+}
+
+.articleFooter strong {
+  font-size: 15px;
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+}

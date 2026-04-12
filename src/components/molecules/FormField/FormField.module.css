@@ -1,0 +1,39 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-sub);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.asterisk {
+  color: var(--color-red);
+}
+
+.content {
+  display: flex;
+  width: 100%;
+}
+
+.error {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: var(--color-red);
+}
+
+.hint {
+  font-family: var(--font-body);
+  font-size: 10px;
+  color: var(--color-text-sub);
+}

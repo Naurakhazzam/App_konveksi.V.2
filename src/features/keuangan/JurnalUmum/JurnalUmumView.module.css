@@ -1,0 +1,108 @@
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.kpiRow {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.filterGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.filterField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filterField label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filterField input, .filterField select {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.filterField input:focus, .filterField select:focus {
+  border-color: var(--color-primary);
+}
+
+.filterActions {
+  display: flex;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+
+.tagWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 200px;
+}
+
+.plus {
+  color: var(--color-green);
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.minus {
+  color: var(--color-red);
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.muted {
+  color: var(--color-text-sub);
+  font-size: 12px;
+}
+
+.footerSummary {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.sumRow {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+}
+
+.sumRow span {
+  color: var(--color-text-secondary);
+}
+
+.sumRow strong {
+  min-width: 150px;
+  text-align: right;
+}
+
+.sumRow.total {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+  font-size: 16px;
+}

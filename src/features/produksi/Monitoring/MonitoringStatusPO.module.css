@@ -1,0 +1,53 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.subTabs {
+  display: flex;
+  gap: 12px;
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: 0px;
+}
+
+.subTabs button {
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.subTabs button:hover {
+  color: var(--color-primary);
+}
+
+.subTabs button.active {
+  color: var(--color-primary);
+}
+
+.subTabs button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-primary);
+}
+
+.tableCard {
+  background: var(--color-bg-primary);
+  border-radius: 12px;
+}
+
+.muted {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}

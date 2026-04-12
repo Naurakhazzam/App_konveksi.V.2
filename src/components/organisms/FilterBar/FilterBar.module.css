@@ -1,0 +1,29 @@
+.filterBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.searchWrap {
+  flex: 1;
+  max-width: 400px;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .filterBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .searchWrap {
+    max-width: 100%;
+  }
+}

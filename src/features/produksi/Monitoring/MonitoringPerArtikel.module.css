@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-bg-secondary);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.select {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg-primary);
+  font-family: var(--font-sans);
+}

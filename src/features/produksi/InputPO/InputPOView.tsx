@@ -1,0 +1,87 @@
+import React, { useState } from 'react';
+import PageWrapper from '@/components/templates/PageWrapper';
+import Panel from '@/components/molecules/Panel';
+import DataTable, { Column } from '@/components/organisms/DataTable';
+import Button from '@/components/atoms/Button';
+import Badge from '@/components/atoms/Badge';
+import { usePOStore } from '@/stores/usePOStore';
+import { PurchaseOrder } from '@/types';
+import FormInputPO from './FormInputPO';
+import DetailPO from './DetailPO';
+import styles from './InputPOView.module.css';
+
+type Mode = 'list' | 'form' | 'detail';
+
+export default function InputPOView() {
+  const { poList } = usePOStore();
+  const [mode, setMode] = useState<Mode>('list');
+  const [activePOId, setActivePOId] = useState<string | null>(null);
+
+  const handleCreate = () => setMode('form');
+  
+  const handleView = (id: string) => {
+    setActivePOId(id);
+    setMode('detail');
+  };
+
+  const handleBackToList = () => {
+    setMode('list');
+    setActivePOId(null);
+  };
+
+  const handleSaveSuccess = (id: string) => {
+    setActivePOId(id);
+    setMode('detail');
+  };
+
+  const columns: Column<PurchaseOrder>[] = [
+    { key: 'nomorPO', header: 'No. PO', render: (val, row) => (
+      <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-primary)', cursor: 'pointer', fontWeight: 600 }} onClick={() => handleView(row.id)}>
+        {val}
+      </span>
+    )},
+    { key: 'klienId', header: 'Klien' }, // normally map to client name
+    { key: 'tanggalInput', header: 'Tanggal Input' },
+    { key: 'itemsCount', header: 'Jumlah Artikel', render: (_, row: any) => row.items?.length || 0 },
+    { key: 'itemsQty', header: 'Total QTY', render: (_, row: any) => row.items?.reduce((acc: number, curr: any) => acc + curr.qty, 0) || 0 },
+    { key: 'status', header: 'Status', render: (val) => {
+      if (val === 'draft') return <Badge variant="neutral">Draft</Badge>;
+      if (val === 'aktif') return <Badge variant="success">Aktif</Badge>;
+      if (val === 'selesai') return <Badge variant="info">Selesai</Badge>;
+      return <Badge variant="neutral">{val}</Badge>;
+    }},
+    { key: 'action', header: '', align: 'right', render: (_, row) => (
+      <Button variant="ghost" size="sm" onClick={() => handleView(row.id)}>Detail</Button>
+    )}
+  ];
+
+  if (mode === 'form') {
+    return (
+      <PageWrapper title="Input PO Baru" subtitle="Buat PO baru dan generate tiket bundle" action={<Button variant="ghost" onClick={handleBackToList}>Kembali</Button>}>
+        <FormInputPO onCancel={handleBackToList} onSuccess={handleSaveSuccess} />
+      </PageWrapper>
+    );
+  }
+
+  if (mode === 'detail' && activePOId) {
+    return (
+      <PageWrapper title="Detail PO" subtitle={activePOId} action={<Button variant="ghost" onClick={handleBackToList}>Kembali</Button>}>
+        <DetailPO poId={activePOId} />
+      </PageWrapper>
+    );
+  }
+
+  return (
+    <PageWrapper 
+      title="Daftar Purchase Order" 
+      subtitle="Manajemen dan monitor entri PO"
+      action={<Button variant="primary" onClick={handleCreate}>+ Buat PO Baru</Button>}
+    >
+      <div className={styles.container}>
+        <Panel title="Semua PO">
+          <DataTable columns={columns} data={poList} keyField="id" />
+        </Panel>
+      </div>
+    </PageWrapper>
+  );
+}

@@ -1,0 +1,31 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 32px;
+  padding: 16px;
+  background: var(--color-bg-secondary);
+  border-radius: 8px;
+  border-top: 1px solid var(--color-border);
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat span {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.stat strong {
+  font-size: 18px;
+  color: var(--color-primary);
+}

@@ -1,0 +1,72 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.summaryCard {
+  background: var(--color-bg-secondary);
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.row span {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.row strong {
+  font-family: var(--font-mono);
+  font-size: 16px;
+}
+
+.kasbon {
+  color: var(--color-orange);
+}
+
+.inputSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-family: var(--font-mono);
+  outline: none;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.resultCard {
+  background: var(--color-cyan-bg);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--color-cyan-dim);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.finalAmount {
+  color: var(--color-cyan);
+  font-family: var(--font-mono);
+}

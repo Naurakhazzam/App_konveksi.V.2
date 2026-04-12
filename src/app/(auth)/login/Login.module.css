@@ -1,0 +1,49 @@
+.container {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.logoContainer {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.logo {
+  letter-spacing: -0.02em;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pwdInput {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.pwdInput:focus {
+  border-color: var(--color-cyan);
+  box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.1);
+}

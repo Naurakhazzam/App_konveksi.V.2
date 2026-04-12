@@ -1,0 +1,29 @@
+.money {
+  font-family: var(--font-mono);
+}
+
+.deduction {
+  color: var(--color-red);
+  font-family: var(--font-mono);
+}
+
+.bonus {
+  color: var(--color-green);
+  font-family: var(--font-mono);
+}
+
+.total {
+  font-weight: 700;
+  color: var(--color-cyan);
+  font-family: var(--font-mono);
+}
+
+.kasbon {
+  color: var(--color-orange);
+  font-family: var(--font-mono);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}

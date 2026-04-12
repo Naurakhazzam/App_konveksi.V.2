@@ -1,0 +1,48 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.headerInfo {
+  background: var(--color-bg-secondary);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.metaGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.metaItem {
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.metaItem span {
+  color: var(--color-text-secondary);
+  width: 80px;
+}
+
+.catatan {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+  font-size: 14px;
+}
+
+.catatan span {
+  color: var(--color-text-secondary);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.tableTitle {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-size: 16px;
+}

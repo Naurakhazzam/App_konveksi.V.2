@@ -1,0 +1,70 @@
+:root {
+  --color-bg: #020617;
+  --color-sidebar: #060d1f;
+  --color-card: #0a1628;
+  --color-card2: #0d1b2e;
+  --color-border: #0e2040;
+  --color-border2: #132545;
+  --color-cyan: #22d3ee;
+  --color-cyan-dim: #0c4a58;
+  --color-cyan-bg: #061520;
+  --color-green: #4ade80;
+  --color-yellow: #facc15;
+  --color-red: #f87171;
+  --color-purple: #a78bfa;
+  --color-blue: #60a5fa;
+  --color-orange: #fb923c;
+  --color-text: #e2e8f0;
+  --color-text-sub: #64748b;
+  --color-text-mid: #334155;
+
+  --status-parsial-bg: #1a2600;
+  --status-parsial-text: #4ade80;
+  --status-belum-bg: #1a1040;
+  --status-belum-text: #a78bfa;
+  --status-selesai-bg: #001a20;
+  --status-selesai-text: #22d3ee;
+
+  --font-heading: var(--font-syne);
+  --font-body: var(--font-instrument-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  user-select: none;             /* Seluruh app tidak bisa di-select */
+  -webkit-user-select: none;
+  cursor: default;               /* Cursor default di mana-mana */
+}
+
+/* HANYA elemen input yang boleh punya cursor text dan seleksi */
+input, textarea, [contenteditable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
+}
+
+/* Tombol dan link tetap pointer */
+button, a, [role="button"], summary {
+  cursor: pointer;
+}

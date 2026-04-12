@@ -1,0 +1,30 @@
+.dot {
+  display: inline-block;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.size-sm {
+  width: 6px;
+  height: 6px;
+}
+
+.size-md {
+  width: 8px;
+  height: 8px;
+}
+
+.pulse {
+  animation: pulse-animation 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-animation {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+}

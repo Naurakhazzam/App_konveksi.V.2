@@ -1,0 +1,27 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.track {
+  background: var(--color-border);
+  width: 100%;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  transition: width 0.3s ease;
+  border-radius: inherit;
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text-sub);
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+}

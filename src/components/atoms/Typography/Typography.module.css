@@ -1,0 +1,46 @@
+.heading {
+  margin: 0;
+  font-family: var(--font-heading);
+}
+
+.h1 { font-size: 28px; font-weight: 800; }
+.h2 { font-size: 22px; font-weight: 800; }
+.h3 { font-size: 17px; font-weight: 700; }
+.h4 { font-size: 14px; font-weight: 700; }
+.h5 { font-size: 12px; font-weight: 700; }
+.h6 { font-size: 11px; font-weight: 700; }
+
+.label {
+  font-family: var(--font-body);
+}
+
+.label-xs { font-size: 9px; }
+.label-sm { font-size: 11px; }
+.label-md { font-size: 13px; }
+
+.uppercase {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.monoText {
+  font-family: var(--font-mono);
+}
+
+.mono-xs { font-size: 9px; }
+.mono-sm { font-size: 11px; }
+.mono-md { font-size: 13px; }
+.mono-lg { font-size: 18px; }
+
+.weight-400 { font-weight: 400; }
+.weight-500 { font-weight: 500; }
+.weight-600 { font-weight: 600; }
+.weight-700 { font-weight: 700; }
+
+.color-text { color: var(--color-text); }
+.color-sub { color: var(--color-text-sub); }
+.color-mid { color: var(--color-text-mid); }
+.color-cyan { color: var(--color-cyan); }
+.color-green { color: var(--color-green); }
+.color-yellow { color: var(--color-yellow); }
+.color-red { color: var(--color-red); }

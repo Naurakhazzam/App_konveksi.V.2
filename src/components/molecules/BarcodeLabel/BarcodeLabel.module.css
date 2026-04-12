@@ -1,0 +1,37 @@
+.labelContainer {
+  border: 1px dashed var(--color-border);
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--color-card);
+  width: max-content;
+  max-width: 100%;
+}
+
+.barcodePreview {
+  height: 60px;
+  background: #fff; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  padding: 0 16px;
+}
+
+.barcodeText {
+  color: #000; 
+  letter-spacing: 0.1em;
+}
+
+.infoGrid {
+  display: flex;
+  gap: 16px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 12px;
+}
+
+.infoCol {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

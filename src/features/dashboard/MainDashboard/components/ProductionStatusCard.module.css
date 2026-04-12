@@ -1,0 +1,84 @@
+.card {
+  background: var(--color-bg-secondary);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary-dim);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.poInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 11px;
+  color: var(--color-primary);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.value {
+  font-size: 18px;
+  font-family: var(--font-heading);
+}
+
+.percentage {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
+.progressContainer {
+  height: 8px;
+  background: var(--color-bg-primary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-cyan));
+  border-radius: 4px;
+}
+
+.footer {
+  display: flex;
+  gap: 24px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat span {
+  font-size: 11px;
+  color: var(--color-text-sub);
+}
+
+.stat strong {
+  font-size: 13px;
+  font-family: var(--font-mono);
+}
+
+.station {
+  color: var(--color-cyan);
+}

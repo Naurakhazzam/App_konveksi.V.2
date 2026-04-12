@@ -1,0 +1,62 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.kpiRow {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.poCol {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.poCol strong {
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+
+.poCol span {
+  font-size: 11px;
+  color: var(--color-text-sub);
+}
+
+.expense {
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.total {
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+}
+
+.muted {
+  color: var(--color-text-sub);
+  font-size: 13px;
+  font-family: var(--font-mono);
+}
+
+.boncos {
+  color: var(--color-red);
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.hemat {
+  color: var(--color-green);
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.expandArea {
+  margin-top: -8px;
+  position: relative;
+  z-index: 10;
+}

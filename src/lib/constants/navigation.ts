@@ -1,0 +1,129 @@
+// src/lib/constants/navigation.ts
+
+export const NAV = [
+  {
+    label: 'Dashboard',
+    icon: 'LayoutDashboard',
+    color: 'blue',
+    subs: ['Produksi', 'Keuangan', 'Penggajian'],
+    basePath: '/dashboard',
+  },
+  {
+    label: 'Produksi',
+    icon: 'Factory',
+    color: 'green',
+    subs: ['Input PO', 'Cutting', 'Jahit', 'Lubang Kancing', 'Buang Benang', 'QC', 'Steam', 'Packing', 'Monitoring'],
+    basePath: '/produksi',
+  },
+  {
+    label: 'Pengiriman',
+    icon: 'Truck',
+    color: 'blue',
+    subs: ['Buat Surat Jalan', 'Riwayat Kirim'],
+    basePath: '/pengiriman',
+  },
+  {
+    label: 'Penggajian',
+    icon: 'Wallet',
+    color: 'purple',
+    subs: ['Rekap Gaji', 'Kasbon', 'Slip Gaji'],
+    basePath: '/penggajian',
+  },
+  {
+    label: 'Inventory',
+    icon: 'Package',
+    color: 'green',
+    subs: ['Overview Stok', 'Transaksi Keluar', 'Alert Order'],
+    basePath: '/inventory',
+  },
+  {
+    label: 'Keuangan',
+    icon: 'TrendingUp',
+    color: 'green',
+    subs: ['Ringkasan', 'Jurnal Umum', 'Laporan Per PO', 'Laporan Per Bulan', 'Laporan Gaji', 'Laporan Reject'],
+    basePath: '/keuangan',
+  },
+  {
+    label: 'Master Data',
+    icon: 'Database',
+    color: 'blue',
+    subs: ['Master Detail', 'Produk & HPP', 'Komponen HPP', 'Karyawan', 'Klien', 'Jenis Reject', 'Kategori Transaksi', 'Satuan (UOM)', 'User & Role'],
+    basePath: '/master-data',
+  },
+  {
+    label: 'Koreksi Data',
+    icon: 'ShieldCheck',
+    color: 'yellow',
+    subs: [],           
+    basePath: '/koreksi-data',
+  },
+  {
+    label: 'Audit Log',
+    icon: 'ScrollText',
+    color: 'cyan',
+    subs: [],           
+    basePath: '/audit-log',
+  },
+  {
+    label: 'Panduan',
+    icon: 'BookOpen',
+    color: 'cyan',
+    subs: [],
+    basePath: '/panduan',
+  },
+];
+
+export function getSubPath(basePath: string, subLabel: string): string {
+  const mapping: Record<string, Record<string, string>> = {
+    '/dashboard': {
+      'Produksi': '/dashboard/produksi',
+      'Keuangan': '/dashboard/keuangan',
+      'Penggajian': '/dashboard/penggajian',
+    },
+    '/produksi': {
+      'Input PO': '/produksi/input-po',
+      'Cutting': '/produksi/scan/cutting',
+      'Jahit': '/produksi/scan/jahit',
+      'Lubang Kancing': '/produksi/scan/lubang-kancing',
+      'Buang Benang': '/produksi/scan/buang-benang',
+      'QC': '/produksi/scan/qc',
+      'Steam': '/produksi/scan/steam',
+      'Packing': '/produksi/scan/packing',
+      'Monitoring': '/produksi/monitoring',
+    },
+    '/pengiriman': {
+      'Buat Surat Jalan': '/pengiriman/buat-surat-jalan',
+      'Riwayat Kirim': '/pengiriman/riwayat',
+    },
+    '/penggajian': {
+      'Rekap Gaji': '/penggajian/rekap-gaji',
+      'Kasbon': '/penggajian/kasbon',
+      'Slip Gaji': '/penggajian/slip-gaji',
+    },
+    '/inventory': {
+      'Overview Stok': '/inventory/overview',
+      'Transaksi Keluar': '/inventory/transaksi-keluar',
+      'Alert Order': '/inventory/alert-order',
+    },
+    '/keuangan': {
+      'Ringkasan': '/keuangan/ringkasan',
+      'Jurnal Umum': '/keuangan/jurnal-umum',
+      'Laporan Per PO': '/keuangan/laporan-po',
+      'Laporan Per Bulan': '/keuangan/laporan-bulan',
+      'Laporan Gaji': '/keuangan/laporan-gaji',
+      'Laporan Reject': '/keuangan/laporan-reject',
+    },
+    '/master-data': {
+      'Master Detail': '/master-data/detail',
+      'Produk & HPP': '/master-data/produk-hpp',
+      'Komponen HPP': '/master-data/hpp-komponen',
+      'Karyawan': '/master-data/karyawan',
+      'Klien': '/master-data/klien',
+      'Jenis Reject': '/master-data/jenis-reject',
+      'Kategori Transaksi': '/master-data/kategori-transaksi',
+      'Satuan (UOM)': '/master-data/satuan',
+      'User & Role': '/master-data/user-role',
+    },
+  };
+  return mapping[basePath]?.[subLabel] || basePath;
+}

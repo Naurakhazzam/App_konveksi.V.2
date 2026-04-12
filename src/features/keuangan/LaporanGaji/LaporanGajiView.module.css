@@ -1,0 +1,70 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.summaryCard {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-blue));
+  border-radius: 16px;
+  padding: 32px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.sumInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sumInfo span {
+  font-size: 14px;
+  opacity: 0.9;
+  letter-spacing: 0.5px;
+}
+
+.sumInfo strong {
+  font-size: 32px;
+  font-family: var(--font-mono);
+}
+
+.sumBadge {
+  background: rgba(255,255,255,0.2);
+  padding: 6px 12px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.empCol {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.empCol strong {
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+
+.empCol span {
+  font-size: 11px;
+  color: var(--color-text-sub);
+}
+
+.amount {
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+}
+
+.minus {
+  color: var(--color-red);
+}

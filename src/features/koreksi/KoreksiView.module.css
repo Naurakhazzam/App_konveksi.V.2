@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.filters {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.tabList {
+  display: flex;
+  background: var(--color-bg-secondary);
+  padding: 4px;
+  border-radius: 8px;
+  gap: 4px;
+}
+
+.tabList button {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.tabList button:hover {
+  color: var(--color-text-primary);
+}
+
+.tabList button.active {
+  background: var(--color-bg-primary);
+  color: var(--color-primary);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}

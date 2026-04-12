@@ -1,0 +1,76 @@
+.container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-card);
+}
+
+.thead {
+  background: var(--color-card2);
+}
+
+.th {
+  padding: 9px 14px;
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-text-sub);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.tbody {
+  background: transparent;
+}
+
+.tr {
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.15s ease;
+}
+
+.striped .tr:nth-child(even) {
+  background: var(--color-card);
+}
+.striped .tr:nth-child(odd) {
+  background: var(--color-card2);
+}
+
+.tr:hover {
+  background: var(--color-border);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.td {
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-text);
+  vertical-align: middle;
+}
+
+.compact .td, .compact .th {
+  padding: 6px 10px;
+}
+
+.tdNumeric {
+  font-family: var(--font-mono);
+}
+
+.empty {
+  padding: 32px 14px;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-text-sub);
+}

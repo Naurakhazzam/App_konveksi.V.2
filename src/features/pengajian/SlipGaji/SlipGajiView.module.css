@@ -1,0 +1,183 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.selector {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+
+.slipWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.slipCard {
+  background: white;
+  color: #333;
+  width: 100%;
+  max-width: 600px;
+  padding: 40px;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.slipHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.companyInfo h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  letter-spacing: 1px;
+}
+
+.companyInfo p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.slipTitle {
+  text-align: right;
+}
+
+.slipTitle h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #000;
+}
+
+.slipTitle p {
+  margin: 0;
+  font-size: 12px;
+}
+
+.employeeInfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.infoCol {
+  font-size: 13px;
+}
+
+.infoCol span {
+  color: #777;
+}
+
+.divider {
+  height: 2px;
+  background: #eee;
+  margin: 20px 0;
+}
+
+.details h4 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.itemRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 14px;
+}
+
+.mt20 {
+  margin-top: 20px !important;
+}
+
+.red { color: #d32f2f; }
+.orange { color: #f57c00; }
+
+.totalSection {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #000;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.grandTotal {
+  font-size: 20px;
+  color: #000;
+  font-family: var(--font-mono);
+}
+
+.slipFooter {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 50px;
+}
+
+.sign {
+  text-align: center;
+  min-width: 150px;
+}
+
+.sign p {
+  margin: 0;
+  font-size: 12px;
+}
+
+.signSpace {
+  height: 60px;
+}
+
+.empty {
+  padding: 40px;
+  text-align: center;
+  color: var(--color-text-sub);
+  background: var(--color-bg-secondary);
+  border-radius: 12px;
+  border: 1px dashed var(--color-border);
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #print-area, #print-area * {
+    visibility: visible;
+  }
+  #print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    box-shadow: none;
+    padding: 0;
+  }
+}

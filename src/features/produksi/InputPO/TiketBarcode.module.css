@@ -1,0 +1,62 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f0f0;
+  min-height: 100vh;
+}
+
+.noPrint {
+  padding: 16px 24px;
+  background-color: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.help {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: right;
+}
+
+.printArea {
+  padding: 24px;
+  max-width: 800px; /* A4 max width approx */
+  margin: 0 auto;
+  background-color: #fff;
+  min-height: 100vh;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  justify-content: center;
+}
+
+@media print {
+  .noPrint {
+    display: none !important;
+  }
+  
+  .wrapper {
+    background-color: transparent !important;
+  }
+  
+  .printArea {
+    padding: 0;
+    max-width: 100%;
+    margin: 0;
+  }
+  
+  html, body {
+    background-color: #fff !important;
+  }
+}
