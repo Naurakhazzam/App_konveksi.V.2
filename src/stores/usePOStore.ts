@@ -26,8 +26,8 @@ const dummyPOs: PurchaseOrder[] = [
     tanggalInput: '2023-10-01',
     status: 'aktif',
     items: [
-      { id: 'ITM-001', poId: 'PO-001', modelId: 'MDL-001', warnaId: 'WRN-001', sizeId: 'SZ-M', qty: 120, qtyPerBundle: 12, jumlahBundle: 10, skuKlien: 'SKU-001', skuInternal: 'INT-001', statusCutting: 'waiting' },
-      { id: 'ITM-002', poId: 'PO-001', modelId: 'MDL-001', warnaId: 'WRN-001', sizeId: 'SZ-L', qty: 96, qtyPerBundle: 12, jumlahBundle: 8, skuKlien: 'SKU-002', skuInternal: 'INT-002', statusCutting: 'waiting' }
+      { id: 'ITM-001', poId: 'PO-001', modelId: 'MDL-001', warnaId: 'WRN-001', sizeId: 'SZ-002', qty: 120, qtyPerBundle: 12, jumlahBundle: 10, skuKlien: 'SKU-001', skuInternal: 'INT-001', statusCutting: 'waiting' },
+      { id: 'ITM-002', poId: 'PO-001', modelId: 'MDL-001', warnaId: 'WRN-001', sizeId: 'SZ-003', qty: 96, qtyPerBundle: 12, jumlahBundle: 8, skuKlien: 'SKU-002', skuInternal: 'INT-002', statusCutting: 'waiting' }
     ]
   },
   {
@@ -37,7 +37,7 @@ const dummyPOs: PurchaseOrder[] = [
     tanggalInput: '2023-10-05',
     status: 'aktif',
     items: [
-      { id: 'ITM-003', poId: 'PO-002', modelId: 'MDL-002', warnaId: 'WRN-002', sizeId: 'SZ-XL', qty: 48, qtyPerBundle: 12, jumlahBundle: 4, skuKlien: 'SKU-003', skuInternal: 'INT-003', statusCutting: 'waiting' }
+      { id: 'ITM-003', poId: 'PO-002', modelId: 'MDL-002', warnaId: 'WRN-002', sizeId: 'SZ-004', qty: 48, qtyPerBundle: 12, jumlahBundle: 4, skuKlien: 'SKU-003', skuInternal: 'INT-003', statusCutting: 'waiting' }
     ]
   }
 ];

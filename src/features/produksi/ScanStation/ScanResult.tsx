@@ -49,11 +49,26 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
   // Status Cutting Check
   const po = poList.find(p => p.nomorPO === bundle.po);
   const poItem = po?.items.find(i => i.modelId === bundle.model && i.warnaId === bundle.warna && i.sizeId === bundle.size);
-  // Perbaikan isCuttingStarted: Default ke true jika poItem tidak ditemukan agar tidak nge-hang, 
-  // atau cek status jika poItem ada.
-  const isCuttingStarted = tahap !== 'cutting' || !poItem || poItem.statusCutting === 'started' || poItem.statusCutting === 'finished';
+  
+  // Strict logic for Cutting stage
+  const isCuttingStage = tahap === 'cutting';
+  const isCuttingStarted = !isCuttingStage || (poItem?.statusCutting === 'started' || poItem?.statusCutting === 'finished');
+  
+  // Explicit block reason for cutting
+  let cuttingBlockReason = null;
+  if (isCuttingStage) {
+    if (!poItem) {
+      cuttingBlockReason = "Data tidak ada di list cutting, harap pastikan dengan benar.";
+    } else if (poItem.statusCutting === 'waiting') {
+      cuttingBlockReason = "Artikel belum dimulai di Cutting Room. Harap pilih 'Mulai Potong' terlebih dahulu di menu Antrian Cutting.";
+    }
+  }
 
-  const canTerima = validation.canTerima && (!needsKaryawan || !!selectedKaryawan) && isCuttingStarted;
+  const canTerima = validation.canTerima && 
+                    (!needsKaryawan || !!selectedKaryawan) && 
+                    isCuttingStarted && 
+                    !cuttingBlockReason;
+                    
   const canSelesai = currentStatus.status === 'terima';
   const canReject = currentStatus.status === 'terima' || currentStatus.status === 'selesai';
 
@@ -222,8 +237,8 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       )}
 
       {/* Cutting specific warning */}
-      {tahap === 'cutting' && poItem?.statusCutting === 'waiting' && (
-        <div className={styles.blockAlert}>⚠️ PO/Artikel ini belum dimulai di <strong>Cutting Room</strong>. Silakan "Mulai Potong" terlebih dahulu.</div>
+      {cuttingBlockReason && (
+        <div className={styles.blockAlert}>⚠️ {cuttingBlockReason}</div>
       )}
 
       {/* Select Karyawan (hanya cutting & jahit) */}
