@@ -1,77 +1,61 @@
 .card {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
   border-radius: 12px;
   padding: 16px 20px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-normal);
   flex: 1;
   min-width: 0;
+  position: relative;
+  overflow: hidden;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.card:hover {
+  transform: translateY(-4px);
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-bright);
 }
 
-.label {
-  font-family: var(--font-body);
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text-sub);
+.card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--glass-shine);
+  pointer-events: none;
 }
 
-.icon {
-  color: var(--color-text-sub);
-  display: flex;
+/* Metallic Accent Gaps & Glows */
+.accent-cyan { 
+  border-left: 3px solid transparent;
+  border-image: linear-gradient(to bottom, var(--color-cyan), var(--color-cyan-dim)) 1;
+  box-shadow: -10px 0 20px -10px rgba(229, 193, 123, 0.3);
 }
-
-.valueRow {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
+.accent-green { 
+  border-left: 3px solid transparent;
+  border-image: linear-gradient(to bottom, #52a46d, #2d5a3c) 1;
+  box-shadow: -10px 0 20px -10px rgba(82, 164, 109, 0.3);
 }
-
-.value {
-  font-family: var(--font-heading);
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1;
+.accent-yellow { 
+  border-left: 3px solid transparent;
+  border-image: linear-gradient(to bottom, #f0bd66, #a67c3a) 1;
 }
-
-.trend {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  font-family: var(--font-body);
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1;
-  margin-bottom: 2px;
-  padding: 2px 6px;
-  border-radius: 4px;
+.accent-red { 
+  border-left: 3px solid transparent;
+  border-image: linear-gradient(to bottom, #e65c5c, #8b3434) 1;
+  box-shadow: -10px 0 20px -10px rgba(230, 92, 92, 0.3);
 }
-
-.trendUp {
-  background: rgba(74, 222, 128, 0.1);
-  color: var(--color-green);
+.accent-blue { 
+  border-left: 3px solid transparent;
+  border-image: linear-gradient(to bottom, #5c9ce6, #2d507a) 1;
+  box-shadow: -10px 0 20px -10px rgba(92, 156, 230, 0.3);
 }
-
-.trendDown {
-  background: rgba(248, 113, 113, 0.1);
-  color: var(--color-red);
-}
-
-.accent-cyan { border-left: 2px solid var(--color-cyan); }
-.accent-green { border-left: 2px solid var(--color-green); }
-.accent-yellow { border-left: 2px solid var(--color-yellow); }
-.accent-red { border-left: 2px solid var(--color-red); }
-.accent-purple { border-left: 2px solid var(--color-purple); }
-.accent-blue { border-left: 2px solid var(--color-blue); }
 
 /* Light Mode: KPI cards need visual lift from background */
 :global([data-theme="light"]) .card {

@@ -13,11 +13,12 @@
   --color-text-sub: #9aa0a6;
   --color-text-mid: #5f6368;
 
-  --glass-bg: rgba(26, 29, 31, 0.6);
-  --glass-bg-hover: rgba(30, 33, 36, 0.8);
-  --glass-border: rgba(255, 255, 255, 0.05);
-  --glass-border-bright: rgba(255, 255, 255, 0.12);
-  --glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.7);
+  --glass-bg: rgba(22, 24, 26, 0.7);
+  --glass-bg-hover: rgba(26, 29, 31, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-bright: rgba(255, 255, 255, 0.15);
+  --glass-shine: linear-gradient(110deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0) 100%);
+  --glass-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.8), 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 :root[data-theme="light"] {
