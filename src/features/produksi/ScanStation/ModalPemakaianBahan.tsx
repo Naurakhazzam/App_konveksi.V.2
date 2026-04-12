@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '@/components/organisms/Modal';
 import Button from '@/components/atoms/Button';
@@ -23,22 +25,21 @@ export default function ModalPemakaianBahan({
   const [meter, setMeter] = useState<number | ''>('');
   const [gram, setGram] = useState<number | ''>('');
 
-  const isValid = Number(meter) > 0 && Number(gram) > 0;
+  // At least one field must be filled
+  const isValid = (meter !== '' && Number(meter) > 0) || (gram !== '' && Number(gram) > 0);
 
   const handleConfirm = () => {
     if (isValid) {
-      onConfirm(Number(meter), Number(gram));
+      onConfirm(Number(meter || 0), Number(gram || 0));
     }
   };
 
   const handleCancel = () => {
-    if (confirm('Jika dibatalkan, scan bundel ini tidak akan diproses. Lanjutkan batal?')) {
-      onClose();
-    }
+    onClose();
   };
 
   return (
-    <Modal open={open} onClose={() => {}} size="sm" closeOnBackdrop={false} closeOnEsc={false}>
+    <Modal open={open} onClose={onClose} size="sm" closeOnBackdrop={true} closeOnEsc={true}>
       <ModalHeader title="🧵 Input Pemakaian Bahan" onClose={handleCancel} />
       <ModalBody>
         <div className={styles.container}>
@@ -68,7 +69,7 @@ export default function ModalPemakaianBahan({
           </div>
 
           <div className={styles.alert}>
-            ⚠️ Data ini hanya diinput sekali per artikel per PO untuk perhitungan HPP realisasi.
+            💡 Anda bisa mengisi salah satu atau keduanya (Meter / Gram). Data ini digunakan untuk perhitungan HPP.
           </div>
         </div>
       </ModalBody>

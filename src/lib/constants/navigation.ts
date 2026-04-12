@@ -12,7 +12,7 @@ export const NAV = [
     label: 'Produksi',
     icon: 'Factory',
     color: 'green',
-    subs: ['Input PO', 'Cutting', 'Jahit', 'Lubang Kancing', 'Buang Benang', 'QC', 'Steam', 'Packing', 'Monitoring'],
+    subs: ['Input PO', 'Antrian Cutting', 'Cutting', 'Jahit', 'Lubang Kancing', 'Buang Benang', 'QC', 'Steam', 'Packing', 'Monitoring'],
     basePath: '/produksi',
   },
   {
@@ -83,6 +83,7 @@ export function getSubPath(basePath: string, subLabel: string): string {
     },
     '/produksi': {
       'Input PO': '/produksi/input-po',
+      'Antrian Cutting': '/produksi/cutting',
       'Cutting': '/produksi/scan/cutting',
       'Jahit': '/produksi/scan/jahit',
       'Lubang Kancing': '/produksi/scan/lubang-kancing',

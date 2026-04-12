@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+'use client';
+
+import React, { useState, useMemo } from 'react';
 import PageWrapper from '@/components/templates/PageWrapper';
 import Panel from '@/components/molecules/Panel';
 import DataTable, { Column } from '@/components/organisms/DataTable';
 import Badge from '@/components/atoms/Badge';
 import { Bundle } from '@/types';
 import { TahapKey, SLUG_TO_KEY, TAHAP_LABEL } from '@/lib/utils/production-helpers';
+import { useScanStore, ScanRecord } from '@/stores/useScanStore';
 import ScanInput from './ScanInput';
 import ScanResult from './ScanResult';
 import styles from './ScanStationView.module.css';
@@ -15,6 +18,7 @@ interface ScanStationViewProps {
 
 export default function ScanStationView({ tahapSlug }: ScanStationViewProps) {
   const tahap = SLUG_TO_KEY[tahapSlug];
+  const { history } = useScanStore();
   const [activeBundle, setActiveBundle] = useState<Bundle | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -36,18 +40,34 @@ export default function ScanStationView({ tahapSlug }: ScanStationViewProps) {
     setActiveBundle(null);
   };
 
-  // Dummy riwayat scan hari ini (bisa diganti dengan data dari store ScanRecord nanti)
-  const historyColumns: Column<any>[] = [
-    { key: 'waktu', header: 'Waktu', render: () => new Date().toLocaleTimeString() },
-    { key: 'barcode', header: 'Barcode', render: (val) => <span style={{ fontFamily: 'var(--font-mono)' }}>{val}</span> },
-    { key: 'aksi', header: 'Aksi', render: (val) => <Badge variant={val === 'Terima' ? 'info' : 'success'}>{val}</Badge> },
-    { key: 'qty', header: 'QTY' },
+  // Filter history for current stage only
+  const stageHistory = useMemo(() => {
+    return history.filter(h => h.tahap === tahap);
+  }, [history, tahap]);
+
+  const historyColumns: Column<ScanRecord>[] = [
+    { 
+      key: 'waktu', 
+      header: 'Waktu', 
+      render: (val) => new Date(val).toLocaleTimeString('id-ID', { hour12: false }) 
+    },
+    { 
+      key: 'barcode', 
+      header: 'Barcode', 
+      render: (val) => <code style={{ fontSize: '11px' }}>{val}</code> 
+    },
+    { 
+      key: 'aksi', 
+      header: 'Aksi', 
+      render: (val) => (
+        <Badge variant={val === 'terima' ? 'info' : val === 'selesai' ? 'success' : 'danger'}>
+          {val.toUpperCase()}
+        </Badge>
+      ) 
+    },
+    { key: 'qty', header: 'QTY', render: (val) => <strong>{val}</strong> },
   ];
   
-  const dummyHistory = activeBundle ? [
-    { id: '1', waktu: new Date().toISOString(), barcode: activeBundle.barcode, aksi: 'Pencarian', qty: activeBundle.qtyBundle }
-  ] : [];
-
   return (
     <PageWrapper 
       title={`Scan — ${TAHAP_LABEL[tahap]}`} 
@@ -73,7 +93,12 @@ export default function ScanStationView({ tahapSlug }: ScanStationViewProps) {
 
         {/* Tabel Riwayat */}
         <Panel title={`Riwayat Scan Hari Ini (${TAHAP_LABEL[tahap]})`}>
-          <DataTable columns={historyColumns} data={dummyHistory} keyField="id" />
+          <DataTable 
+            columns={historyColumns} 
+            data={stageHistory} 
+            keyField="id" 
+            emptyMessage="Belum ada aktivitas scan untuk tahap ini hari ini."
+          />
         </Panel>
 
       </div>

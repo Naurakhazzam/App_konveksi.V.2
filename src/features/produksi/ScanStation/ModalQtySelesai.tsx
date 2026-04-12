@@ -14,9 +14,10 @@ interface ModalQtySelesaiProps {
   onConfirm: (qtySelesai: number, alasan: string, needsKoreksi: boolean) => void;
   qtyTerima: number;
   tahap: TahapKey;
+  title?: string;
 }
 
-export default function ModalQtySelesai({ open, onClose, onConfirm, qtyTerima, tahap }: ModalQtySelesaiProps) {
+export default function ModalQtySelesai({ open, onClose, onConfirm, qtyTerima, tahap, title }: ModalQtySelesaiProps) {
   const [qty, setQty] = useState<number | ''>('');
   const [alasan, setAlasan] = useState('');
   const [showOwnerAuth, setShowOwnerAuth] = useState(false);
@@ -64,7 +65,7 @@ export default function ModalQtySelesai({ open, onClose, onConfirm, qtyTerima, t
     <>
       <Modal open={open && !showOwnerAuth} onClose={handleClose} size="sm">
         <div className={styles.container}>
-          <Heading level={4}>Input QTY Selesai</Heading>
+          <Heading level={4}>{title || 'Input QTY Selesai'}</Heading>
           <Label color="sub">Tahap: {TAHAP_LABEL[tahap]}</Label>
 
           <div className={styles.target}>

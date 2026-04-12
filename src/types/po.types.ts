@@ -9,6 +9,7 @@ export interface POItem {
   jumlahBundle: number;
   skuKlien: string;
   skuInternal: string;
+  statusCutting?: 'waiting' | 'started' | 'finished';
 }
 
 export interface Artikel {

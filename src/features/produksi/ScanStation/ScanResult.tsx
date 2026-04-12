@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { Bundle } from '@/types';
 import { useMasterStore } from '@/stores/useMasterStore';
@@ -7,6 +9,7 @@ import Badge from '@/components/atoms/Badge';
 import { Label } from '@/components/atoms/Typography';
 import { usePOStore } from '@/stores/usePOStore';
 import { useKoreksiStore } from '@/stores/useKoreksiStore';
+import { useScanStore } from '@/stores/useScanStore';
 import {
   TahapKey, TAHAP_ORDER, TAHAP_LABEL, REQUIRES_KARYAWAN,
   validateCanTerima, getQtyTerima, getTahapStatusIcon
@@ -25,8 +28,9 @@ interface ScanResultProps {
 export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProps) {
   const { model, warna, sizes, karyawan } = useMasterStore();
   const { updateStatusTahap } = useBundleStore();
-  const { getPemakaianBahan, addPemakaianBahan } = usePOStore();
+  const { poList, getPemakaianBahan, addPemakaianBahan, updateItemCuttingStatus } = usePOStore();
   const { addToQueue } = useKoreksiStore();
+  const { addRecord } = useScanStore();
   
   const [showQtyModal, setShowQtyModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -39,34 +43,53 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
 
   const currentStatus = bundle.statusTahap[tahap];
   const validation = validateCanTerima(bundle, tahap);
-  const qtyTerima = getQtyTerima(bundle, tahap);
+  const qtyTerimaDefault = getQtyTerima(bundle, tahap);
   const needsKaryawan = REQUIRES_KARYAWAN.includes(tahap);
 
-  const canTerima = validation.canTerima && (!needsKaryawan || !!selectedKaryawan);
+  // Status Cutting Check
+  const po = poList.find(p => p.nomorPO === bundle.po);
+  const poItem = po?.items.find(i => i.modelId === bundle.model && i.warnaId === bundle.warna && i.sizeId === bundle.size);
+  const isCuttingStarted = tahap !== 'cutting' || (poItem?.statusCutting === 'started' || poItem?.statusCutting === 'finished');
+
+  const canTerima = validation.canTerima && (!needsKaryawan || !!selectedKaryawan) && isCuttingStarted;
   const canSelesai = currentStatus.status === 'terima';
   const canReject = currentStatus.status === 'terima' || currentStatus.status === 'selesai';
 
   const handleTerima = () => {
-    // Phase 2B Check: Pemakaian Bahan for Cutting
     if (tahap === 'cutting') {
       const existingBahan = getPemakaianBahan(bundle.po, bundle.model, bundle.warna, bundle.size);
       if (!existingBahan) {
         setShowBahanModal(true);
         return;
       }
+      // If bahan exists but we are in cutting, we might still want to prompt for Qty immediately
+      setShowQtyModal(true);
+      return;
     }
     
-    executeTerima();
+    executeTerima(qtyTerimaDefault);
   };
 
-  const executeTerima = () => {
+  const executeTerima = (finalQty: number) => {
     const now = new Date().toISOString();
     updateStatusTahap(bundle.barcode, tahap, {
       status: 'terima',
-      qtyTerima,
+      qtyTerima: finalQty,
       waktuTerima: now,
       karyawan: needsKaryawan ? selectedKaryawan : null,
     });
+
+    // Record to Scan Store
+    addRecord({
+      id: `SCAN-${Date.now()}`,
+      barcode: bundle.barcode,
+      po: bundle.po,
+      tahap,
+      aksi: 'terima',
+      qty: finalQty,
+      waktu: now
+    });
+
     if (onComplete) onComplete();
   };
 
@@ -80,28 +103,44 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       artikelNama: `${modelName} - ${warnaName} - ${sizeName}`,
       pemakaianKainMeter: meter,
       pemakaianBeratGram: gram,
-      inputOleh: 'ADMIN', // Placeholder
+      inputOleh: 'ADMIN',
       waktuInput: new Date().toISOString()
     });
     setShowBahanModal(false);
-    executeTerima();
+    
+    // Step 2: Open Qty Modal after Bahan
+    if (tahap === 'cutting') {
+      setShowQtyModal(true);
+    } else {
+      executeTerima(qtyTerimaDefault);
+    }
   };
 
   const handleQtyConfirm = (qtySelesai: number, alasan: string, needsKoreksi: boolean) => {
     const now = new Date().toISOString();
     
-    // If needs koreksi, add to Koreksi Queue
+    if (tahap === 'cutting' && currentStatus.status === null) {
+      // In cutting, we use the QTY modal for the INITIAL 'Terima' (actual yield)
+      if (poItem) {
+        updateItemCuttingStatus(poItem.id, 'finished');
+      }
+      executeTerima(qtySelesai);
+      setShowQtyModal(false);
+      return;
+    }
+
+    // Normal 'Selesai' Flow
     if (needsKoreksi) {
       addToQueue({
         id: `KOR-${Date.now()}`,
         barcode: bundle.barcode,
         tahap,
-        qtyTarget: qtyTerima,
+        qtyTarget: currentStatus.qtyTerima || qtyTerimaDefault,
         qtyAktual: qtySelesai,
         tipe: 'lebih',
         alasan: alasan || 'QTY Melebihi target',
         status: 'pending',
-        diajukanOleh: 'ADMIN', // Placeholder
+        diajukanOleh: 'ADMIN',
         waktuAjukan: now
       });
     }
@@ -113,6 +152,18 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       koreksiStatus: needsKoreksi ? 'pending' : null,
       koreksiAlasan: alasan || null,
     });
+
+    // Record to Scan Store
+    addRecord({
+      id: `SCAN-${Date.now()}`,
+      barcode: bundle.barcode,
+      po: bundle.po,
+      tahap,
+      aksi: 'selesai',
+      qty: qtySelesai,
+      waktu: now
+    });
+
     if (onComplete) onComplete();
   };
 
@@ -148,6 +199,11 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         <div className={styles.blockAlert}>⛔ {validation.blockReason}</div>
       )}
 
+      {/* Cutting specific warning */}
+      {tahap === 'cutting' && poItem?.statusCutting === 'waiting' && (
+        <div className={styles.blockAlert}>⚠️ PO/Artikel ini belum dimulai di <strong>Cutting Room</strong>. Silakan "Mulai Potong" terlebih dahulu.</div>
+      )}
+
       {/* Select Karyawan (hanya cutting & jahit) */}
       {needsKaryawan && currentStatus.status === null && (
         <div className={styles.karyawanField}>
@@ -176,15 +232,16 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         open={showQtyModal}
         onClose={() => setShowQtyModal(false)}
         onConfirm={handleQtyConfirm}
-        qtyTerima={currentStatus.qtyTerima || qtyTerima}
+        qtyTerima={currentStatus.status === 'terima' ? currentStatus.qtyTerima : qtyTerimaDefault}
         tahap={tahap}
+        title={tahap === 'cutting' && currentStatus.status === null ? "Input Hasil Potong (Actual Yield)" : undefined}
       />
       <ModalReject
         open={showRejectModal}
         onClose={() => setShowRejectModal(false)}
         barcode={bundle.barcode}
         tahap={tahap}
-        qtyMax={currentStatus.qtyTerima || qtyTerima}
+        qtyMax={currentStatus.qtyTerima || qtyTerimaDefault}
       />
       <ModalPemakaianBahan 
         open={showBahanModal}
