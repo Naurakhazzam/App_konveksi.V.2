@@ -5,7 +5,7 @@ export const NAV = [
     label: 'Dashboard',
     icon: 'LayoutDashboard',
     color: 'blue',
-    subs: ['Produksi', 'Keuangan', 'Penggajian'],
+    subs: ['Ringkasan Utama', 'Produksi', 'Keuangan', 'Penggajian'],
     basePath: '/dashboard',
   },
   {
@@ -76,6 +76,7 @@ export const NAV = [
 export function getSubPath(basePath: string, subLabel: string): string {
   const mapping: Record<string, Record<string, string>> = {
     '/dashboard': {
+      'Ringkasan Utama': '/dashboard',
       'Produksi': '/dashboard/produksi',
       'Keuangan': '/dashboard/keuangan',
       'Penggajian': '/dashboard/penggajian',
