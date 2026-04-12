@@ -108,6 +108,15 @@
 html {
   scrollbar-gutter: stable;
   overflow-y: scroll;
+  font-size: 16px; /* Base */
+}
+
+@media (max-width: 768px) {
+  html { font-size: 15px; }
+}
+
+@media (max-width: 480px) {
+  html { font-size: 14px; }
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -115,7 +124,8 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
-  font-weight: 300; /* Clean and thin like iPhone */
+  font-weight: 400; /* DM Sans needs 400 for better mobile legibility than 300 */
+  line-height: 1.5;
   letter-spacing: -0.01em;
   user-select: none;
   -webkit-user-select: none;
@@ -124,8 +134,31 @@ body {
 
 h1, h2, h3, h4, .heading {
   font-family: var(--font-heading);
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+/* Global Mobile Scroll Helpers */
+.slideContainer {
+  display: flex !important;
+  overflow-x: auto !important;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  gap: 12px;
+  padding-bottom: 8px; /* Room for scrollbar if visible */
+  scrollbar-width: none;
+  width: 100%;
+}
+
+.slideContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.slideItem {
+  scroll-snap-align: center;
+  flex: 0 0 calc(85% - 12px); /* Show part of next card to hint scroll */
+  min-width: 260px;
 }
 
 /* HANYA elemen input yang boleh punya cursor text dan seleksi */

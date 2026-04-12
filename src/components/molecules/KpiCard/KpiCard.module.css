@@ -86,13 +86,14 @@
 
 @media (max-width: 640px) {
   .card {
-    padding: 12px 14px;
-    gap: 8px;
+    padding: 10px 12px;
+    gap: 6px;
   }
   .value {
-    font-size: 18px;
+    font-size: 17px;
   }
   .label {
     font-size: 8px;
+    letter-spacing: 0.02em;
   }
 }

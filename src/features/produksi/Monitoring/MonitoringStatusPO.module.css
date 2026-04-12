@@ -6,30 +6,38 @@
 
 .subTabs {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   border-bottom: 2px solid var(--color-border);
   padding-bottom: 0px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.subTabs::-webkit-scrollbar {
+  display: none;
 }
 
 .subTabs button {
   padding: 12px 16px;
   border: none;
   background: transparent;
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 13px;
-  color: var(--color-text-secondary);
+  color: var(--color-text-sub);
   cursor: pointer;
   position: relative;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .subTabs button:hover {
-  color: var(--color-primary);
+  color: var(--color-text);
 }
 
 .subTabs button.active {
-  color: var(--color-primary);
+  color: var(--color-cyan-dim);
 }
 
 .subTabs button.active::after {
@@ -39,11 +47,11 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: var(--color-primary);
+  background: var(--color-cyan-dim);
 }
 
 .tableCard {
-  background: var(--color-bg-primary);
+  background: var(--color-card);
   border-radius: 12px;
 }
 

@@ -1,29 +1,31 @@
 .boardContainer {
-  background: #090e1a;
-  padding: 32px 24px;
+  background: var(--color-bg);
+  padding: 24px 16px;
   border-radius: 12px;
   overflow-x: auto;
-  color: #a0aec0;
+  color: var(--color-text-sub);
+  -webkit-overflow-scrolling: touch;
 }
 
 .legend {
   display: flex;
-  gap: 24px;
-  margin-bottom: 32px;
-  font-size: 11px;
+  gap: 16px;
+  margin-bottom: 24px;
+  font-size: 10px;
+  flex-wrap: wrap;
 }
 
 .legendItem {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .miniBox {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   border-radius: 3px;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid var(--color-border);
 }
 
 .boxTop {
@@ -41,14 +43,15 @@
   align-items: center;
   gap: 4px;
   min-width: max-content;
+  padding-bottom: 12px;
 }
 
 .stageColumn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  width: 100px;
+  gap: 10px;
+  width: 90px;
 }
 
 .doubleBox {
@@ -58,102 +61,117 @@
 }
 
 .box {
-  width: 84px;
-  height: 72px;
-  background: rgba(255,255,255,0.03);
-  border: 1.5px solid rgba(255,255,255,0.1);
+  width: 76px;
+  height: 64px;
+  background: var(--color-card);
+  border: 1.5px solid var(--color-border);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .box:hover {
-  background: rgba(255,255,255,0.08);
+  background: var(--color-card2);
   transform: translateY(-2px);
+  border-color: var(--color-cyan-dim);
 }
 
 .singleBox {
   border-radius: 12px;
-  height: 120px;
+  height: 110px;
 }
 
 .boxKirim {
-  border-color: rgba(34, 197, 94, 0.4);
+  border-color: var(--color-green) !important;
 }
 
 .count {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 800;
-  color: #fff;
+  color: var(--color-text);
 }
 
 .pct {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  color: #64748b;
+  color: var(--color-text-sub);
 }
 
 .stageLabel {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.5px;
   text-align: center;
-  margin-top: 8px;
+  margin-top: 6px;
+  color: var(--color-text);
+  white-space: nowrap;
 }
 
 .subLabel {
-  font-size: 9px;
-  color: #4a5568;
+  font-size: 8px;
+  color: var(--color-text-sub);
 }
 
 .arrow {
-  color: #2d3748;
-  font-size: 20px;
-  margin-bottom: 50px;
+  color: var(--color-border2);
+  font-size: 16px;
+  margin-bottom: 40px;
 }
 
 .arrowDown {
-  color: #2d3748;
-  font-size: 12px;
-  margin: 2px 0;
+  color: var(--color-border2);
+  font-size: 10px;
+  margin: 1px 0;
 }
 
 .statusLabels {
   display: flex;
   flex-direction: column;
   font-size: 8px;
-  color: #4a5568;
+  color: var(--color-text-sub);
   text-align: center;
 }
 
-/* Accents */
-.accent-yellow { border-color: #f6e05e44; }
+/* Accents with Theme Support */
+.accent-yellow { border-color: rgba(246, 224, 94, 0.3); }
 .accent-yellow.boxTop { background: rgba(246, 224, 94, 0.05); }
 .accent-yellow:hover { border-color: #f6e05e; }
 
-.accent-blue { border-color: #4299e144; }
+.accent-blue { border-color: rgba(66, 153, 225, 0.3); }
 .accent-blue.boxTop { background: rgba(66, 153, 225, 0.05); }
 .accent-blue:hover { border-color: #4299e1; }
 
-.accent-purple { border-color: #9f7aea44; }
+.accent-purple { border-color: rgba(159, 122, 234, 0.3); }
 .accent-purple.boxTop { background: rgba(159, 122, 234, 0.05); }
 .accent-purple:hover { border-color: #9f7aea; }
 
-.accent-cyan { border-color: #38b2ac44; }
+.accent-cyan { border-color: rgba(56, 178, 172, 0.3); }
 .accent-cyan.boxTop { background: rgba(56, 178, 172, 0.05); }
 .accent-cyan:hover { border-color: #38b2ac; }
 
-.accent-green { border-color: #48bb7844; }
+.accent-green { border-color: rgba(72, 187, 120, 0.3); }
 .accent-green.boxTop { background: rgba(72, 187, 120, 0.05); }
 .accent-green:hover { border-color: #48bb78; }
 
-.accent-orange { border-color: #ed893644; }
+.accent-orange { border-color: rgba(237, 137, 54, 0.3); }
 .accent-orange.boxTop { background: rgba(237, 137, 54, 0.05); }
 .accent-orange:hover { border-color: #ed8936; }
 
-.accent-teal { border-color: #31979544; }
-.accent-teal.boxTop { background: rgba(49, 151, 149, 0.05); }
-.accent-teal:hover { border-color: #319795; }
+@media (max-width: 768px) {
+  .boardContainer {
+    padding: 16px 12px;
+  }
+  .box {
+    width: 68px;
+    height: 58px;
+  }
+  .count {
+    font-size: 18px;
+  }
+  .stageColumn {
+    width: 80px;
+  }
+}

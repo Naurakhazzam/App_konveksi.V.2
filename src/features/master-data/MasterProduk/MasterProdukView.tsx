@@ -9,6 +9,8 @@ import FormProduk from './FormProduk';
 import HPPEditorPanel from './HPPEditor/HPPEditorPanel';
 import { useMasterStore } from '@/stores/useMasterStore';
 
+import styles from './MasterProdukView.module.css';
+
 export default function MasterProdukView() {
   const { kategori, model, produk } = useMasterStore();
   const [selectedProdukId, setSelectedProdukId] = useState<string | null>(null);
@@ -46,7 +48,7 @@ export default function MasterProdukView() {
     if (currentLevel === 0) {
       // Show Categories
       return (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '20px' }}>
+        <div className={styles.explorerGrid}>
           {kategori.map(kat => (
             <FolderCard 
               key={kat.id}
@@ -64,7 +66,7 @@ export default function MasterProdukView() {
       // Show Models in Category
       const filteredModels = model.filter(m => m.kategoriId === viewPath[0]);
       return (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '20px' }}>
+        <div className={styles.explorerGrid}>
           {filteredModels.map(mod => (
             <FolderCard 
               key={mod.id}
@@ -103,8 +105,8 @@ export default function MasterProdukView() {
         </div>
       }
     >
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 3fr) 2fr', gap: '24px', alignItems: 'start' }}>
-        <div style={{ gridColumn: '1 / 2' }}>
+      <div className={styles.mainGrid}>
+        <div className={styles.leftCol}>
           <Panel title={viewPath.length === 2 ? "Daftar Varian Produk" : "Eksplorasi Master Data"}>
             <Breadcrumbs items={breadcrumbItems} />
             <div style={{ minHeight: '400px' }}>
@@ -113,18 +115,11 @@ export default function MasterProdukView() {
           </Panel>
         </div>
         
-        <div style={{ gridColumn: '2 / 3', position: 'sticky', top: '24px', height: 'calc(100vh - 100px)' }}>
+        <div className={styles.rightCol}>
           {selectedProdukId ? (
             <HPPEditorPanel produkId={selectedProdukId} />
           ) : (
-            <div style={{ 
-              background: 'var(--color-bg-secondary)', 
-              border: '1px solid var(--color-border)', 
-              borderRadius: '12px', 
-              padding: '60px 20px', 
-              textAlign: 'center', 
-              color: 'var(--color-text-sub)' 
-            }}>
+            <div className={styles.emptyEditor}>
               <p>
                 {currentLevel < 2 
                   ? "Buka folder Model untuk memilih produk dan mengedit HPP." 

@@ -86,9 +86,23 @@
 
 @media (max-width: 768px) {
   .kpiGrid {
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
     gap: 12px;
+    padding: 0 0 16px;
+    margin-right: -16px;
+    scrollbar-width: none;
   }
+  .kpiGrid::-webkit-scrollbar {
+    display: none;
+  }
+  .kpiGrid > * {
+    scroll-snap-align: center;
+    flex: 0 0 240px;
+    min-width: 240px;
+  }
+  
   .tabBtn {
     padding: 8px 14px;
     font-size: 12px;

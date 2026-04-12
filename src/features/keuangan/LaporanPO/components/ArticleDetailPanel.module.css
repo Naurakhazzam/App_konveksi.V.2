@@ -27,6 +27,27 @@
   gap: 16px;
 }
 
+@media (max-width: 768px) {
+  .articleGrid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 12px;
+    padding: 0 0 16px;
+    margin-right: -20px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .articleGrid::-webkit-scrollbar {
+    display: none;
+  }
+  .articleCard {
+    scroll-snap-align: center;
+    flex: 0 0 280px;
+    min-width: 280px;
+  }
+}
+
 .articleCard {
   background: var(--color-bg-primary);
   border-radius: 10px;

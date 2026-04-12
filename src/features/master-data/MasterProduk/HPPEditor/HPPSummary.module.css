@@ -1,0 +1,88 @@
+.container {
+  margin-top: 24px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--color-text-sub);
+}
+
+.itemValue {
+  font-family: var(--font-mono);
+}
+
+.divider {
+  border-top: 2px dashed var(--color-border);
+  margin: 12px 0;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.totalValue {
+  font-family: var(--font-mono);
+}
+
+.hargaJual {
+  color: var(--color-cyan-dim);
+}
+
+.marginBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 800;
+  margin-top: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.marginValues {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.marginPercent {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.positive {
+  background: var(--color-green);
+  color: #000;
+}
+
+.negative {
+  background: var(--color-red);
+  color: #fff;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding-top: 12px;
+    gap: 6px;
+  }
+  .item, .totalRow {
+    font-size: 12px;
+  }
+  .marginBox {
+    padding: 12px;
+  }
+}

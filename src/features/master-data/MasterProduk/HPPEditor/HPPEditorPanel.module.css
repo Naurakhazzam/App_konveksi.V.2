@@ -34,6 +34,26 @@
   justify-content: flex-end;
 }
 
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+  }
+  .actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+  .actions button {
+    flex: 1;
+    min-width: 120px;
+    font-size: 11px;
+  }
+  .content {
+    padding: 12px;
+  }
+}
+
 .content {
   padding: 20px;
   overflow-y: auto;

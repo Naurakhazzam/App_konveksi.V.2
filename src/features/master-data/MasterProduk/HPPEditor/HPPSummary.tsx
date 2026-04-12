@@ -1,6 +1,7 @@
 import React from 'react';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { formatRupiah } from '@/lib/utils/formatters';
+import styles from './HPPSummary.module.css';
 
 export interface HPPSummaryProps {
   produkId: string;
@@ -19,45 +20,36 @@ export default function HPPSummary({ produkId }: HPPSummaryProps) {
   const margin = getMargin(produkId);
 
   return (
-    <div style={{ marginTop: '24px', borderTop: '1px solid var(--color-border)', paddingTop: '16px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', color: 'var(--color-text-sub)', fontSize: '13px' }}>
+    <div className={styles.container}>
+      <div className={styles.item}>
         <span>Subtotal Bahan Baku:</span>
-        <span style={{ fontFamily: 'var(--font-mono)' }}>{formatRupiah(subBahanBaku)}</span>
+        <span className={styles.itemValue}>{formatRupiah(subBahanBaku)}</span>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', color: 'var(--color-text-sub)', fontSize: '13px' }}>
+      <div className={styles.item}>
         <span>Subtotal Biaya Produksi:</span>
-        <span style={{ fontFamily: 'var(--font-mono)' }}>{formatRupiah(subBiayaProduksi)}</span>
+        <span className={styles.itemValue}>{formatRupiah(subBiayaProduksi)}</span>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', color: 'var(--color-text-sub)', fontSize: '13px' }}>
+      <div className={styles.item}>
         <span>Subtotal Overhead:</span>
-        <span style={{ fontFamily: 'var(--font-mono)' }}>{formatRupiah(subOverhead)}</span>
+        <span className={styles.itemValue}>{formatRupiah(subOverhead)}</span>
       </div>
 
-      <div style={{ borderTop: '2px dashed var(--color-border)', margin: '16px 0' }} />
+      <div className={styles.divider} />
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontWeight: 600 }}>
+      <div className={styles.totalRow}>
         <span>TOTAL HPP:</span>
-        <span style={{ fontFamily: 'var(--font-mono)' }}>{formatRupiah(total)}</span>
+        <span className={styles.totalValue}>{formatRupiah(total)}</span>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontWeight: 600 }}>
+      <div className={styles.totalRow}>
         <span>Harga Jual:</span>
-        <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-cyan)' }}>{formatRupiah(prod.hargaJual)}</span>
+        <span className={`${styles.totalValue} ${styles.hargaJual}`}>{formatRupiah(prod.hargaJual)}</span>
       </div>
 
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        padding: '12px', 
-        backgroundColor: margin.nominal >= 0 ? 'var(--color-success)' : 'var(--color-danger)', 
-        color: margin.nominal >= 0 ? '#000' : '#fff',
-        borderRadius: '8px',
-        fontWeight: 'bold'
-      }}>
+      <div className={`${styles.marginBox} ${margin.nominal >= 0 ? styles.positive : styles.negative}`}>
         <span>MARGIN:</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontFamily: 'var(--font-mono)' }}>{formatRupiah(margin.nominal)}</span>
-          <span style={{ fontSize: '14px', opacity: 0.8 }}>({margin.persen.toFixed(1)}%)</span>
+        <div className={styles.marginValues}>
+          <span className={styles.totalValue}>{formatRupiah(margin.nominal)}</span>
+          <span className={styles.marginPercent}>({margin.persen.toFixed(1)}%)</span>
         </div>
       </div>
     </div>

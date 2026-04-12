@@ -18,8 +18,21 @@
 
 @media (max-width: 768px) {
   .kpiRow {
-    flex-wrap: wrap;
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
     gap: 12px;
+    padding: 0 0 16px;
+    margin-right: -16px; /* Match PageWrapper mobile padding bleed */
+    scrollbar-width: none;
+  }
+  .kpiRow::-webkit-scrollbar {
+    display: none;
+  }
+  .kpiRow > * {
+    scroll-snap-align: center;
+    flex: 0 0 260px;
+    min-width: 260px;
   }
 }
 

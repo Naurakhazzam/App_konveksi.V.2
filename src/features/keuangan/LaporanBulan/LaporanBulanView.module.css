@@ -4,30 +4,51 @@
   gap: 24px;
 }
 
-.kpiRow {
-  display: flex;
-  gap: 16px;
-  width: 100%;
-}
-
-.filterBar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.filterBar input {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-primary);
-  color: var(--color-text-primary);
-}
-
 .reportGrid {
   display: grid;
   grid-template-columns: 1fr 340px;
   gap: 24px;
+}
+
+@media (max-width: 992px) {
+  .reportGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .sideInfo {
+    order: -1;
+  }
+
+  .kpiRow {
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+  }
+  
+  .kpiRow::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .filterBar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .filterBar input {
+    width: 100%;
+  }
+
+  .plHighlight {
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  .plHighlight.final {
+    font-size: 16px;
+  }
 }
 
 .plWrapper {

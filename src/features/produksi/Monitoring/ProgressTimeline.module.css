@@ -4,7 +4,24 @@
   align-items: center;
 }
 
+@media (max-width: 640px) {
+  .container {
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+  .container::-webkit-scrollbar {
+    display: none;
+  }
+  .step {
+    flex-shrink: 0;
+  }
+}
+
 .step {
+/* ... existing styles ... */
   display: flex;
   flex-direction: column;
   align-items: center;

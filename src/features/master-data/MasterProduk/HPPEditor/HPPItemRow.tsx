@@ -10,48 +10,39 @@ interface HPPItemRowProps {
   onRemove: () => void;
 }
 
+import styles from './HPPItemRow.module.css';
+
 export default function HPPItemRow({ item, komponen, onUpdate, onRemove }: HPPItemRowProps) {
   const subtotal = item.qty * item.harga;
 
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: '12px',
-      padding: '8px 12px',
-      backgroundColor: 'var(--color-bg-tertiary)',
-      borderRadius: '8px',
-      marginBottom: '8px'
-    }}>
+    <div className={styles.row}>
       <button 
         type="button"
+        className={styles.deleteBtn}
         onClick={onRemove}
-        style={{ 
-          background: 'none', border: 'none', color: 'var(--color-danger)', 
-          cursor: 'pointer', fontSize: '16px', fontWeight: 'bold' 
-        }}
       >×</button>
       
-      <div style={{ flex: 1 }}>
-        <div style={{ fontSize: '14px', fontWeight: 500, marginBottom: '4px' }}>{komponen.nama}</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
+      <div className={styles.info}>
+        <div className={styles.name}>{komponen.nama}</div>
+        <div className={styles.inputs}>
           <input 
             type="number"
+            className={styles.inputQty}
             value={item.qty || ''}
             onChange={(e) => onUpdate({ qty: parseFloat(e.target.value) || 0 })}
-            style={{ width: '60px', padding: '4px', background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)', color: 'var(--color-text)', borderRadius: '4px' }}
           />
-          <span style={{ color: 'var(--color-text-sub)' }}>{komponen.satuan} &times; Rp</span>
+          <span>{komponen.satuan} &times; Rp</span>
           <input 
             type="number"
+            className={styles.inputHarga}
             value={item.harga || ''}
             onChange={(e) => onUpdate({ harga: parseFloat(e.target.value) || 0 })}
-            style={{ width: '100px', padding: '4px', background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)', color: 'var(--color-text)', borderRadius: '4px' }}
           />
         </div>
       </div>
       
-      <div style={{ fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
+      <div className={styles.subtotal}>
         {formatRupiah(subtotal)}
       </div>
     </div>

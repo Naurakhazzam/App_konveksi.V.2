@@ -17,15 +17,27 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
       gap: '8px', 
       marginBottom: '20px', 
       fontSize: '13px', 
-      fontFamily: 'var(--font-body)' 
+      fontFamily: 'var(--font-body)',
+      overflowX: 'auto',
+      whiteSpace: 'nowrap',
+      paddingBottom: '4px',
+      msOverflowStyle: 'none',
+      scrollbarWidth: 'none',
+      WebkitOverflowScrolling: 'touch'
     }}>
+      <style>{`
+        div::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
       <span 
         onClick={items[0].onClick}
         style={{ 
           color: 'var(--color-cyan)', 
           cursor: 'pointer', 
           fontWeight: 600,
-          opacity: items.length === 1 ? 1 : 0.7
+          opacity: items.length === 1 ? 1 : 0.7,
+          flexShrink: 0
         }}
       >
         Daftar Master
@@ -33,14 +45,15 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
       
       {items.slice(1).map((item, idx) => (
         <React.Fragment key={idx}>
-          <span style={{ color: 'var(--color-text-sub)' }}>/</span>
+          <span style={{ color: 'var(--color-text-sub)', flexShrink: 0 }}>/</span>
           <span 
             onClick={item.onClick}
             style={{ 
               color: 'var(--color-cyan)', 
               cursor: 'pointer', 
               fontWeight: 600,
-              opacity: idx === items.length - 2 ? 1 : 0.7
+              opacity: idx === items.length - 2 ? 1 : 0.7,
+              flexShrink: 0
             }}
           >
             {item.label}
