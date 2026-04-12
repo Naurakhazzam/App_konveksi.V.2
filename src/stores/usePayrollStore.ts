@@ -27,7 +27,7 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
   addLedgerEntry: (entry) => set((state) => ({ ledger: [...state.ledger, entry] })),
   
   calculateUpah: (karyawanId, startDate, endDate) => {
-    let entries = get().ledger.filter(l => l.karyawanId === karyawanId && l.status === 'belum_lunas');
+    let entries = get().ledger.filter(l => l.karyawanId === karyawanId);
     
     if (startDate && endDate) {
       const start = new Date(startDate).getTime();
