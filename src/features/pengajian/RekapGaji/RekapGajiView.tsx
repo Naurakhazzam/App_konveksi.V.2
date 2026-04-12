@@ -16,7 +16,7 @@ import styles from './RekapGajiView.module.css';
 
 export default function RekapGajiView() {
   const { karyawan } = useMasterStore();
-  const { calculateUpah, prosesBayar } = usePayrollStore();
+  const { calculateUpah, prosesBayar, ledger, kasbon } = usePayrollStore();
   const { addEntry, entries } = useJurnalStore();
   const router = useRouter();
 
@@ -42,7 +42,7 @@ export default function RekapGajiView() {
         isLunas: calc.entries.length > 0 && calc.entries.every(e => e.status === 'lunas')
       };
     });
-  }, [karyawan, calculateUpah, dateRange]);
+  }, [karyawan, calculateUpah, dateRange, ledger, kasbon]);
 
   const stats = useMemo(() => {
     let totalUpah = 0;
