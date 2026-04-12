@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { Menu, User, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import SidebarItem from './SidebarItem';
