@@ -101,3 +101,36 @@ select option {
   background-color: var(--color-card);
   color: var(--color-text);
 }
+
+/* Global Print Utilities */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Target Sidebar and other dashboard containers directly */
+  aside, nav, [class*="Sidebar"], [class*="RoleSwitcher"] {
+    display: none !important;
+  }
+
+  main, [class*="mainContent"] {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    position: static !important;
+    display: block !important;
+  }
+
+  /* Ensure background and colors are print-friendly */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+}

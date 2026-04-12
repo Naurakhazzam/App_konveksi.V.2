@@ -16,7 +16,10 @@ interface FormInputPOProps {
   onSuccess: (poId: string) => void;
 }
 
+import { useToast } from '@/components/molecules/Toast';
+
 export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
+  const { toast, success, error } = useToast();
   const { getNextNomorPO, addPO, incrementGlobalSequence } = usePOStore();
   const { klien, model, warna, sizes } = useMasterStore();
   const { addBundles } = useBundleStore();
@@ -49,8 +52,15 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!klienId) return alert('Pilih klien terlebih dahulu');
-    if (items.some(i => !i.modelId || !i.warnaId || !i.sizeId || !i.qty)) return alert('Harap lengkapi semua item PO');
+    if (!klienId) {
+      error('Pilih Klien', 'Harap pilih klien terlebih dahulu sebelum menyimpan PO.');
+      return;
+    }
+    
+    if (items.some(i => !i.modelId || !i.warnaId || !i.sizeId || !i.qty)) {
+      error('Data Tidak Lengkap', 'Harap lengkapi semua baris artikel sebelum menyimpan.');
+      return;
+    }
 
     const poId = `PO-${Date.now()}`;
     
@@ -80,8 +90,8 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
     });
 
     // Generate Bundles
-    let totalBundles = finalItems.reduce((acc, curr) => acc + curr.jumlahBundle, 0);
-    const startSeq = incrementGlobalSequence(totalBundles);
+    let totalBundlesCount = finalItems.reduce((acc, curr) => acc + curr.jumlahBundle, 0);
+    const startSeq = incrementGlobalSequence(totalBundlesCount);
     let currentGlobalSeq = startSeq;
 
     const newBundles: Bundle[] = [];
@@ -133,6 +143,7 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
     });
 
     addBundles(newBundles);
+    success('PO Berhasil Simpan', `Purchase Order ${nomorPO} telah dibuat dengan ${totalBundlesCount} bundle tiket.`);
     onSuccess(poId);
   };
 

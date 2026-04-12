@@ -64,6 +64,12 @@ export default function DetailSuratJalan({ sj, onClose, onUpdateStatus }: Detail
         </div>
       </ModalBody>
       <ModalFooter>
+        <div className={styles.footerPrint}>
+          <Button variant="ghost" onClick={() => window.print()}>
+            🖨️ Cetak Surat Jalan
+          </Button>
+        </div>
+        <div style={{ flex: 1 }} />
         <Button variant="ghost" onClick={onClose}>Tutup</Button>
         {sj.status === 'dikirim' && (
           <Button variant="primary" onClick={() => {

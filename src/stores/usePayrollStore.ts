@@ -21,6 +21,9 @@ interface PayrollState {
   getSisaKasbon: (karyawanId: string) => number;
 }
 
+import { useLogStore } from './useLogStore';
+import { useAuthStore } from './useAuthStore';
+
 export const usePayrollStore = create<PayrollState>((set, get) => ({
   ledger: dummyGajiLedger,
   kasbon: dummyKasbon,
@@ -69,6 +72,7 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
 
   prosesBayar: (karyawanId, entryIds, inputKasbon) => {
     const tanggalBayar = new Date().toISOString();
+    const upahData = get().calculateUpah(karyawanId); // Get totals for logging
 
     set(state => {
       // 1. Mark ledger entries as lunas
@@ -85,12 +89,28 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
           jumlah: -inputKasbon,
           tanggal: tanggalBayar,
           keterangan: 'Potongan pembayaran gaji',
-          status: 'lunas' // Payment counts as "lunas" internally or simply reduces balance
+          status: 'lunas'
         });
       }
 
       return { ledger: newLedger, kasbon: newKasbon };
     });
+
+    // Log Activity
+    const user = useAuthStore.getState().user;
+    if (user) {
+      useLogStore.getState().addLog({
+        user: { id: user.id, nama: user.nama, role: user.role },
+        modul: 'penggajian',
+        aksi: 'Bayar Gaji',
+        target: karyawanId,
+        metadata: { 
+          totalUpah: upahData.upahBersih, 
+          potongKasbon: inputKasbon,
+          netto: upahData.upahBersih - inputKasbon
+        }
+      });
+    }
   },
 
   setSlipPrinted: (entryIds) => {
@@ -101,5 +121,19 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
     }));
   },
   
-  addKasbon: (kasbon) => set((state) => ({ kasbon: [...state.kasbon, kasbon] }))
+  addKasbon: (kasbon) => {
+    set((state) => ({ kasbon: [...state.kasbon, kasbon] }));
+
+    // Log Activity
+    const user = useAuthStore.getState().user;
+    if (user) {
+      useLogStore.getState().addLog({
+        user: { id: user.id, nama: user.nama, role: user.role },
+        modul: 'penggajian',
+        aksi: 'Tambah Kasbon',
+        target: kasbon.karyawanId,
+        metadata: { nominal: kasbon.jumlah }
+      });
+    }
+  }
 }));

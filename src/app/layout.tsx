@@ -25,6 +25,8 @@ export const metadata: Metadata = {
   description: "Garment Operating System",
 };
 
+import { ToastProvider } from "@/components/molecules/Toast";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,7 +34,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${syne.variable} ${instrumentSans.variable} ${geistMono.variable}`}>
-      <body>{children}</body>
+      <body>
+        <ToastProvider>
+          {children}
+        </ToastProvider>
+      </body>
     </html>
   );
 }

@@ -21,6 +21,7 @@ interface BundleState {
   addBundles: (newBundles: Bundle[]) => void;
   markUpahPaid: (poId: string) => void;
   addRejectRecord: (record: RejectRecord) => void;
+  removeBundlesByPO: (poId: string) => void;
 }
 
 const defaultStatus: StatusTahap = {
@@ -145,4 +146,7 @@ export const useBundleStore = create<BundleState>((set, get) => ({
     }),
   })),
   addRejectRecord: (record) => set((state) => ({ rejectRecords: [...state.rejectRecords, record] })),
+  removeBundlesByPO: (poId) => set((state) => ({
+    bundles: state.bundles.filter((b) => b.po !== poId)
+  })),
 }));

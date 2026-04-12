@@ -5,6 +5,8 @@ import { Label, Heading } from '@/components/atoms/Typography';
 import { formatRupiah } from '@/lib/utils/formatters';
 import styles from './ModalBayar.module.css';
 
+import { useToast } from '@/components/molecules/Toast';
+
 interface ModalBayarProps {
   rekap: {
     id: string;
@@ -18,9 +20,31 @@ interface ModalBayarProps {
 }
 
 export default function ModalBayar({ rekap, onClose, onConfirm }: ModalBayarProps) {
+  const { error, success } = useToast();
   const [potongKasbon, setPotongKasbon] = useState(Math.min(rekap.upahBersih, rekap.sisaKasbon));
 
   const totalBayar = rekap.upahBersih - potongKasbon;
+
+  const handleConfirm = () => {
+    // Advanced Validation
+    if (potongKasbon > rekap.sisaKasbon) {
+      error('Input Invalid', 'Jumlah potong tidak boleh melebihi sisa kasbon.');
+      return;
+    }
+
+    if (potongKasbon > rekap.upahBersih) {
+      error('Input Invalid', 'Jumlah potong tidak boleh melebihi total upah bersih.');
+      return;
+    }
+
+    if (potongKasbon < 0) {
+      error('Input Invalid', 'Jumlah potong tidak boleh negatif.');
+      return;
+    }
+
+    onConfirm(rekap.id, rekap.entryIds, potongKasbon);
+    success('Pembayaran Berhasil', `Gaji untuk ${rekap.nama} telah diproses.`);
+  };
 
   return (
     <Modal open={true} onClose={onClose} size="md">
@@ -44,11 +68,13 @@ export default function ModalBayar({ rekap, onClose, onConfirm }: ModalBayarProp
               type="number" 
               className={styles.input}
               value={potongKasbon}
-              onChange={(e) => setPotongKasbon(Math.min(rekap.sisaKasbon, Number(e.target.value)))}
-              max={rekap.sisaKasbon}
+              onChange={(e) => setPotongKasbon(Number(e.target.value))}
+              max={Math.min(rekap.sisaKasbon, rekap.upahBersih)}
               min={0}
             />
-            <p className={styles.hint}>Max potong: {formatRupiah(rekap.sisaKasbon)}</p>
+            <p className={styles.hint}>
+              Max potong: {formatRupiah(Math.min(rekap.sisaKasbon, rekap.upahBersih))}
+            </p>
           </div>
 
           <div className={styles.resultCard}>
@@ -61,7 +87,7 @@ export default function ModalBayar({ rekap, onClose, onConfirm }: ModalBayarProp
       </ModalBody>
       <ModalFooter>
         <Button variant="ghost" onClick={onClose}>Batal</Button>
-        <Button variant="primary" onClick={() => onConfirm(rekap.id, rekap.entryIds, potongKasbon)}>
+        <Button variant="primary" onClick={handleConfirm}>
           💳 Konfirmasi Pembayaran
         </Button>
       </ModalFooter>

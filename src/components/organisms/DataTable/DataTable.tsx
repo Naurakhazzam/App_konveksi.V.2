@@ -25,6 +25,8 @@ export interface DataTableProps<T> {
   stickyHeader?: boolean;
 }
 
+import EmptyState from '../../molecules/EmptyState';
+
 export default function DataTable<T extends Record<string, any>>({
   columns,
   data,
@@ -48,13 +50,15 @@ export default function DataTable<T extends Record<string, any>>({
           {loading ? (
             <tr>
               <td colSpan={columns.length} className={styles.empty}>
-                Loading...
+                <div className={styles.loadingWrapper}>Loading...</div>
               </td>
             </tr>
           ) : data.length === 0 ? (
             <tr>
-              <td colSpan={columns.length} className={styles.empty}>
-                {emptyMessage}
+              <td colSpan={columns.length}>
+                <div className={styles.emptyWrapper}>
+                  <EmptyState title="Data Kosong" message={emptyMessage} />
+                </div>
               </td>
             </tr>
           ) : (

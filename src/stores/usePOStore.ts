@@ -42,19 +42,64 @@ const dummyPOs: PurchaseOrder[] = [
   }
 ];
 
+import { useLogStore } from './useLogStore';
+import { useAuthStore } from './useAuthStore';
+
 export const usePOStore = create<POState>((set, get) => ({
   poList: dummyPOs,
   globalSequence: 23,
 
-  addPO: (po: PurchaseOrder) => set((state: POState) => ({ poList: [...state.poList, po] })),
+  addPO: (po: PurchaseOrder) => {
+    set((state: POState) => ({ poList: [...state.poList, po] }));
+    
+    // Log Activity
+    const user = useAuthStore.getState().user;
+    if (user) {
+      useLogStore.getState().addLog({
+        user: { id: user.id, nama: user.nama, role: user.role },
+        modul: 'produksi',
+        aksi: 'Buat PO Baru',
+        target: po.nomorPO,
+        metadata: { items: po.items.length }
+      });
+    }
+  },
   
-  updatePO: (id: string, data: Partial<PurchaseOrder>) => set((state: POState) => ({
-    poList: state.poList.map((p: PurchaseOrder) => p.id === id ? { ...p, ...data } : p)
-  })),
+  updatePO: (id: string, data: Partial<PurchaseOrder>) => {
+    set((state: POState) => ({
+      poList: state.poList.map((p: PurchaseOrder) => p.id === id ? { ...p, ...data } : p)
+    }));
 
-  removePO: (id: string) => set((state: POState) => ({
-    poList: state.poList.filter((p: PurchaseOrder) => p.id !== id)
-  })),
+    // Log Activity
+    const user = useAuthStore.getState().user;
+    const po = get().getPOById(id);
+    if (user && po) {
+      useLogStore.getState().addLog({
+        user: { id: user.id, nama: user.nama, role: user.role },
+        modul: 'produksi',
+        aksi: 'Update PO',
+        target: po.nomorPO
+      });
+    }
+  },
+
+  removePO: (id: string) => {
+    const po = get().getPOById(id);
+    set((state: POState) => ({
+      poList: state.poList.filter((p: PurchaseOrder) => p.id !== id)
+    }));
+
+    // Log Activity
+    const user = useAuthStore.getState().user;
+    if (user && po) {
+      useLogStore.getState().addLog({
+        user: { id: user.id, nama: user.nama, role: user.role },
+        modul: 'produksi',
+        aksi: 'Hapus PO',
+        target: po.nomorPO
+      });
+    }
+  },
 
   getPOById: (id: string) => get().poList.find((p: PurchaseOrder) => p.id === id),
 

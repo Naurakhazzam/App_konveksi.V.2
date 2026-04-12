@@ -11,15 +11,15 @@ Tagline        : Garment Operating System — Precision Engine
 Tipe           : Full-Stack Web Application (rencana dijual sebagai SaaS)
 Pemilik        : Owner konveksi skala menengah, omset miliaran
 Tujuan         : Menggantikan sistem Excel manual dengan sistem digital terintegrasi
-Status         : **PHASE 1 & 2 SELESAI (100%)** — Core workflow produksi (Cutting Room) & payroll sudah stabil.
+Status         : **PHASE 1 - 6 SELESAI (100% Frontend)** — Core workflow, UI, & logic sudah stabil di Next.js 15.
 Identitas Visual: **2026 High-End Aesthetics** (Refined Charcoal & Muted Copper)
-Terakhir Update : 12 April 2026 (Ultimate Design Overhaul & Liquid Glass)
+Terakhir Update : 12 April 2026 (Ultimate Design Overhaul, Build Fixed, & Safety Audit)
 
-> **PENTING — KONTEKS PROYEK SAAT INI:**
-> Aplikasi telah berhasil dipindahkan dari versi monolith ke arsitektur modular Next.js 15.
-> Saat ini, UI dan Logika Bisnis (State) secara frontend sudah **95% selesai**.
-> Sesi berikutnya harus menjalankan perintah yang ada di **`Docs/prompts/SPRINT_6.5_FINAL_POLISH.md`** 
-> untuk membereskan 5% sisa fitur (Print, Empty States, Validasi) sebelum masuk ke **Sprint 7** (Migrasi Database).
+> **PENTING — KONTEKS HANDOVER:**
+> 1. Aplikasi sudah **stabil di Vercel**. Semua error tipe data (`null-safety`) dan missing selectors sudah diperbaiki.
+> 2. UI sudah menggunakan tema premium (Charcoal/Copper) dengan **Framer Motion Liquid Glass**.
+> 3. Sesi berikutnya harus fokus pada **Sprint 6.5** (Polish: Print, Toast, Validasi Akhir) 
+>    atau langsung masuk ke **Sprint 7** (Migrasi Database ke Supabase/Prisma).
 > **File V1 TIDAK digunakan lagi.** Jangan referensi atau edit file V1.
 
 ---

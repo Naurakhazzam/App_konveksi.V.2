@@ -189,18 +189,64 @@
 }
 
 @media print {
-  body * {
-    visibility: hidden;
+  /* Sembunyikan semua elemen kecuali area print */
+  body {
+    background: white !important;
+    color: black !important;
   }
-  #print-area, #print-area * {
-    visibility: visible;
+
+  /* Target element yang ingin dihilangkan secara global di layout dashboard */
+  nav, 
+  header,
+  aside,
+  button,
+  .no-print {
+    display: none !important;
   }
-  #print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    box-shadow: none;
-    padding: 0;
+
+  /* Reset container dan panel styles */
+  .container, .mainGrid, .previewSection, .slipWrapper {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    position: static !important;
+  }
+
+  /* Hilangkan panel lain */
+  .listSection {
+    display: none !important;
+  }
+
+  .slipCard {
+    box-shadow: none !important;
+    border: 1px solid #eee !important;
+    margin: 0 auto !important;
+    max-width: 100% !important;
+    padding: 20px !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Pastikan teks hitam tajam */
+  .slipTitle h2, .companyInfo h3, .grandTotal {
+    color: black !important;
+  }
+  
+  .infoCol span {
+    color: #555 !important;
+  }
+
+  .divider {
+    background: #000 !important;
+  }
+
+  .totalSection {
+    border-top: 2px solid #000 !important;
+  }
+
+  /* Hilangkan tombol aksi dalam slip */
+  .actions {
+    display: none !important;
   }
 }
