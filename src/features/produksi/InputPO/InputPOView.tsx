@@ -79,7 +79,7 @@ export default function InputPOView() {
     >
       <div className={styles.container}>
         <Panel title="Semua PO" sequenceIndex={0}>
-          <DataTable columns={columns} data={poList} keyField="id" sequenceIndex={1} />
+          <DataTable columns={columns} data={poList} keyField="id" sequenceIndex={1} reverse={true} />
         </Panel>
       </div>
     </PageWrapper>

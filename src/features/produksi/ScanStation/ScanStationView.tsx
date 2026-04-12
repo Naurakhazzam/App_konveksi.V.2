@@ -98,6 +98,7 @@ export default function ScanStationView({ tahapSlug }: ScanStationViewProps) {
             data={stageHistory} 
             keyField="id" 
             emptyMessage="Belum ada aktivitas scan untuk tahap ini hari ini."
+            reverse={true}
           />
         </Panel>
 

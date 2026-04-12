@@ -11,6 +11,7 @@ export interface KpiCardProps {
   format?: 'number' | 'rupiah' | 'percent';
   sequenceIndex?: number;
   reverse?: boolean;
+  className?: string;
 }
 
 function formatValue(value: string | number, format: KpiCardProps['format']) {

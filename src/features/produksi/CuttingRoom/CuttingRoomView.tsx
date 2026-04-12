@@ -116,6 +116,7 @@ export default function CuttingRoomView() {
             data={queue} 
             keyField="id" 
             emptyMessage="Tidak ada antrian cutting saat ini."
+            reverse={true}
           />
         </Panel>
 

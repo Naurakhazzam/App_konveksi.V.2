@@ -80,7 +80,7 @@ export default function MonitoringPerArtikel({ poList, bundles, sequenceIndex }:
           ))}
         </select>
       </div>
-      <DataTable columns={columns} data={articleData} keyField="id" sequenceIndex={innerIndex} />
+      <DataTable columns={columns} data={articleData} keyField="id" reverse={true} />
     </div>
   );
 }

@@ -67,7 +67,7 @@ export default function WarningProses({ bundles, sequenceIndex }: WarningProsesP
           <p>Semua proses produksi berjalan lancar. Tidak ada peringatan saat ini.</p>
         </div>
       ) : (
-        <DataTable columns={columns} data={warnings} keyField="id" sequenceIndex={innerIndex} />
+        <DataTable columns={columns} data={warnings} keyField="id" reverse={true} />
       )}
     </div>
   );

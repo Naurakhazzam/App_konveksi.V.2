@@ -126,9 +126,9 @@ export default function MonitoringStatusPO({ poList, bundles, sequenceIndex }: M
       </div>
 
       <div className={styles.tableCard}>
-        {activeSubTab === 'belum' && <DataTable columns={columnsBelum} data={groupedPOs.belum} keyField="id" sequenceIndex={innerIndex} />}
+        {activeSubTab === 'belum' && <DataTable columns={columnsBelum} data={groupedPOs.belum} keyField="id" reverse={true} />}
         {activeSubTab === 'proses' && <ProductionFlowBoard bundles={bundles} />}
-        {activeSubTab === 'selesai_unpaid' && <DataTable columns={columnsSelesai} data={groupedPOs.selesai_unpaid} keyField="id" sequenceIndex={innerIndex} />}
+        {activeSubTab === 'selesai_unpaid' && <DataTable columns={columnsSelesai} data={groupedPOs.selesai_unpaid} keyField="id" reverse={true} />}
       </div>
     </div>
   );
