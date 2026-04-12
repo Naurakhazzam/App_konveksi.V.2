@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import RingkasanView from '@/features/keuangan/Ringkasan/RingkasanView';
 

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import RekapGajiView from '@/features/pengajian/RekapGaji/RekapGajiView';
 
