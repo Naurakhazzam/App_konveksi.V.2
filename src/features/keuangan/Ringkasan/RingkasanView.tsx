@@ -48,9 +48,9 @@ export default function RingkasanView() {
 
   const kpiRow = (
     <div className={styles.kpiRow}>
-      <KpiCard label="Saldo Kas" value={financeStats.saldo} accent="blue" format="rupiah" />
-      <KpiCard label="Total Pemasukan" value={financeStats.pemasukan} accent="green" format="rupiah" />
-      <KpiCard label="Total Pengeluaran" value={financeStats.pengeluaran} accent="red" format="rupiah" />
+      <KpiCard label="Saldo Kas" value={financeStats.saldo} accent="blue" format="rupiah" sequenceIndex={0} />
+      <KpiCard label="Total Pemasukan" value={financeStats.pemasukan} accent="green" format="rupiah" sequenceIndex={1} />
+      <KpiCard label="Total Pengeluaran" value={financeStats.pengeluaran} accent="red" format="rupiah" sequenceIndex={2} />
     </div>
   );
 
@@ -62,13 +62,13 @@ export default function RingkasanView() {
     >
       <div className={styles.mainGrid}>
         <div className={styles.leftCol}>
-          <Panel title="Struktur Biaya Pengeluaran (Actual)">
+          <Panel title="Struktur Biaya Pengeluaran (Actual)" sequenceIndex={0}>
             <div className={styles.chartWrapper}>
               <ExpenseBarChart data={chartData} />
             </div>
           </Panel>
 
-          <Panel title="Breakdown Per Kategori">
+          <Panel title="Breakdown Per Kategori" sequenceIndex={1}>
             <div className={styles.tableWrapper}>
               <table className={styles.catTable}>
                 <thead>
@@ -97,7 +97,7 @@ export default function RingkasanView() {
         </div>
 
         <div className={styles.rightCol}>
-          <Panel title="Arus Kas Terbaru">
+          <Panel title="Arus Kas Terbaru" sequenceIndex={2}>
             <div className={styles.recentList}>
               {[...entries].reverse().slice(0, 10).map(e => (
                 <div key={e.id} className={styles.recentItem}>

@@ -47,7 +47,7 @@ export default function ModelSection() {
         </Button>
       </div>
       
-      <DataTable columns={columns} data={model} keyField="id" />
+      <DataTable columns={columns} data={model} keyField="id" sequenceIndex={1} />
 
       <MasterFormModal
         open={modalOpen}

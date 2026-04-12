@@ -43,7 +43,7 @@ export default function KategoriSection() {
         </Button>
       </div>
       
-      <DataTable columns={columns} data={kategori} keyField="id" />
+      <DataTable columns={columns} data={kategori} keyField="id" sequenceIndex={1} />
 
       <MasterFormModal
         open={modalOpen}

@@ -29,6 +29,8 @@ export interface DataTableProps<T> {
   onSort?: (key: string) => void;
   sortKey?: string | null;
   sortDirection?: 'asc' | 'desc';
+  sequenceIndex?: number;
+  reverse?: boolean;
 }
 
 const tbodyVariants = {
@@ -55,12 +57,24 @@ export default function DataTable<T extends Record<string, any>>({
   onSort,
   sortKey,
   sortDirection,
+  sequenceIndex,
+  reverse,
 }: DataTableProps<T>) {
+  // Automated simultaneous logic: use sequenceIndex for stable random-offset if provided
+  const index = sequenceIndex ?? 0;
+  const randomOffset = (index * 1.87) % 4;
+  const beamDelay = { 
+    animationDelay: `-${randomOffset}s`,
+    '--beam-direction': reverse ? 'reverse' : 'normal'
+  } as React.CSSProperties;
+
   return (
     <div 
       className={styles.container} 
-      style={{ maxHeight, overflowY: maxHeight ? 'auto' : 'visible' }}
+      style={{ maxHeight, overflowY: maxHeight ? 'auto' : 'visible', position: 'relative' }}
+      data-beam-container="true"
     >
+      <div className="beam-border" style={beamDelay} aria-hidden="true" />
       <div className={styles.tableWrapper}>
         <table className={`${styles.table} ${striped ? styles.striped : ''} ${compact ? styles.compact : ''}`}>
           <DataTableHeader 

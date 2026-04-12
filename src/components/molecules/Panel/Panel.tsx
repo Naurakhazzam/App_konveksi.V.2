@@ -9,13 +9,28 @@ export interface PanelProps {
   onAction?: () => void;
   accent?: string;
   className?: string;
+  sequenceIndex?: number;
+  reverse?: boolean;
 }
 
-export default function Panel({ title, children, action, onAction, accent, className }: PanelProps) {
+export default function Panel({ title, children, action, onAction, accent, className, sequenceIndex, reverse }: PanelProps) {
   const accentStyle = accent ? { borderTopColor: `var(--color-${accent})` } : {};
   
+  // Automated simultaneous logic: use sequenceIndex for stable random-offset if provided
+  const index = sequenceIndex ?? 0;
+  const randomOffset = (index * 1.37) % 4;
+  const beamDelay = { 
+    animationDelay: `-${randomOffset}s`,
+    '--beam-direction': reverse ? 'reverse' : 'normal'
+  } as React.CSSProperties;
+  
   return (
-    <div className={`${styles.panel} ${className || ''}`} style={accentStyle}>
+    <div 
+      className={`${styles.panel} ${className || ''}`} 
+      style={accentStyle}
+      data-beam-container="true"
+    >
+      <div className="beam-border" style={beamDelay} aria-hidden="true" />
       <div className={styles.header}>
         <MacDots />
         <h3 className={styles.title}>{title}</h3>

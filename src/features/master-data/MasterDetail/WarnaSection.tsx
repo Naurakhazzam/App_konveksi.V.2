@@ -50,7 +50,7 @@ export default function WarnaSection() {
         </Button>
       </div>
       
-      <DataTable columns={columns} data={warna} keyField="id" />
+      <DataTable columns={columns} data={warna} keyField="id" sequenceIndex={1} />
 
       <MasterFormModal
         open={modalOpen}

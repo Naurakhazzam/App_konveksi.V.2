@@ -7,10 +7,12 @@ import styles from './WarningProses.module.css';
 
 interface WarningProsesProps {
   bundles: Bundle[];
+  sequenceIndex?: number;
 }
 
-export default function WarningProses({ bundles }: WarningProsesProps) {
+export default function WarningProses({ bundles, sequenceIndex }: WarningProsesProps) {
   const warnings = getWarnings(bundles);
+  const innerIndex = sequenceIndex !== undefined ? sequenceIndex + 1 : undefined;
 
   const columns: Column<WarningData>[] = [
     { 
@@ -65,7 +67,7 @@ export default function WarningProses({ bundles }: WarningProsesProps) {
           <p>Semua proses produksi berjalan lancar. Tidak ada peringatan saat ini.</p>
         </div>
       ) : (
-        <DataTable columns={columns} data={warnings} keyField="id" />
+        <DataTable columns={columns} data={warnings} keyField="id" sequenceIndex={innerIndex} />
       )}
     </div>
   );

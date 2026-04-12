@@ -78,8 +78,8 @@ export default function InputPOView() {
       action={<Button variant="primary" onClick={handleCreate}>+ Buat PO Baru</Button>}
     >
       <div className={styles.container}>
-        <Panel title="Semua PO">
-          <DataTable columns={columns} data={poList} keyField="id" />
+        <Panel title="Semua PO" sequenceIndex={0}>
+          <DataTable columns={columns} data={poList} keyField="id" sequenceIndex={1} />
         </Panel>
       </div>
     </PageWrapper>

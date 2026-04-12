@@ -13,14 +13,18 @@ import styles from './MonitoringStatusPO.module.css';
 interface MonitoringStatusPOProps {
   poList: PurchaseOrder[];
   bundles: Bundle[];
+  sequenceIndex?: number;
 }
 
 type FilterStatus = 'belum' | 'proses' | 'selesai_unpaid';
 
-export default function MonitoringStatusPO({ poList, bundles }: MonitoringStatusPOProps) {
+export default function MonitoringStatusPO({ poList, bundles, sequenceIndex }: MonitoringStatusPOProps) {
   const { klien, karyawan } = useMasterStore();
   const { markUpahPaid } = useBundleStore();
   const [activeSubTab, setActiveSubTab] = useState<FilterStatus>('belum');
+
+  // Next index for inner table
+  const innerIndex = sequenceIndex !== undefined ? sequenceIndex + 1 : undefined;
 
   // Logic to categorize POs
   const groupedPOs = poList.reduce((acc, po) => {
@@ -122,9 +126,9 @@ export default function MonitoringStatusPO({ poList, bundles }: MonitoringStatus
       </div>
 
       <div className={styles.tableCard}>
-        {activeSubTab === 'belum' && <DataTable columns={columnsBelum} data={groupedPOs.belum} keyField="id" />}
+        {activeSubTab === 'belum' && <DataTable columns={columnsBelum} data={groupedPOs.belum} keyField="id" sequenceIndex={innerIndex} />}
         {activeSubTab === 'proses' && <ProductionFlowBoard bundles={bundles} />}
-        {activeSubTab === 'selesai_unpaid' && <DataTable columns={columnsSelesai} data={groupedPOs.selesai_unpaid} keyField="id" />}
+        {activeSubTab === 'selesai_unpaid' && <DataTable columns={columnsSelesai} data={groupedPOs.selesai_unpaid} keyField="id" sequenceIndex={innerIndex} />}
       </div>
     </div>
   );

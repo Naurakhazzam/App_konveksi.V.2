@@ -24,13 +24,14 @@ export default function MonitoringView() {
 
   const kpiRow = (
     <div className={styles.kpiGrid}>
-      <KpiCard label="PO Aktif" value={activePOs.length} accent="blue" />
-      <KpiCard label="Total Bundel" value={totalBundles} accent="cyan" />
-      <KpiCard label="Bundel Selesai" value={completedBundles} accent="green" />
+      <KpiCard label="PO Aktif" value={activePOs.length} accent="blue" sequenceIndex={0} />
+      <KpiCard label="Total Bundel" value={totalBundles} accent="cyan" sequenceIndex={1} />
+      <KpiCard label="Bundel Selesai" value={completedBundles} accent="green" sequenceIndex={2} />
       <KpiCard 
         label="Bermasalah" 
         value={warnings.length} 
         accent={warnings.length > 0 ? 'red' : 'green'} 
+        sequenceIndex={3}
       />
     </div>
   );
@@ -75,18 +76,18 @@ export default function MonitoringView() {
 
       <div className={styles.content}>
         {activeTab === 'status' && (
-          <Panel title="Manajemen Status PO">
-            <MonitoringStatusPO poList={activePOs} bundles={bundles} />
+          <Panel title="Manajemen Status PO" sequenceIndex={4}>
+            <MonitoringStatusPO poList={activePOs} bundles={bundles} sequenceIndex={4} />
           </Panel>
         )}
         {activeTab === 'artikel' && (
-          <Panel title="Detail Progress Per Artikel">
-            <MonitoringPerArtikel poList={activePOs} bundles={bundles} />
+          <Panel title="Detail Progress Per Artikel" sequenceIndex={4}>
+            <MonitoringPerArtikel poList={activePOs} bundles={bundles} sequenceIndex={4} />
           </Panel>
         )}
         {activeTab === 'warning' && (
-          <Panel title="Pusat Peringatan Produksi">
-            <WarningProses bundles={bundles} />
+          <Panel title="Pusat Peringatan Produksi" sequenceIndex={4}>
+            <WarningProses bundles={bundles} sequenceIndex={4} />
           </Panel>
         )}
       </div>

@@ -9,7 +9,8 @@ export interface KpiCardProps {
   trend?: { value: number; isUp: boolean };
   accent?: 'cyan' | 'green' | 'yellow' | 'red' | 'purple' | 'blue';
   format?: 'number' | 'rupiah' | 'percent';
-  className?: string;
+  sequenceIndex?: number;
+  reverse?: boolean;
 }
 
 function formatValue(value: string | number, format: KpiCardProps['format']) {
@@ -25,11 +26,24 @@ function formatValue(value: string | number, format: KpiCardProps['format']) {
   return value;
 }
 
-export default function KpiCard({ label, value, icon, trend, accent = 'cyan', format, className }: KpiCardProps) {
+export default function KpiCard({ label, value, icon, trend, accent = 'cyan', format, className, sequenceIndex, reverse }: KpiCardProps) {
   const formattedValue = formatValue(value, format);
   
+  // Automated simultaneous logic: use sequenceIndex for stable random-offset if provided
+  // If not provided, use label length as seed for varied offsets
+  const index = sequenceIndex ?? Math.abs(label.length) % 10;
+  const randomOffset = (index * 2.13) % 4;
+  const beamDelay = { 
+    animationDelay: `-${randomOffset}s`,
+    '--beam-direction': reverse ? 'reverse' : 'normal'
+  } as React.CSSProperties;
+  
   return (
-    <div className={`${styles.card} ${styles[`accent-${accent}`]} ${className || ''}`}>
+    <div 
+      className={`${styles.card} ${styles[`accent-${accent}`]} ${className || ''}`}
+      data-beam-container="true"
+    >
+      <div className="beam-border" style={beamDelay} aria-hidden="true" />
       <div className={styles.header}>
         <span className={styles.label}>{label}</span>
         {icon && <span className={styles.icon}>{icon}</span>}

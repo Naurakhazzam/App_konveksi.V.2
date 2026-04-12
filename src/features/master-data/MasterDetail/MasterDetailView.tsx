@@ -15,7 +15,7 @@ export default function MasterDetailView() {
       title="Master Detail" 
       subtitle="Kelola data kategori, model, ukuran, dan warna spesifikasi produk"
     >
-      <Panel title="Daftar Master Data">
+      <Panel title="Daftar Master Data" sequenceIndex={0}>
         <div className={styles.container}>
           <div className={styles.tabs}>
             <button 

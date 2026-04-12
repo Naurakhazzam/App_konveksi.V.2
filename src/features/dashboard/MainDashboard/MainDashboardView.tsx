@@ -46,6 +46,7 @@ export default function MainDashboardView() {
         format="rupiah" 
         trend={{ value: Math.round(monthlyStats.margin), isUp: monthlyStats.profit >= 0 }}
         icon={<TrendingUp size={20} />}
+        sequenceIndex={0}
       />
       <KpiCard 
         label="Saldo Kas" 
@@ -53,18 +54,21 @@ export default function MainDashboardView() {
         accent="blue" 
         format="rupiah"
         icon={<Landmark size={20} />}
+        sequenceIndex={1}
       />
       <KpiCard 
         label="Stok Bermasalah" 
         value={inventoryAlertsCount} 
         accent={inventoryAlertsCount > 0 ? 'red' : 'green'} 
         icon={<AlertTriangle size={20} />}
+        sequenceIndex={2}
       />
       <KpiCard 
         label="PO Aktif" 
         value={poList.filter(p => p.status === 'aktif').length} 
         accent="cyan" 
         icon={<FileText size={20} />}
+        sequenceIndex={3}
       />
     </div>
   );
@@ -77,7 +81,7 @@ export default function MainDashboardView() {
     >
       <div className={styles.grid}>
         <div className={styles.leftCol}>
-          <Panel title="Progres Produksi Terbaru">
+          <Panel title="Progres Produksi Terbaru" sequenceIndex={4}>
             {poList.length === 0 ? (
               <div className={styles.emptyState}>
                 <PackageOpen size={32} />
@@ -107,7 +111,7 @@ export default function MainDashboardView() {
         </div>
 
         <div className={styles.rightCol}>
-          <Panel title="Log Aktivitas Terbaru">
+          <Panel title="Log Aktivitas Terbaru" sequenceIndex={5}>
             {logs.length === 0 ? (
               <div className={styles.emptyState}>
                 <Activity size={32} />

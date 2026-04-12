@@ -62,10 +62,10 @@ export default function RekapGajiView() {
 
   const kpiRow = (
     <div className={styles.kpiRow}>
-      <KpiCard label="Total Upah Periode" value={stats.totalUpah} accent="blue" format="rupiah" />
-      <KpiCard label="Sudah Dibayar" value={stats.totalSudah} accent="green" format="rupiah" />
-      <KpiCard label="Belum Dibayar" value={stats.totalBelum} accent="yellow" format="rupiah" />
-      <KpiCard label="Outstanding Kasbon" value={stats.sisaKasbon} accent="red" format="rupiah" />
+      <KpiCard label="Total Upah Periode" value={stats.totalUpah} accent="blue" format="rupiah" sequenceIndex={0} />
+      <KpiCard label="Sudah Dibayar" value={stats.totalSudah} accent="green" format="rupiah" sequenceIndex={1} />
+      <KpiCard label="Belum Dibayar" value={stats.totalBelum} accent="yellow" format="rupiah" sequenceIndex={2} />
+      <KpiCard label="Outstanding Kasbon" value={stats.sisaKasbon} accent="red" format="rupiah" sequenceIndex={3} />
     </div>
   );
 
@@ -115,7 +115,7 @@ export default function RekapGajiView() {
           </Button>
         </div>
 
-        <Panel title="Daftar Rekapitulasi Gaji">
+        <Panel title="Daftar Rekapitulasi Gaji" sequenceIndex={4}>
           <RekapGajiTable 
             data={rekapData} 
             onBayar={(r) => {

@@ -1,6 +1,6 @@
 .card {
   background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
+  border: 1px solid transparent;
   backdrop-filter: var(--glass-blur);
   border-radius: 12px;
   padding: 16px 20px;
@@ -15,68 +15,16 @@
   z-index: 1;
 }
 
-.card::before {
-  content: "";
-  position: absolute;
-  top: -150%;
-  left: -150%;
-  width: 400%;
-  height: 400%;
-  background: conic-gradient(
-    transparent, 
-    rgba(255, 255, 255, 0.1) 10%, 
-    rgba(229, 193, 123, 0.3) 20%, 
-    transparent 30%
-  );
-  animation: borderTrace 10s linear infinite;
-  z-index: -2;
-  pointer-events: none;
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.4);
 }
 
-.card::after {
-  content: "";
-  position: absolute;
-  inset: 1px;
-  background: var(--glass-bg);
-  border-radius: 11px;
-  z-index: -1;
-  pointer-events: none;
-}
-
-.card:hover::before {
-  animation-duration: 5s;
-  background: conic-gradient(
-    transparent, 
-    rgba(255, 255, 255, 0.2) 10%, 
-    rgba(229, 193, 123, 0.6) 20%, 
-    transparent 30%
-  );
-}
-
-/* Metallic Accent Gaps & Glows */
-.accent-cyan { 
-  border-left: 3px solid transparent;
-  border-image: linear-gradient(to bottom, var(--color-cyan), var(--color-cyan-dim)) 1;
-  box-shadow: -10px 0 20px -10px rgba(229, 193, 123, 0.3);
-}
-.accent-green { 
-  border-left: 3px solid transparent;
-  border-image: linear-gradient(to bottom, #52a46d, #2d5a3c) 1;
-  box-shadow: -10px 0 20px -10px rgba(82, 164, 109, 0.3);
-}
-.accent-yellow { 
-  border-left: 3px solid transparent;
-  border-image: linear-gradient(to bottom, #f0bd66, #a67c3a) 1;
-}
-.accent-red { 
-  border-left: 3px solid transparent;
-  border-image: linear-gradient(to bottom, #e65c5c, #8b3434) 1;
-  box-shadow: -10px 0 20px -10px rgba(230, 92, 92, 0.3);
-}
-.accent-blue { 
-  border-left: 3px solid transparent;
-  border-image: linear-gradient(to bottom, #5c9ce6, #2d507a) 1;
-  box-shadow: -10px 0 20px -10px rgba(92, 156, 230, 0.3);
+/* Accent Markers - Removed solid borders for borderless elegance */
+.accent-cyan, .accent-green, .accent-yellow, .accent-red, .accent-blue { 
+  border-left: none;
+  border-image: none;
+  box-shadow: none;
 }
 
 /* Light Mode: KPI cards need visual lift from background */

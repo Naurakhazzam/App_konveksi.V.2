@@ -43,7 +43,7 @@ export default function SizeSection() {
         </Button>
       </div>
       
-      <DataTable columns={columns} data={sizes} keyField="id" />
+      <DataTable columns={columns} data={sizes} keyField="id" sequenceIndex={1} />
 
       <MasterFormModal
         open={modalOpen}

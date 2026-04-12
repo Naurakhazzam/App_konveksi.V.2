@@ -8,10 +8,12 @@ import styles from './MonitoringPerArtikel.module.css';
 interface MonitoringPerArtikelProps {
   poList: PurchaseOrder[];
   bundles: Bundle[];
+  sequenceIndex?: number;
 }
 
-export default function MonitoringPerArtikel({ poList, bundles }: MonitoringPerArtikelProps) {
+export default function MonitoringPerArtikel({ poList, bundles, sequenceIndex }: MonitoringPerArtikelProps) {
   const { model, warna, sizes } = useMasterStore();
+  const innerIndex = sequenceIndex !== undefined ? sequenceIndex + 1 : undefined;
   const [selectedPO, setSelectedPO] = useState<string>('');
 
   // Get articles data
@@ -78,7 +80,7 @@ export default function MonitoringPerArtikel({ poList, bundles }: MonitoringPerA
           ))}
         </select>
       </div>
-      <DataTable columns={columns} data={articleData} keyField="id" />
+      <DataTable columns={columns} data={articleData} keyField="id" sequenceIndex={innerIndex} />
     </div>
   );
 }

@@ -80,7 +80,11 @@ export default function MasterHPPKomponenView() {
             <button className={`${styles.tab} ${activeTab === 'overhead' ? styles.active : ''}`} onClick={() => setActiveTab('overhead')}>Overhead</button>
           </div>
           
-          <DataTable columns={columns} data={filteredData} keyField="id" />
+          <DataTable 
+            columns={columns} 
+            data={filteredData} 
+            keyField="id" 
+          />
         </div>
       </Panel>
 

@@ -85,6 +85,36 @@
   
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Border Beam Tokens - Default (Light Mode: Indigo/Sapphire) */
+  --beam-size: 4px;
+  --beam-duration: 4s;
+  --beam-color-1: #4f46e5;
+  --beam-color-2: #06b6d4;
+  --beam-glow: blur(4px);
+}
+
+[data-theme='dark'], .dark {
+  /* Dark Mode Overrides (Premium Gold/Bronze) */
+  --beam-color-1: #ffcf7d;
+  --beam-color-2: #d4a017;
+  --beam-glow: blur(4px);
+}
+
+@property --beam-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes beam-rotate {
+  from { --beam-angle: 0deg; }
+  to { --beam-angle: 360deg; }
+}
+
+@keyframes beam-opacity {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.6; }
 }
 
 @keyframes glassShimmer {
@@ -112,6 +142,38 @@
 @keyframes borderTrace {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.beam-border {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--beam-size);
+  background: conic-gradient(
+    from var(--beam-angle),
+    transparent 85%,
+    var(--beam-color-1) 94%,
+    var(--beam-color-2) 98%,
+    transparent
+  );
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  filter: var(--beam-glow);
+  animation: 
+    beam-rotate var(--beam-duration) linear infinite var(--beam-direction, normal);
+  z-index: 10;
+}
+
+/* Universal Harmony: Auto-reverse beam if nested inside another beam-container */
+[data-beam-container="true"] [data-beam-container="true"] .beam-border {
+  --beam-direction: reverse;
 }
 
 @keyframes iconBreathe {
