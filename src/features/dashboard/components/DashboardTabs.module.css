@@ -50,6 +50,11 @@
   font-weight: 700;
 }
 
+.tabContent {
+  position: relative;
+  z-index: 5; /* Higher than pill */
+}
+
 .pill {
   position: absolute;
   top: 0;
