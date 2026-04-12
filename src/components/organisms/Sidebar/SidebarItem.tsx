@@ -60,7 +60,9 @@ export default function SidebarItem({
         <div className={styles.subsList}>
           {subs.map(subLabel => {
             const href = getSubPath(basePath, subLabel);
-            const isSubActive = currentPath.startsWith(href);
+            const isSubActive = href === basePath 
+              ? currentPath === href 
+              : currentPath.startsWith(href);
             return (
               <SidebarSubItem 
                 key={subLabel}
