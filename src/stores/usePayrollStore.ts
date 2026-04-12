@@ -97,10 +97,10 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
     });
 
     // Log Activity
-    const user = useAuthStore.getState().user;
+    const user = useAuthStore.getState().currentUser;
     if (user) {
       useLogStore.getState().addLog({
-        user: { id: user.id, nama: user.nama, role: user.role },
+        user: { id: user.id, nama: user.nama, role: user.roles[0] || 'User' },
         modul: 'penggajian',
         aksi: 'Bayar Gaji',
         target: karyawanId,
@@ -125,10 +125,10 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
     set((state) => ({ kasbon: [...state.kasbon, kasbon] }));
 
     // Log Activity
-    const user = useAuthStore.getState().user;
+    const user = useAuthStore.getState().currentUser;
     if (user) {
       useLogStore.getState().addLog({
-        user: { id: user.id, nama: user.nama, role: user.role },
+        user: { id: user.id, nama: user.nama, role: user.roles[0] || 'User' },
         modul: 'penggajian',
         aksi: 'Tambah Kasbon',
         target: kasbon.karyawanId,

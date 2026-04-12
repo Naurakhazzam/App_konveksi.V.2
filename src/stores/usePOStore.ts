@@ -53,10 +53,10 @@ export const usePOStore = create<POState>((set, get) => ({
     set((state: POState) => ({ poList: [...state.poList, po] }));
     
     // Log Activity
-    const user = useAuthStore.getState().user;
+    const user = useAuthStore.getState().currentUser;
     if (user) {
       useLogStore.getState().addLog({
-        user: { id: user.id, nama: user.nama, role: user.role },
+        user: { id: user.id, nama: user.nama, role: user.roles[0] || 'User' },
         modul: 'produksi',
         aksi: 'Buat PO Baru',
         target: po.nomorPO,
@@ -71,11 +71,11 @@ export const usePOStore = create<POState>((set, get) => ({
     }));
 
     // Log Activity
-    const user = useAuthStore.getState().user;
+    const user = useAuthStore.getState().currentUser;
     const po = get().getPOById(id);
     if (user && po) {
       useLogStore.getState().addLog({
-        user: { id: user.id, nama: user.nama, role: user.role },
+        user: { id: user.id, nama: user.nama, role: user.roles[0] || 'User' },
         modul: 'produksi',
         aksi: 'Update PO',
         target: po.nomorPO
@@ -90,10 +90,10 @@ export const usePOStore = create<POState>((set, get) => ({
     }));
 
     // Log Activity
-    const user = useAuthStore.getState().user;
+    const user = useAuthStore.getState().currentUser;
     if (user && po) {
       useLogStore.getState().addLog({
-        user: { id: user.id, nama: user.nama, role: user.role },
+        user: { id: user.id, nama: user.nama, role: user.roles[0] || 'User' },
         modul: 'produksi',
         aksi: 'Hapus PO',
         target: po.nomorPO
