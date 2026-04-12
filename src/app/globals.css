@@ -33,7 +33,15 @@
   --radius-md: 0.375rem;
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
-  --radius-2xl: 1rem;
+  --radius-2xl: 1.5rem;
+  
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(10, 22, 40, 0.7);
+  --glass-bg-hover: rgba(15, 30, 55, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-bright: rgba(255, 255, 255, 0.15);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  --glass-blur: blur(12px);
   
   --spacing-1: 0.25rem;
   --spacing-2: 0.5rem;

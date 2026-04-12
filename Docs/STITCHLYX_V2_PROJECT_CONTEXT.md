@@ -11,7 +11,8 @@ Tagline        : Garment Operating System — Precision Engine
 Tipe           : Full-Stack Web Application (rencana dijual sebagai SaaS)
 Pemilik        : Owner konveksi skala menengah, omset miliaran
 Tujuan         : Menggantikan sistem Excel manual dengan sistem digital terintegrasi
-Status         : **PHASE 1 & 2 SELESAI (95%)** — Saat ini berada di Sprint 6.5 (Final Polish)
+Status         : **PHASE 1 & 2 SELESAI (100%)** — Core workflow produksi (Cutting Room) & payroll sudah stabil.
+Terakhir Update: 12 April 2026 (Fitur Cutting Room & Sequential Scan)
 
 > **PENTING — KONTEKS PROYEK SAAT INI:**
 > Aplikasi telah berhasil dipindahkan dari versi monolith ke arsitektur modular Next.js 15.
@@ -74,6 +75,7 @@ d:\Project Konveksi.V.2\
 │   │       │   └── penggajian/page.tsx
 │   │       ├── produksi/
 │   │       │   ├── input-po/page.tsx
+│   │       │   ├── cutting/page.tsx         # NEW: Antrian Cutting & Print SPK
 │   │       │   ├── scan/[tahap]/page.tsx    # Dynamic: cutting, jahit, dll
 │   │       │   └── monitoring/page.tsx
 │   │       ├── pengiriman/
@@ -156,6 +158,7 @@ d:\Project Konveksi.V.2\
 │   │
 │   ├── stores/                   # Zustand stores (1 store per domain)
 │   │   ├── useBundleStore.ts     # BundleDB + statusTahap
+│   │   ├── useScanStore.ts       # NEW: Persisted scan history (manual)
 │   │   ├── useKoreksiStore.ts    # Koreksi queue
 │   │   ├── useInventoryStore.ts  # Inventory + transaksi
 │   │   ├── useJurnalStore.ts     # Jurnal keuangan
@@ -505,13 +508,17 @@ Aturan:
 ## BUSINESS LOGIC PENTING
 
 ### Sistem Scan Produksi
-- Semua 7 tahap (Cutting s/d Packing) wajib input QTY aktual setelah scan
-- Cutting & Jahit: wajib pilih nama karyawan → upah dicatat per karyawan
-- Lubang Kancing, Buang Benang, QC, Steam, Packing: tidak perlu nama → upah dicatat **global per tahap per periode**
-- Input QTY aktual wajib diisi — jika QTY kurang dari bundle → wajib isi alasan
-- Jika QTY melebihi hasil tahap sebelumnya → validasi kode Owner (030503) + masuk antrian koreksi
-- Maks QTY per tahap = hasil QTY tahap sebelumnya pada bundle yang sama (sinkron)
-- Cutting: maks QTY = QTY bundle itu sendiri
+- **Alur Kerja Cutting (Khusus)**: 
+  - Input PO -> Masuk ke **Antrian Cutting**.
+  - Admin/Mandor memilih artikel & klik "Cetak SPK & Mulai Potong" (Status Artikel: Started).
+  - Scan di stasiun Cutting hanya bisa dilakukan jika status Artikel sudah "Started".
+  - Jika belum started, scan diblokir: *"Data tidak ada di list cutting..."*
+- **Input Bertahap (Cutting)**: Saat scan cutting selesai, muncul urutan modal: 
+  1. Input Pemakaian Bahan (berlaku untuk 1 artikel/PO).
+  2. Input Hasil Potong (Actual Yield).
+- **Stasiun Lain**: Semua 7 tahap (Cutting s/d Packing) wajib input QTY aktual setelah scan.
+- **Operator**: Cutting & Jahit wajib pilih nama karyawan → upah dicatat per karyawan.
+- **Riwayat**: Semua aktivitas scan dicatat di `useScanStore` dan tampil di tabel riwayat di bawah area scan.
 
 ### Logika Sinkron Antar Tahap
 ```
