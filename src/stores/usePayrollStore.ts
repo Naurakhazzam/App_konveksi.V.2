@@ -16,6 +16,7 @@ interface PayrollState {
     entries: GajiLedgerEntry[];
   };
   prosesBayar: (karyawanId: string, entryIds: string[], inputKasbon: number) => void;
+  setSlipPrinted: (entryIds: string[]) => void;
   addKasbon: (kasbon: KasbonEntry) => void;
   getSisaKasbon: (karyawanId: string) => number;
 }
@@ -90,6 +91,14 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
 
       return { ledger: newLedger, kasbon: newKasbon };
     });
+  },
+
+  setSlipPrinted: (entryIds) => {
+    set(state => ({
+      ledger: state.ledger.map(l => 
+        entryIds.includes(l.id) ? { ...l, isPrinted: true } : l
+      )
+    }));
   },
   
   addKasbon: (kasbon) => set((state) => ({ kasbon: [...state.kasbon, kasbon] }))

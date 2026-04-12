@@ -8,6 +8,7 @@ export interface GajiLedgerEntry {
   keterangan: string;
   status: 'belum_lunas' | 'lunas';
   tanggalBayar?: string;
+  isPrinted?: boolean;
 }
 
 export interface KasbonEntry {

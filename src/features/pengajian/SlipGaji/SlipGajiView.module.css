@@ -26,6 +26,29 @@
   outline: none;
 }
 
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.money {
+  font-family: var(--font-mono);
+  color: var(--color-cyan);
+}
+
+.previewSection {
+  position: sticky;
+  top: 24px;
+}
+
 .slipWrapper {
   display: flex;
   flex-direction: column;
