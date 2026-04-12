@@ -1,15 +1,26 @@
 import { create } from 'zustand';
 import { Bundle, StatusTahap } from '../types';
 
+export interface RejectRecord {
+  id: string;
+  barcode: string;
+  tahap: string;
+  jenisRejectId: string;
+  qty: number;
+  catatan: string;
+  waktu: string;
+}
+
 interface BundleState {
   bundles: Bundle[];
-  rejectRecords: any[];
+  rejectRecords: RejectRecord[];
   addBundle: (bundle: Bundle) => void;
   updateStatusTahap: (barcode: string, tahap: string, updates: Partial<StatusTahap>) => void;
   getBundleByBarcode: (barcode: string) => Bundle | undefined;
   getBundlesByPO: (poId: string) => Bundle[];
   addBundles: (newBundles: Bundle[]) => void;
   markUpahPaid: (poId: string) => void;
+  addRejectRecord: (record: RejectRecord) => void;
 }
 
 const defaultStatus: StatusTahap = {
@@ -131,4 +142,5 @@ export const useBundleStore = create<BundleState>((set, get) => ({
       return { ...b, statusTahap: newStatusTahap };
     }),
   })),
+  addRejectRecord: (record) => set((state) => ({ rejectRecords: [...state.rejectRecords, record] })),
 }));
