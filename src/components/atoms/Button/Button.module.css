@@ -6,13 +6,19 @@
   font-family: var(--font-body);
   font-weight: 600;
   border-radius: var(--radius-xl);
-  border: 1px solid var(--glass-border);
+  /* Base glassy borders - top/left brighter for glare */
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   transition: all var(--transition-normal);
   user-select: none;
   cursor: pointer;
   white-space: nowrap;
-  backdrop-filter: var(--glass-blur);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   overflow: hidden;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .button:disabled {
@@ -64,54 +70,69 @@
   align-items: center;
 }
 
-/* Glassmorphism Variants */
+/* Glassmorphism Variants - Realistic Clear Glass */
 
 .variant-primary {
-  background: linear-gradient(135deg, rgba(34, 211, 238, 0.4), rgba(34, 211, 238, 0.1));
-  color: var(--color-cyan);
-  border-color: rgba(34, 211, 238, 0.5);
-  box-shadow: 0 4px 15px rgba(34, 211, 238, 0.2);
+  /* Slightly cyan tinted glass */
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.25), rgba(34, 211, 238, 0.05));
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.5), 0 8px 20px rgba(34, 211, 238, 0.15);
 }
 
 .variant-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, rgba(34, 211, 238, 0.6), rgba(34, 211, 238, 0.2));
-  box-shadow: 0 8px 25px rgba(34, 211, 238, 0.4);
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.4), rgba(34, 211, 238, 0.1));
+  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.7), 0 10px 25px rgba(34, 211, 238, 0.25);
   transform: translateY(-2px);
-  border-color: rgba(34, 211, 238, 0.8);
 }
 
 .variant-secondary {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: var(--glass-border-bright);
+  /* Clear transparent glass */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
   color: var(--color-text);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .variant-secondary:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
   transform: translateY(-2px);
-  box-shadow: var(--glass-shadow);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.5), 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .variant-ghost {
   background: transparent;
   color: var(--color-text-sub);
-  border: none;
+  border: 1px solid transparent; /* Override base borders */
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 .variant-ghost:hover:not(:disabled) {
   color: var(--color-text);
+  /* Very faint glass on hover */
   background: rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .variant-danger {
-  background: linear-gradient(135deg, rgba(248, 113, 113, 0.4), rgba(248, 113, 113, 0.1));
-  color: var(--color-red);
-  border-color: rgba(248, 113, 113, 0.5);
-  box-shadow: 0 4px 15px rgba(248, 113, 113, 0.2);
+  /* Red tinted glass */
+  background: linear-gradient(135deg, rgba(248, 113, 113, 0.25), rgba(248, 113, 113, 0.05));
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.4), 0 8px 20px rgba(248, 113, 113, 0.15);
 }
 
 .variant-danger:hover:not(:disabled) {
-  background: linear-gradient(135deg, rgba(248, 113, 113, 0.6), rgba(248, 113, 113, 0.2));
-  box-shadow: 0 8px 25px rgba(248, 113, 113, 0.4);
+  background: linear-gradient(135deg, rgba(248, 113, 113, 0.4), rgba(248, 113, 113, 0.1));
+  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.6), 0 10px 25px rgba(248, 113, 113, 0.25);
   transform: translateY(-2px);
 }
