@@ -119,28 +119,34 @@
 }
 
 .item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 10px 16px;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.15s ease;
-  border-left: 3px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 44px;
   user-select: none;
 }
 
 .item:hover {
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.03);
   transform: translateX(4px);
 }
 
-.itemActive {
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
-  border-left-color: var(--color-cyan);
+/* styles for the Framer Motion liquid indicator */
+.liquidActive {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--color-cyan);
+  border-radius: 8px;
+  z-index: 0;
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
 }
 
 .itemIcon {
@@ -175,6 +181,7 @@
 }
 
 .subItem {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -184,17 +191,30 @@
   font-size: 11px;
   color: var(--color-text-sub);
   border-radius: 8px;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .subItem:hover {
   color: var(--color-text);
-  background: rgba(255,255,255,0.02);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.liquidActiveSub {
+  position: absolute;
+  left: 36px;
+  right: 8px;
+  top: 4px;
+  bottom: 4px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01));
+  border: 1px solid var(--color-cyan);
+  border-radius: 6px;
+  z-index: 0;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
 }
 
 .subItemActive {
   font-weight: 600;
-  background: rgba(255,255,255,0.03);
 }
 
 .subDot {

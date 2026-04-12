@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import * as LucideIcons from 'lucide-react';
 import { ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import SidebarSubItem from './SidebarSubItem';
 import { getSubPath } from '../../../lib/constants/navigation';
 import styles from './Sidebar.module.css';
@@ -29,22 +30,34 @@ export default function SidebarItem({
     <div 
       className={`${styles.item} ${isActive && !hasSubs ? styles.itemActive : ''}`}
       onClick={hasSubs ? onToggle : undefined}
-      style={isActive && !hasSubs ? { borderLeftColor: `var(--color-${color})`, backgroundColor: 'rgba(255,255,255,0.02)' } : {}}
+      style={hasSubs ? {} : { color: isActive ? `var(--color-${color})` : 'inherit' }}
     >
+      {isActive && !hasSubs && (
+        <motion.div
+          layoutId="sidebar-active"
+          className={styles.liquidActive}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          style={{ borderColor: `var(--color-${color})` }}
+        />
+      )}
       <IconComponent 
         size={18} 
         className={styles.itemIcon} 
-        style={isActive ? { color: `var(--color-${color})` } : {}} 
+        style={isActive && !hasSubs ? { color: `var(--color-${color})`, zIndex: 2 } : { zIndex: 2, position: 'relative' }} 
       />
       {!collapsed && (
         <>
-          <span className={styles.itemLabel} style={isActive ? { color: `var(--color-${color})` } : {}}>
+          <span 
+            className={styles.itemLabel} 
+            style={isActive && !hasSubs ? { color: `#fff`, textShadow: `0 0 10px var(--color-${color})`, zIndex: 2 } : { zIndex: 2, position: 'relative' }}
+          >
             {label}
           </span>
           {hasSubs && (
             <ChevronRight 
               size={14} 
               className={`${styles.chevron} ${isExpanded ? styles.chevronOpen : ''}`} 
+              style={{ zIndex: 2, position: 'relative' }}
             />
           )}
         </>

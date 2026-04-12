@@ -1,22 +1,29 @@
 :root {
-  --color-bg: #020617;
-  --color-sidebar: #060d1f;
-  --color-card: #0a1628;
-  --color-card2: #0d1b2e;
-  --color-border: #0e2040;
-  --color-border2: #132545;
-  --color-cyan: #22d3ee;
-  --color-cyan-dim: #0c4a58;
-  --color-cyan-bg: #061520;
-  --color-green: #4ade80;
-  --color-yellow: #facc15;
-  --color-red: #f87171;
-  --color-purple: #a78bfa;
-  --color-blue: #60a5fa;
-  --color-orange: #fb923c;
-  --color-text: #e2e8f0;
-  --color-text-sub: #64748b;
-  --color-text-mid: #334155;
+  /* Refined Charcoal Theme */
+  --color-bg: #111315;
+  --color-sidebar: #16181A;
+  --color-card: #1A1D1F;
+  --color-card2: #1E2124;
+  --color-border: #2A2D31;
+  --color-border2: #33363A;
+  
+  /* Muted Copper Theme */
+  --color-cyan: #d49b6a;      /* Main copper */
+  --color-cyan-dim: #7a5130;  /* Dark copper */
+  --color-cyan-bg: #2b1f14;   /* Very dark copper tinted background */
+  
+  /* Other Accent Colors (muted slightly to fit the theme) */
+  --color-green: #6ab082;
+  --color-yellow: #d4b86a;
+  --color-red: #d46a6a;
+  --color-purple: #9b6ad4;
+  --color-blue: #6a9bd4;
+  --color-orange: #d48b6a;
+  
+  /* Text */
+  --color-text: #e8eaed;
+  --color-text-sub: #9aa0a6;
+  --color-text-mid: #5f6368;
 
   --status-parsial-bg: #1a2600;
   --status-parsial-text: #4ade80;
@@ -35,13 +42,13 @@
   --radius-xl: 0.75rem;
   --radius-2xl: 1.5rem;
   
-  /* Glassmorphism Tokens */
-  --glass-bg: rgba(10, 22, 40, 0.7);
-  --glass-bg-hover: rgba(15, 30, 55, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-border-bright: rgba(255, 255, 255, 0.15);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-  --glass-blur: blur(12px);
+  /* Glassmorphism Tokens - Refined for Charcoal */
+  --glass-bg: rgba(26, 29, 31, 0.6);
+  --glass-bg-hover: rgba(30, 33, 36, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-border-bright: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.7);
+  --glass-blur: blur(20px);
   
   --spacing-1: 0.25rem;
   --spacing-2: 0.5rem;
@@ -52,7 +59,7 @@
   --spacing-8: 2rem;
   
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -60,9 +67,17 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
-  user-select: none;             /* Seluruh app tidak bisa di-select */
+  font-weight: 300; /* Clean and thin like iPhone */
+  letter-spacing: -0.01em;
+  user-select: none;
   -webkit-user-select: none;
-  cursor: default;               /* Cursor default di mana-mana */
+  cursor: default;
+}
+
+h1, h2, h3, h4, .heading {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 /* HANYA elemen input yang boleh punya cursor text dan seleksi */
