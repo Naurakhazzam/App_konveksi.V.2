@@ -12,7 +12,8 @@ Tipe           : Full-Stack Web Application (rencana dijual sebagai SaaS)
 Pemilik        : Owner konveksi skala menengah, omset miliaran
 Tujuan         : Menggantikan sistem Excel manual dengan sistem digital terintegrasi
 Status         : **PHASE 1 & 2 SELESAI (100%)** — Core workflow produksi (Cutting Room) & payroll sudah stabil.
-Terakhir Update: 12 April 2026 (Fitur Cutting Room & Sequential Scan)
+Identitas Visual: **2026 High-End Aesthetics** (Refined Charcoal & Muted Copper)
+Terakhir Update : 12 April 2026 (Ultimate Design Overhaul & Liquid Glass)
 
 > **PENTING — KONTEKS PROYEK SAAT INI:**
 > Aplikasi telah berhasil dipindahkan dari versi monolith ke arsitektur modular Next.js 15.
@@ -35,6 +36,7 @@ Terakhir Update: 12 April 2026 (Fitur Cutting Room & Sequential Scan)
 | **Auth** | Dummy Auth (Zustand) | Role-based access via useAuthStore |
 | **Forms** | React Hook Form + Zod | Validasi form |
 | **Icons** | Lucide React | Tree-shakeable, konsisten |
+| **Animation** | Framer Motion | Liquid glass effects, smooth transitions |
 | **PDF** | @react-pdf/renderer (nanti) | Export surat jalan, slip gaji |
 | **Barcode** | react-barcode + react-qr-code (nanti) | Cetak label barcode |
 
@@ -230,24 +232,25 @@ Disimpan sebagai CSS Variables di `globals.css`:
 
 ```css
 :root {
-  --color-bg: #020617;
-  --color-sidebar: #060d1f;
-  --color-card: #0a1628;
-  --color-card2: #0d1b2e;
-  --color-border: #0e2040;
-  --color-border2: #132545;
-  --color-cyan: #22d3ee;
-  --color-cyan-dim: #0c4a58;
-  --color-cyan-bg: #061520;
-  --color-green: #4ade80;
-  --color-yellow: #facc15;
-  --color-red: #f87171;
-  --color-purple: #a78bfa;
-  --color-blue: #60a5fa;
-  --color-orange: #fb923c;
-  --color-text: #e2e8f0;
-  --color-text-sub: #64748b;
-  --color-text-mid: #334155;
+  /* Refined Charcoal Theme */
+  --color-bg: #111315;
+  --color-sidebar: #16181A;
+  --color-card: #1A1D1F;
+  --color-card2: #1E2124;
+  --color-border: #2A2D31;
+  --color-border2: #33363A;
+  
+  /* Muted Copper Theme */
+  --color-cyan: #d49b6a;
+  --color-cyan-dim: #7a5130;
+  
+  /* Glassmorphism V2 */
+  --glass-bg: rgba(26, 29, 31, 0.6);
+  --glass-blur: blur(20px);
+  --glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.7);
+
+  --color-text: #e8eaed;
+  --color-text-sub: #9aa0a6;
 }
 ```
 
@@ -255,43 +258,26 @@ Juga diekspor sebagai object TypeScript di `lib/constants/theme.ts`:
 
 ```ts
 export const C = {
-  bg: '#020617',
-  sidebar: '#060d1f',
-  card: '#0a1628',
-  card2: '#0d1b2e',
-  border: '#0e2040',
-  border2: '#132545',
-  cyan: '#22d3ee',
-  cyanDim: '#0c4a58',
-  cyanBg: '#061520',
-  green: '#4ade80',
-  yellow: '#facc15',
-  red: '#f87171',
-  purple: '#a78bfa',
-  blue: '#60a5fa',
-  orange: '#fb923c',
-  text: '#e2e8f0',
-  textSub: '#64748b',
-  textMid: '#334155',
+  bg: '#111315',
+  sidebar: '#16181A',
+  card: '#1A1D1F',
+  cyan: '#d49b6a',      // Muted Copper
+  text: '#e8eaed',
+  textSub: '#9aa0a6',
 } as const;
 ```
 
 ### Tipografi
 
 ```
-Syne            : heading, angka KPI besar (weight 700, 800)
-Instrument Sans : body, label, tombol, nav
-Geist Mono      : angka data, kode, SKU, Rupiah, timestamp
+Instrument Sans : Seluruh Body & Label (Weight 300 - Light)
+Syne            : Heading & Angka KPI (Weight 600 - Semi Bold)
+Geist Mono      : Data Teknis (Weight 300)
 ```
 
-CSS Variables:
-```css
-:root {
-  --font-heading: 'Syne', sans-serif;
-  --font-body: 'Instrument Sans', sans-serif;
-  --font-mono: 'Geist Mono', monospace;
-}
-```
+Aturan Visual Khusus:
+- **Liquid Glass Sidebar**: Indikator menu aktif menggunakan Framer Motion `layoutId`. Indikator meluncur secara dinamis ("cair") saat berpindah menu.
+- **Glassmorphism V2**: Tombol & Panel menggunakan `backdrop-filter: blur(20px)` dengan pantulan cahaya (*glare*) pada sisi atas/kiri dan bayangan dalam (*inset shadow*) untuk kesan 3D kaca asli.
 
 ### Komponen Wajib
 
