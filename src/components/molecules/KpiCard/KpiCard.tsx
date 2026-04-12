@@ -36,7 +36,7 @@ export default function KpiCard({ label, value, icon, trend, accent = 'cyan', fo
   const randomOffset = (index * 2.13) % 4;
   const beamDelay = { 
     animationDelay: `-${randomOffset}s`,
-    '--beam-direction': reverse ? 'reverse' : 'normal'
+    ...(reverse !== undefined ? { '--beam-direction': reverse ? 'reverse' : 'normal' } : {})
   } as React.CSSProperties;
   
   return (

@@ -58,7 +58,7 @@ export default function DataTable<T extends Record<string, any>>({
   sortKey,
   sortDirection,
   sequenceIndex,
-  reverse,
+  reverse = true, // Automatically reverse ALL tables for global harmony
 }: DataTableProps<T>) {
   // Automated simultaneous logic: use sequenceIndex for stable random-offset if provided
   const index = sequenceIndex ?? 0;
