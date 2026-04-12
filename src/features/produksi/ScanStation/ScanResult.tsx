@@ -120,12 +120,32 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     const now = new Date().toISOString();
     
     if (tahap === 'cutting' && currentStatus.status === null) {
-      // In cutting, we use the QTY modal for the INITIAL 'Terima' (actual yield)
       if (poItem) {
         updateItemCuttingStatus(poItem.id, 'finished');
       }
-      executeTerima(qtySelesai);
+      
+      // Lompat langsung ke Selesai untuk Cutting, catat Qty & Karyawan (Penting untuk Upah)
+      updateStatusTahap(bundle.barcode, tahap, {
+        status: 'selesai',
+        qtyTerima: qtySelesai,
+        qtySelesai: qtySelesai,
+        waktuTerima: now,
+        waktuSelesai: now,
+        karyawan: selectedKaryawan,
+      });
+
+      addRecord({
+        id: `SCAN-${Date.now()}`,
+        barcode: bundle.barcode,
+        po: bundle.po,
+        tahap,
+        aksi: 'selesai',
+        qty: qtySelesai,
+        waktu: now
+      });
+
       setShowQtyModal(false);
+      if (onComplete) onComplete();
       return;
     }
 
@@ -217,10 +237,16 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
 
       {/* Action Buttons */}
       <div className={styles.actions}>
-        <Button variant="primary" onClick={handleTerima} disabled={!canTerima}>
-          ✅ Terima
-        </Button>
-        <Button variant="secondary" onClick={() => setShowQtyModal(true)} disabled={!canSelesai}>
+        {tahap !== 'cutting' && (
+          <Button variant="primary" onClick={handleTerima} disabled={!canTerima}>
+            ✅ Terima
+          </Button>
+        )}
+        <Button 
+          variant={tahap === 'cutting' ? 'primary' : 'secondary'} 
+          onClick={tahap === 'cutting' ? handleTerima : () => setShowQtyModal(true)} 
+          disabled={tahap === 'cutting' ? !canTerima : !canSelesai}
+        >
           🏁 Selesai
         </Button>
         <Button variant="danger" onClick={() => setShowRejectModal(true)} disabled={!canReject}>
