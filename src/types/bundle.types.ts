@@ -1,7 +1,7 @@
 export interface StatusTahap {
   status: null | 'terima' | 'selesai';
-  qtyTerima: number;
-  qtySelesai: number;
+  qtyTerima: number | null;
+  qtySelesai: number | null;
   waktuTerima: string | null;
   waktuSelesai: string | null;
   karyawan: string | null;        // Hanya untuk cutting & jahit
