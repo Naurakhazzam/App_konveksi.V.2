@@ -49,7 +49,9 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
   // Status Cutting Check
   const po = poList.find(p => p.nomorPO === bundle.po);
   const poItem = po?.items.find(i => i.modelId === bundle.model && i.warnaId === bundle.warna && i.sizeId === bundle.size);
-  const isCuttingStarted = tahap !== 'cutting' || (poItem?.statusCutting === 'started' || poItem?.statusCutting === 'finished');
+  // Perbaikan isCuttingStarted: Default ke true jika poItem tidak ditemukan agar tidak nge-hang, 
+  // atau cek status jika poItem ada.
+  const isCuttingStarted = tahap !== 'cutting' || !poItem || poItem.statusCutting === 'started' || poItem.statusCutting === 'finished';
 
   const canTerima = validation.canTerima && (!needsKaryawan || !!selectedKaryawan) && isCuttingStarted;
   const canSelesai = currentStatus.status === 'terima';
