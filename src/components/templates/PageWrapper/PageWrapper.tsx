@@ -21,7 +21,7 @@ const staggerItem = (delay: number) => ({
     opacity: 1, 
     y: 0,
     transition: { 
-      duration: 0.5, 
+      duration: 1.0, 
       delay,
       ease: [0.22, 1, 0.36, 1] as any
     }
@@ -46,7 +46,7 @@ export default function PageWrapper({ title, subtitle, children, kpiRow, filterB
         {kpiRow && (
           <motion.div 
             className={styles.kpiRow}
-            {...staggerItem(0.12)}
+            {...staggerItem(0.24)}
           >
             {kpiRow}
           </motion.div>
@@ -55,7 +55,7 @@ export default function PageWrapper({ title, subtitle, children, kpiRow, filterB
         {filterBar && (
           <motion.div 
             className={styles.filterBar}
-            {...staggerItem(0.24)}
+            {...staggerItem(0.48)}
           >
             {filterBar}
           </motion.div>
@@ -63,7 +63,7 @@ export default function PageWrapper({ title, subtitle, children, kpiRow, filterB
         
         <motion.div 
           className={styles.content}
-          {...staggerItem(filterBar ? 0.36 : kpiRow ? 0.24 : 0.12)}
+          {...staggerItem(filterBar ? 0.72 : kpiRow ? 0.48 : 0.24)}
         >
           {children}
         </motion.div>

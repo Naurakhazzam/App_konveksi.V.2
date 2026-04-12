@@ -47,7 +47,7 @@ export default function PageTransition({ children, type = 'driftNatural', id, cl
         exit="exit"
         variants={variants[type]}
         transition={{
-          duration: isNatural ? 0.8 : 0.4,
+          duration: isNatural ? 1.6 : 0.8,
           ease: isNatural ? [0.16, 1, 0.3, 1] : [0.22, 1, 0.36, 1],
         }}
         className={className}
