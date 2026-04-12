@@ -21,18 +21,18 @@ import { useToast } from '@/components/molecules/Toast';
 export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
   const { toast, success, error } = useToast();
   const { getNextNomorPO, addPO, incrementGlobalSequence } = usePOStore();
-  const { klien, model, warna, sizes } = useMasterStore();
+  const { klien, model, warna, sizes, produk: allProducts } = useMasterStore();
   const { addBundles } = useBundleStore();
 
   const [klienId, setKlienId] = useState(klien[0]?.id || '');
   const [tanggalDeadline, setTanggalDeadline] = useState('');
   const [catatan, setCatatan] = useState('');
-  const [items, setItems] = useState<Partial<POItem>[]>([{ id: `temp-${Date.now()}`, qtyPerBundle: 12, qty: 0 }]);
+  const [items, setItems] = useState<Partial<POItem>[]>([{ id: `temp-${Date.now()}`, qtyPerBundle: 0, qty: 0 }]);
 
   const nomorPO = getNextNomorPO();
 
   const handleAddItem = () => {
-    setItems([...items, { id: `temp-${Date.now()}`, qtyPerBundle: 12, qty: 0 }]);
+    setItems([...items, { id: `temp-${Date.now()}`, qtyPerBundle: 0, qty: 0 }]);
   };
 
   const handleRemoveItem = (index: number) => {
@@ -42,10 +42,19 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
   const handleItemChange = (index: number, field: keyof POItem, value: any) => {
     const newItems = [...items];
     newItems[index] = { ...newItems[index], [field]: value };
+    
+    // Reset dependency fields if parent changes
+    if (field === 'modelId') {
+      newItems[index].warnaId = undefined;
+      newItems[index].sizeId = undefined;
+    } else if (field === 'warnaId') {
+      newItems[index].sizeId = undefined;
+    }
+
     if (field === 'qty' || field === 'qtyPerBundle') {
       const q = Number(newItems[index].qty || 0);
-      const qb = Number(newItems[index].qtyPerBundle || 12);
-      newItems[index].jumlahBundle = Math.ceil(q / qb);
+      const qb = Number(newItems[index].qtyPerBundle || 0);
+      newItems[index].jumlahBundle = qb > 0 ? Math.ceil(q / qb) : 0;
     }
     setItems(newItems);
   };
@@ -57,8 +66,8 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
       return;
     }
     
-    if (items.some(i => !i.modelId || !i.warnaId || !i.sizeId || !i.qty)) {
-      error('Data Tidak Lengkap', 'Harap lengkapi semua baris artikel sebelum menyimpan.');
+    if (items.some(i => !i.modelId || !i.warnaId || !i.sizeId || !i.qty || !i.qtyPerBundle)) {
+      error('Data Tidak Lengkap', 'Harap lengkapi semua baris artikel (termasuk Isi/Bundle) sebelum menyimpan.');
       return;
     }
 
@@ -178,55 +187,78 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
 
       <Panel title="Detail Artikel (Item)">
         <div className={styles.itemsContainer}>
-          {items.map((item, index) => (
-            <div key={item.id} className={styles.itemRow}>
-              <div className={styles.itemIndex}>{index + 1}</div>
-              <div className={styles.itemGrid}>
-                <div className={styles.field}>
-                  <Label>Model <span className={styles.req}>*</span></Label>
-                  <select className={styles.select} value={item.modelId || ''} onChange={e => handleItemChange(index, 'modelId', e.target.value)} required>
-                    <option value="">-- Model --</option>
-                    {model.map(m => <option key={m.id} value={m.id}>{m.nama}</option>)}
-                  </select>
-                </div>
-                <div className={styles.field}>
-                  <Label>Warna <span className={styles.req}>*</span></Label>
-                  <select className={styles.select} value={item.warnaId || ''} onChange={e => handleItemChange(index, 'warnaId', e.target.value)} required>
-                    <option value="">-- Warna --</option>
-                    {warna.map(w => <option key={w.id} value={w.id}>{w.nama}</option>)}
-                  </select>
-                </div>
-                <div className={styles.field}>
-                  <Label>Size <span className={styles.req}>*</span></Label>
-                  <select className={styles.select} value={item.sizeId || ''} onChange={e => handleItemChange(index, 'sizeId', e.target.value)} required>
-                    <option value="">-- Size --</option>
-                    {sizes.map((s: any) => <option key={s.id} value={s.id}>{s.nama}</option>)}
-                  </select>
-                </div>
-                <div className={styles.field}>
-                  <Label>SKU Klien (Opsional)</Label>
-                  <TextInput value={item.skuKlien || ''} onChange={v => handleItemChange(index, 'skuKlien', v)} placeholder="SKU" />
-                </div>
-                <div className={styles.field}>
-                  <Label>QTY Order <span className={styles.req}>*</span></Label>
-                  <NumberInput value={item.qty || ''} onChange={v => handleItemChange(index, 'qty', v)} />
-                </div>
-                <div className={styles.field}>
-                  <Label>Isi/Bundle <span className={styles.req}>*</span></Label>
-                  <NumberInput value={item.qtyPerBundle || ''} onChange={v => handleItemChange(index, 'qtyPerBundle', v)} />
-                </div>
-                <div className={styles.field}>
-                  <Label>Bundles</Label>
-                  <div className={styles.readonlyBoxSmall}>{item.jumlahBundle || 0}</div>
-                </div>
-                {items.length > 1 && (
-                  <div className={styles.actionCol}>
-                    <Button type="button" variant="ghost" className={styles.delBtn} onClick={() => handleRemoveItem(index)}>✕</Button>
+          {items.map((item, index) => {
+            // Filter available variants from allProducts (linked products)
+            const availableWarna = item.modelId 
+              ? warna.filter(w => allProducts.some(p => p.modelId === item.modelId && p.warnaId === w.id))
+              : [];
+            
+            const availableSizes = item.modelId && item.warnaId
+              ? sizes.filter((s: any) => allProducts.some(p => p.modelId === item.modelId && p.warnaId === item.warnaId && p.sizeId === s.id))
+              : [];
+
+            return (
+              <div key={item.id} className={styles.itemRow}>
+                <div className={styles.itemIndex}>{index + 1}</div>
+                <div className={styles.itemGrid}>
+                  <div className={styles.field}>
+                    <Label>Model <span className={styles.req}>*</span></Label>
+                    <select className={styles.select} value={item.modelId || ''} onChange={e => handleItemChange(index, 'modelId', e.target.value)} required>
+                      <option value="">-- Model --</option>
+                      {model.map(m => <option key={m.id} value={m.id}>{m.nama}</option>)}
+                    </select>
                   </div>
-                )}
+                  <div className={styles.field}>
+                    <Label>Warna <span className={styles.req}>*</span></Label>
+                    <select 
+                      className={styles.select} 
+                      value={item.warnaId || ''} 
+                      onChange={e => handleItemChange(index, 'warnaId', e.target.value)} 
+                      required
+                      disabled={!item.modelId}
+                    >
+                      <option value="">-- Warna --</option>
+                      {availableWarna.map(w => <option key={w.id} value={w.id}>{w.nama}</option>)}
+                    </select>
+                  </div>
+                  <div className={styles.field}>
+                    <Label>Size <span className={styles.req}>*</span></Label>
+                    <select 
+                      className={styles.select} 
+                      value={item.sizeId || ''} 
+                      onChange={e => handleItemChange(index, 'sizeId', e.target.value)} 
+                      required
+                      disabled={!item.warnaId}
+                    >
+                      <option value="">-- Size --</option>
+                      {availableSizes.map((s: any) => <option key={s.id} value={s.id}>{s.nama}</option>)}
+                    </select>
+                  </div>
+                  <div className={styles.field}>
+                    <Label>SKU Klien (Opsional)</Label>
+                    <TextInput value={item.skuKlien || ''} onChange={v => handleItemChange(index, 'skuKlien', v)} placeholder="SKU" />
+                  </div>
+                  <div className={styles.field}>
+                    <Label>QTY Order <span className={styles.req}>*</span></Label>
+                    <NumberInput value={item.qty || ''} onChange={v => handleItemChange(index, 'qty', v)} />
+                  </div>
+                  <div className={styles.field}>
+                    <Label>Isi/Bundle <span className={styles.req}>*</span></Label>
+                    <NumberInput value={item.qtyPerBundle || ''} onChange={v => handleItemChange(index, 'qtyPerBundle', v)} />
+                  </div>
+                  <div className={styles.field}>
+                    <Label>Bundles</Label>
+                    <div className={styles.readonlyBoxSmall}>{item.jumlahBundle || 0}</div>
+                  </div>
+                  {items.length > 1 && (
+                    <div className={styles.actionCol}>
+                      <Button type="button" variant="ghost" className={styles.delBtn} onClick={() => handleRemoveItem(index)}>✕</Button>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         
         <div style={{ marginTop: '16px' }}>
