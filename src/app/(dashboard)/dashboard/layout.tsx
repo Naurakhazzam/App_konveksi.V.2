@@ -29,21 +29,18 @@ export default function DashboardSubLayout({ children }: { children: React.React
 
   const variants = {
     enter: (direction: number) => ({
-      x: direction > 0 ? 200 : -200,
+      x: direction > 0 ? '100%' : '-100%',
       opacity: 0,
-      filter: 'blur(4px)',
     }),
     center: {
       zIndex: 1,
       x: 0,
       opacity: 1,
-      filter: 'blur(0px)',
     },
     exit: (direction: number) => ({
       zIndex: 0,
-      x: direction < 0 ? 200 : -200,
+      x: direction < 0 ? '100%' : '-100%',
       opacity: 0,
-      filter: 'blur(4px)',
     }),
   };
 
@@ -61,9 +58,8 @@ export default function DashboardSubLayout({ children }: { children: React.React
             animate="center"
             exit="exit"
             transition={{
-              x: { type: 'spring', stiffness: 100, damping: 20, mass: 1 },
-              opacity: { duration: 0.4 },
-              filter: { duration: 0.4 }
+              x: { type: 'spring', stiffness: 100, damping: 20 },
+              opacity: { duration: 0.5 },
             }}
             style={{ 
               width: '100%',
