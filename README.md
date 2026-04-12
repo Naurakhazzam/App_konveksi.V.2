@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧵 Stitchlyx.Syncore (V2)
+> **Advanced Garment Production & Financial Management System**
 
-## Getting Started
+Stitchlyx V2 adalah sistem manajemen konveksi modern yang dibangun dengan arsitektur **Next.js 15 Modular**. Versi ini adalah evolusi dari versi sebelumnya (V1 monolith) yang telah dipecah menjadi komponen-komponen atomic untuk skalabilitas, performa maksimal, dan kemudahan pemeliharaan.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Fitur Utama
+
+### 📊 Dashboard Eksekutif
+* **Produksi**: Monitoring real-time status PO, progress artikel, dan rincian per tahap (Cutting, Jahit, QC, dll).
+* **Keuangan**: Laba/Rugi berjalan (MTD), saldo kas, dan analisis profitabilitas.
+* **Penggajian**: Rekapitulasi upah terbayar dan sisa kasbon karyawan.
+
+### 🏭 Manajemen Produksi (QR/Barcode System)
+* **Input PO & Barcode**: Pembuatan PO otomatis menghasilkan tiket bundle dengan kode unik.
+* **Scan Stations**: 7 Stasiun scan (Cutting s/d Packing) dengan validasi chain-logic untuk mencegah manipulasi data.
+* **Real-Time Monitoring**: Lacak setiap helai kain dari tahap pemotongan hingga siap kirim.
+
+### 💰 Akuntansi & HPP Realisasi
+* **HPP Estimasi vs Realisasi**: Hitung margin keuntungan asli berdasarkan pemakaian bahan dan upah aktual di lapangan.
+* **Jurnal Umum Otomatis**: Integrasi otomatis antara inventory, penggajian, dan pembukuan keuangan.
+* **Laporan Eksekutif**: Income Statement bulanan dan laporan per-PO yang mendalam.
+
+---
+
+## 🛠️ Tech Stack
+
+* **Framework**: Next.js 15 (App Router)
+* **Language**: TypeScript (Strict Mode)
+* **State Management**: Zustand
+* **Styling**: CSS Modules & Global Design System Variables
+* **Icons**: Lucide React
+* **Architecture**: Atomic Design (Atoms, Molecules, Organisms, Templates)
+
+---
+
+## 📁 Struktur Proyek
+
+```text
+src/
+ ├── app/             # App Router & Page Layouts
+ ├── components/      # Atomic Components (Reusable)
+ ├── features/        # Business Logic & Feature-specific UI
+ ├── lib/             # Utilities, Constants & Hooks
+ ├── stores/          # Zustand State Management
+ └── types/           # TypeScript Definitions
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚙️ Cara Menjalankan Lokal
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Clone repository ini:**
+   ```bash
+   git clone https://github.com/Naurakhazzam/App_konveksi.V.2.git
+   ```
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+3. **Jalankan development server:**
+   ```bash
+   npm run dev
+   ```
+4. **Buka di browser:** `http://localhost:3000`
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📈 Roadmap (Next Phase)
+- [ ] Integrasi Database (Supabase/PostgreSQL)
+- [ ] Sistem Authentication & Role-Based Access Control (RBAC)
+- [ ] Export Laporan & Slip Gaji ke PDF
+- [ ] PWA (Progressive Web App) untuk mode Offline Scan
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Developed by **Antigravity AI** for **Syncore Stitchlyx**.*
