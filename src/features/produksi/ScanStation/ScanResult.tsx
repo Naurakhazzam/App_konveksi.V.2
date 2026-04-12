@@ -275,7 +275,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         open={showQtyModal}
         onClose={() => setShowQtyModal(false)}
         onConfirm={handleQtyConfirm}
-        qtyTerima={currentStatus.status === 'terima' ? currentStatus.qtyTerima : qtyTerimaDefault}
+        qtyTerima={currentStatus.status === 'terima' ? (currentStatus.qtyTerima ?? 0) : qtyTerimaDefault}
         tahap={tahap}
         title={tahap === 'cutting' && currentStatus.status === null ? "Input Hasil Potong (Actual Yield)" : undefined}
       />

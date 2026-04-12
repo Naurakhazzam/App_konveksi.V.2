@@ -30,6 +30,8 @@ const defaultStatus: StatusTahap = {
   waktuTerima: null,
   waktuSelesai: null,
   karyawan: null,
+  koreksiStatus: null,
+  koreksiAlasan: null,
 };
 
 // Generate dummy bundles
