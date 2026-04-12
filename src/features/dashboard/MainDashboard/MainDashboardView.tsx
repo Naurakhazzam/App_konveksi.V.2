@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import PageWrapper from '@/components/templates/PageWrapper';
 import Panel from '@/components/molecules/Panel';
 import KpiCard from '@/components/molecules/KpiCard';
@@ -18,6 +19,7 @@ export default function MainDashboardView() {
   const { items: inventoryItems } = useInventoryStore();
   const { entries, getTotalByTipe } = useJurnalStore();
   const { logs } = useLogStore();
+  const router = useRouter();
 
   const inventoryAlertsCount = inventoryItems.filter(i => i.stokAktual <= i.stokMinimum).length;
   
@@ -90,9 +92,9 @@ export default function MainDashboardView() {
           </Panel>
 
           <div className={styles.shortcuts}>
-            <Button variant="ghost" onClick={() => window.location.href='/produksi/input-po'}>➕ PO Baru</Button>
-            <Button variant="ghost" onClick={() => window.location.href='/produksi/scan-station'}>🔍 Scan Station</Button>
-            <Button variant="ghost" onClick={() => window.location.href='/inventory/alert-order'}>📦 Restock Barang</Button>
+            <Button variant="ghost" onClick={() => router.push('/produksi/input-po')}>➕ PO Baru</Button>
+            <Button variant="ghost" onClick={() => router.push('/produksi/monitoring')}>🔍 Scan Station</Button>
+            <Button variant="ghost" onClick={() => router.push('/inventory/alert-order')}>📦 Restock Barang</Button>
           </div>
         </div>
 
