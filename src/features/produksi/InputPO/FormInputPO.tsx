@@ -56,6 +56,19 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
       const qb = Number(newItems[index].qtyPerBundle || 0);
       newItems[index].jumlahBundle = qb > 0 ? Math.ceil(q / qb) : 0;
     }
+
+    // Auto-fill SKU Klien if Model, Warna, and Size are complete
+    const mId = newItems[index].modelId;
+    const wId = newItems[index].warnaId;
+    const sId = newItems[index].sizeId;
+
+    if (mId && wId && sId) {
+      const match = allProducts.find(p => p.modelId === mId && p.warnaId === wId && p.sizeId === sId);
+      if (match) {
+        newItems[index].skuKlien = match.skuKlien;
+      }
+    }
+
     setItems(newItems);
   };
 
