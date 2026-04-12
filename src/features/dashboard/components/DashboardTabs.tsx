@@ -23,9 +23,8 @@ export default function DashboardTabs() {
           const isActive = pathname === tab.path || (tab.path !== '/dashboard' && pathname?.startsWith(tab.path));
           
           return (
-            <button
+            <div
               key={tab.id}
-              onClick={() => router.push(tab.path)}
               className={`${styles.tab} ${isActive ? styles.active : ''}`}
             >
               <span className={styles.tabContent}>{tab.label}</span>
@@ -33,10 +32,15 @@ export default function DashboardTabs() {
                 <motion.div
                   layoutId="dashboard-tab-pill"
                   className={styles.pill}
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  transition={{ 
+                    type: 'spring', 
+                    stiffness: 180, 
+                    damping: 25,
+                    mass: 1.2
+                  }}
                 />
               )}
-            </button>
+            </div>
           );
         })}
       </div>

@@ -58,8 +58,8 @@ export default function DashboardSubLayout({ children }: { children: React.React
             animate="center"
             exit="exit"
             transition={{
-              x: { type: 'spring', stiffness: 300, damping: 30 },
-              opacity: { duration: 0.2 },
+              x: { type: 'spring', stiffness: 120, damping: 22, mass: 1.1 },
+              opacity: { duration: 0.4 },
             }}
             style={{ 
               width: '100%',
