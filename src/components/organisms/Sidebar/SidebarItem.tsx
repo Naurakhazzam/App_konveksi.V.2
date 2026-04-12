@@ -42,6 +42,7 @@ export default function SidebarItem({
           style={{ borderColor: `var(--color-${color})` }}
         />
       )}
+      {isActive && !hasSubs && <div className={styles.activeDotSidebar} style={{ backgroundColor: `var(--color-${color})`, boxShadow: `0 0 10px var(--color-${color})` }} />}
       <IconComponent 
         size={18} 
         className={styles.itemIcon} 

@@ -108,12 +108,15 @@ export default function MonitoringStatusPO({ poList, bundles }: MonitoringStatus
     <div className={styles.wrapper}>
       <div className={styles.subTabs}>
         <button className={activeSubTab === 'belum' ? styles.active : ''} onClick={() => setActiveSubTab('belum')}>
+          {activeSubTab === 'belum' && <div className={styles.activeDot} />}
           Belum Mulai ({groupedPOs.belum.length})
         </button>
         <button className={activeSubTab === 'proses' ? styles.active : ''} onClick={() => setActiveSubTab('proses')}>
+          {activeSubTab === 'proses' && <div className={styles.activeDot} />}
           Sedang Dikerjakan ({groupedPOs.proses.length})
         </button>
         <button className={activeSubTab === 'selesai_unpaid' ? styles.active : ''} onClick={() => setActiveSubTab('selesai_unpaid')}>
+          {activeSubTab === 'selesai_unpaid' && <div className={styles.activeDot} />}
           Selesai & Belum Dibayar ({groupedPOs.selesai_unpaid.length})
         </button>
       </div>
