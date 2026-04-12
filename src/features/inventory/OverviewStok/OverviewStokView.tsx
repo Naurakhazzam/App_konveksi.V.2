@@ -7,6 +7,7 @@ import KpiCard from '@/components/molecules/KpiCard';
 import Button from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
 import DataTable, { Column } from '@/components/organisms/DataTable';
+import Pagination from '@/components/atoms/Pagination';
 import { useInventoryStore } from '@/stores/useInventoryStore';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { InventoryItem } from '@/types';
@@ -18,6 +19,8 @@ export default function OverviewStokView() {
   const { kategori, satuan } = useMasterStore();
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const stats = useMemo(() => {
     const total = items.length;
@@ -36,10 +39,18 @@ export default function OverviewStokView() {
     </div>
   );
 
-  const filteredItems = items.filter(i => 
-    i.nama.toLowerCase().includes(search.toLowerCase()) ||
-    i.id.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredItems = useMemo(() => {
+    return items.filter(i => 
+      i.nama.toLowerCase().includes(search.toLowerCase()) ||
+      i.id.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [items, search]);
+
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const paginatedItems = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredItems.slice(start, start + itemsPerPage);
+  }, [filteredItems, currentPage]);
 
   const columns: Column<InventoryItem>[] = [
     { key: 'id', header: 'Kode', render: (v) => <code className={styles.code}>{v}</code> },
@@ -94,10 +105,20 @@ export default function OverviewStokView() {
               className={styles.searchInput} 
               placeholder="Cari kode atau nama barang..." 
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={e => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
             />
           </div>
-          <DataTable columns={columns} data={filteredItems} keyField="id" />
+          <DataTable columns={columns} data={paginatedItems} keyField="id" />
+          
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            className={styles.pagination}
+          />
         </Panel>
       </div>
 

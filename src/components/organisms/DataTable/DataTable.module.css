@@ -74,6 +74,23 @@
   font-family: var(--font-mono);
 }
 
+@media (max-width: 768px) {
+  .td, .th {
+    padding: 10px 12px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .td, .th {
+    padding: 8px 10px;
+    font-size: 10px;
+  }
+  .table {
+    min-width: 500px; /* Slander slightly for very small screens */
+  }
+}
+
 .empty {
   padding: 0;
   text-align: center;

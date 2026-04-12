@@ -10,6 +10,19 @@
   width: 100%;
 }
 
+@media (max-width: 1200px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .kpiRow {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
 .leftCol {
   display: flex;
   flex-direction: column;
@@ -20,6 +33,15 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+}
+
+@media (max-width: 640px) {
+  .productionGrid {
+    grid-template-columns: 1fr;
+  }
+  .shortcuts {
+    flex-wrap: wrap;
+  }
 }
 
 .shortcuts {

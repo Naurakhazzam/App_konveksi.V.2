@@ -1,9 +1,16 @@
 .container {
   margin-bottom: 24px;
+  width: 100%;
   display: flex;
   justify-content: flex-start;
   overflow-x: auto;
-  padding: 4px;
+  padding: 4px 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 .tabList {
@@ -11,25 +18,27 @@
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(8px);
   padding: 4px;
-  border-radius: 12px;
+  border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   gap: 4px;
+  min-width: min-content; /* Ensure items don't shrink */
 }
 
 .tab {
   position: relative;
-  padding: 8px 20px;
-  border-radius: 8px;
+  padding: 8px 18px;
+  border-radius: 10px;
   border: none;
   background: transparent;
   color: var(--color-text-sub);
-  font-family: var(--font-sans);
-  font-size: 14px;
+  font-family: var(--font-body);
+  font-size: 13px;
   font-weight: 500;
-  cursor: default;
+  cursor: pointer;
   outline: none;
   transition: color 0.2s ease;
   white-space: nowrap;
+  z-index: 2;
 }
 
 .tab:hover {
@@ -37,13 +46,8 @@
 }
 
 .active {
-  color: #000 !important;
-  font-weight: 600;
-}
-
-.tabContent {
-  position: relative;
-  z-index: 2;
+  color: #111 !important;
+  font-weight: 700;
 }
 
 .pill {
@@ -53,7 +57,21 @@
   right: 0;
   bottom: 0;
   background: var(--color-cyan);
-  border-radius: 8px;
+  border-radius: 10px;
   z-index: 1;
-  box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(229, 193, 123, 0.3);
+}
+
+:global([data-theme="light"]) .tabList {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+:global([data-theme="light"]) .active {
+  color: #fff !important;
+}
+
+:global([data-theme="light"]) .pill {
+  background: var(--color-cyan-dim);
+  box-shadow: 0 4px 12px rgba(175, 130, 96, 0.2);
 }

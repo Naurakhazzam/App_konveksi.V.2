@@ -243,6 +243,39 @@
   background: var(--color-border);
 }
 
+/* Light Mode Overrides for Hybrid Sidebar */
+:global([data-theme="light"]) .sidebar {
+  background: rgba(13, 14, 16, 0.85); /* More solid to prevent light bleed */
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+:global([data-theme="light"]) .liquidActive {
+  background: linear-gradient(135deg, rgba(175, 130, 96, 0.2), rgba(175, 130, 96, 0.05));
+  border: 1px solid var(--color-cyan-dim);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+:global([data-theme="light"]) .liquidActiveSub {
+  background: rgba(175, 130, 96, 0.15);
+  border: 1px solid var(--color-cyan-dim);
+}
+
+:global([data-theme="light"]) .itemLabel,
+:global([data-theme="light"]) .itemIcon,
+:global([data-theme="light"]) .chevron {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+:global([data-theme="light"]) .subItem {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+:global([data-theme="light"]) .item:hover .itemLabel,
+:global([data-theme="light"]) .item:hover .itemIcon,
+:global([data-theme="light"]) .subItem:hover {
+  color: #fff;
+}
+
 .footer {
   padding: 20px;
   border-top: 1px solid var(--color-border);
