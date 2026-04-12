@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Menu, User } from 'lucide-react';
+import { Menu, User, LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import SidebarItem from './SidebarItem';
 import { NAV } from '../../../lib/constants/navigation';
+import { useAuthStore } from '@/stores/useAuthStore';
 import styles from './Sidebar.module.css';
 
 export interface SidebarProps {
@@ -10,6 +11,8 @@ export interface SidebarProps {
 
 export default function Sidebar({ currentPath }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const router = useRouter();
+  const { logout } = useAuthStore();
   
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(() => {
     const initialState: Record<string, boolean> = {};
@@ -87,6 +90,18 @@ export default function Sidebar({ currentPath }: SidebarProps) {
             </div>
           )}
         </div>
+        
+        <button 
+          className={styles.logoutBtn} 
+          onClick={() => {
+            logout();
+            router.push('/login');
+          }}
+          title="Keluar dari sistem"
+        >
+          <LogOut size={18} />
+          {!collapsed && <span>Keluar</span>}
+        </button>
       </div>
     </aside>
   );
