@@ -10,6 +10,7 @@
   flex-direction: column;
   transition: all var(--transition-normal);
   position: relative;
+  animation: livingGlow 8s ease-in-out infinite;
 }
 
 .panel::before {

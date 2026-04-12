@@ -132,10 +132,9 @@
 
 .emptyState svg {
   color: var(--color-cyan);
-  opacity: 0.8;
   margin-bottom: 8px;
   z-index: 1;
-  filter: drop-shadow(0 0 10px rgba(229, 193, 123, 0.3));
+  animation: iconBreathe 4s ease-in-out infinite;
   transition: transform 0.3s ease;
 }
 
