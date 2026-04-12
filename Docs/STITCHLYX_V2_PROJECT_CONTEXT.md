@@ -18,9 +18,11 @@ Terakhir Update : 13 April 2026 (Fresh Start, Production Data Imported, Hierarch
 > **PENTING — KONTEKS HANDOVER:**
 > 1.  **Data Sanitization Komplit**: Seluruh data dummy telah dihapus. Sistem sekarang menggunakan data produksi asli.
 > 2.  **Import 662 Produk**: Database dasar kini terisi 662 produk real dari CSV klien dengan 25 komponen HPP per produk.
-> 3.  **UI Hierarchical Explorer**: Menu Master Produk menggunakan navigasi **Folder Explorer** (Kategori > Model > Varian) untuk performa maksimal dan kemudahan akses data besar.
-> 4.  **Aesthetics**: Menggunakan icon **Glassmorphism Folder** dan Liquid Glass effect.
-> 5.  **Next Step**: Fokus penuh pada **Sprint 7** (Migrasi Database ke Supabase/Prisma) karena frontend sudah 100% siap.
+> 3.  **UI Hierarchical Explorer**: Menu Master Produk menggunakan navigasi **Folder Explorer** (Kategori > Model > Varian) untuk performa maksimal.
+> 4.  **Smart PO Form**: Implementasi *Model-based variant filtering* (Warna & Size otomatis tersaring sesuai Model) dan **Auto-SKU Klien** (SKU otomatis terisi saat parameter produk lengkap). 🚀
+> 5.  **Aesthetics**: Menggunakan icon **Glassmorphism Folder** dan Liquid Glass effect.
+> 6.  **Next Step**: Fokus penuh pada **Sprint 7** (Migrasi Database ke Supabase/Prisma) karena frontend sudah 100% siap.
+
 
 
 ---
