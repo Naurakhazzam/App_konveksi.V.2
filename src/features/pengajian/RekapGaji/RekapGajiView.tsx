@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import PageWrapper from '@/components/templates/PageWrapper';
 import Panel from '@/components/molecules/Panel';
 import KpiCard from '@/components/molecules/KpiCard';
@@ -16,6 +17,7 @@ export default function RekapGajiView() {
   const { karyawan } = useMasterStore();
   const { calculateUpah, prosesBayar } = usePayrollStore();
   const { addEntry, entries } = useJurnalStore();
+  const router = useRouter();
 
   const [dateRange, setDateRange] = useState({ 
     start: '2026-04-01', 
@@ -71,13 +73,11 @@ export default function RekapGajiView() {
     return entries.some(e => e.jenis === 'direct_upah' && e.keterangan.includes(periodStr));
   }, [entries, dateRange]);
 
-  const handleRekapJurnal = () => {
     if (stats.totalBelum > 0) {
-      alert('Masih ada karyawan yang belum dibayar di periode ini.');
-      return;
+      if (!confirm(`Terdapat ${formatRupiah(stats.totalBelum)} gaji belum dibayar. Tetap rekap total biaya (${formatRupiah(stats.totalUpah)}) ke Jurnal Umum?`)) return;
+    } else {
+      if (!confirm('Rekap seluruh upah periode ini ke Jurnal Umum?')) return;
     }
-
-    if (!confirm('Rekap seluruh upah periode ini ke Jurnal Umum?')) return;
 
     addEntry({
       id: `JRN-UPAH-${Date.now()}`,
@@ -116,8 +116,13 @@ export default function RekapGajiView() {
         <Panel title="Daftar Rekapitulasi Gaji">
           <RekapGajiTable 
             data={rekapData} 
-            onBayar={(r) => setSelectedKaryawan(r)}
-            onViewSlip={(id) => console.log('View slip for', id)}
+            onBayar={(r) => {
+              console.log('Bayar clicked for:', r.nama);
+              setSelectedKaryawan(r);
+            }}
+            onViewSlip={(id) => {
+              router.push(`/penggajian/slip-gaji?id=${id}`);
+            }}
           />
         </Panel>
       </div>
