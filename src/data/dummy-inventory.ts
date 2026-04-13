@@ -1,14 +1,14 @@
 import { InventoryItem, TransaksiMasuk, TransaksiKeluar } from '../types';
 
 export const dummyInventory: InventoryItem[] = [
-  { id: 'INV-001', nama: 'Kain Katun Airflow Hitam', kategoriId: 'KAT-001', satuanId: 'UOM-001', stokAktual: 120, stokMinimum: 50 },
-  { id: 'INV-002', nama: 'Kain Katun Airflow Putih', kategoriId: 'KAT-001', satuanId: 'UOM-001', stokAktual: 15, stokMinimum: 50 }, // Alert
-  { id: 'INV-003', nama: 'Kain Oxford Navy', kategoriId: 'KAT-002', satuanId: 'UOM-001', stokAktual: 200, stokMinimum: 100 },
-  { id: 'INV-004', nama: 'Benang Jahit Hitam', kategoriId: 'KAT-003', satuanId: 'UOM-004', stokAktual: 50, stokMinimum: 20 },
-  { id: 'INV-005', nama: 'Benang Jahit Putih', kategoriId: 'KAT-003', satuanId: 'UOM-004', stokAktual: 8, stokMinimum: 20 }, // Alert
-  { id: 'INV-006', nama: 'Kancing Kemeja Bening', kategoriId: 'KAT-002', satuanId: 'UOM-006', stokAktual: 20, stokMinimum: 5 },
-  { id: 'INV-007', nama: 'Resleting YKK 15cm', kategoriId: 'KAT-003', satuanId: 'UOM-004', stokAktual: 100, stokMinimum: 50 },
-  { id: 'INV-008', nama: 'Label Woven Stitchlyx', kategoriId: 'KAT-003', satuanId: 'UOM-005', stokAktual: 2, stokMinimum: 5 }, // Alert
+  { id: 'INV-001', nama: 'Kain Katun Airflow Hitam', jenisBahan: 'kain', satuanId: 'UOM-001', stokAktual: 120, stokMinimum: 50, hargaSatuan: 35000 },
+  { id: 'INV-002', nama: 'Kain Katun Airflow Putih', jenisBahan: 'kain', satuanId: 'UOM-001', stokAktual: 15, stokMinimum: 50, hargaSatuan: 32000 }, // Alert
+  { id: 'INV-003', nama: 'Kain Oxford Navy', jenisBahan: 'kain', satuanId: 'UOM-001', stokAktual: 200, stokMinimum: 100, hargaSatuan: 40000 },
+  { id: 'INV-004', nama: 'Benang Jahit Hitam', jenisBahan: 'aksesori', satuanId: 'UOM-004', stokAktual: 50, stokMinimum: 20, hargaSatuan: 5000 },
+  { id: 'INV-005', nama: 'Benang Jahit Putih', jenisBahan: 'aksesori', satuanId: 'UOM-004', stokAktual: 8, stokMinimum: 20, hargaSatuan: 5000 }, // Alert
+  { id: 'INV-006', nama: 'Kancing Kemeja Bening', jenisBahan: 'aksesori', satuanId: 'UOM-006', stokAktual: 20, stokMinimum: 5, hargaSatuan: 200 },
+  { id: 'INV-007', nama: 'Resleting YKK 15cm', jenisBahan: 'aksesori', satuanId: 'UOM-004', stokAktual: 100, stokMinimum: 50, hargaSatuan: 1500 },
+  { id: 'INV-008', nama: 'Label Woven Stitchlyx', jenisBahan: 'aksesori', satuanId: 'UOM-005', stokAktual: 2, stokMinimum: 5, hargaSatuan: 1000 }, // Alert
 ];
 
 export const dummyTrxMasuk: TransaksiMasuk[] = [

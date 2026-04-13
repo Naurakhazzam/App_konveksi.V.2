@@ -5,65 +5,71 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '@/components/organis
 import Button from '@/components/atoms/Button';
 import { Label } from '@/components/atoms/Typography';
 import { useMasterStore } from '@/stores/useMasterStore';
-import styles from './ModalTambahItem.module.css';
+import { InventoryItem } from '@/types';
+import styles from './FormBahanBaku.module.css';
 
-interface ModalTambahItemProps {
+interface FormBahanBakuProps {
   onClose: () => void;
-  onConfirm: (data: any) => void;
+  onConfirm: (data: InventoryItem) => void;
+  item?: InventoryItem;
 }
 
-export default function ModalTambahItem({ onClose, onConfirm }: ModalTambahItemProps) {
-  const { kategori, satuan } = useMasterStore();
-  const [formData, setFormData] = useState({
-    id: `INV-${Date.now()}`,
+export default function FormBahanBaku({ onClose, onConfirm, item }: FormBahanBakuProps) {
+  const { satuan } = useMasterStore();
+  
+  const [formData, setFormData] = useState<InventoryItem>(item || {
+    id: `INV-RAW-${Date.now()}`,
     nama: '',
-    kategoriId: '',
+    jenisBahan: 'kain',
     satuanId: '',
     stokAktual: 0,
-    stokMinimum: 0
+    stokMinimum: 0,
+    hargaSatuan: 0
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.nama || !formData.kategoriId || !formData.satuanId) return;
+    if (!formData.nama || !formData.satuanId) return;
     onConfirm(formData);
   };
 
   return (
     <Modal open={true} onClose={onClose} size="md">
       <form onSubmit={handleSubmit}>
-        <ModalHeader title="Tambah Item Inventory" onClose={onClose} />
+        <ModalHeader title={item ? "Edit Bahan Baku" : "Tambah Bahan Baku Baru"} onClose={onClose} />
         <ModalBody>
           <div className={styles.container}>
             <div className={styles.field}>
-              <Label>Nama Barang</Label>
+              <Label>Nama Bahan Baku</Label>
               <input 
                 type="text" 
                 className={styles.input} 
                 value={formData.nama} 
                 onChange={e => setFormData(p => ({ ...p, nama: e.target.value }))}
-                placeholder="Misal: Kain Katun Airflow"
+                placeholder="Misal: Kain Cotton Combed 30s"
                 required
               />
             </div>
 
             <div className={styles.row}>
               <div className={styles.field}>
-                <Label>Kategori</Label>
+                <Label>Jenis Bahan</Label>
                 <select 
-                  className={styles.input}
-                  value={formData.kategoriId}
-                  onChange={e => setFormData(p => ({ ...p, kategoriId: e.target.value }))}
+                  className={styles.select}
+                  value={formData.jenisBahan}
+                  onChange={e => setFormData(p => ({ ...p, jenisBahan: e.target.value as any }))}
                   required
                 >
-                  <option value="">-- Pilih Kategori --</option>
-                  {kategori.map(k => <option key={k.id} value={k.id}>{k.nama}</option>)}
+                  <option value="kain">Kain</option>
+                  <option value="aksesori">Aksesori</option>
+                  <option value="kemasan">Kemasan</option>
+                  <option value="lainnya">Lainnya</option>
                 </select>
               </div>
               <div className={styles.field}>
                 <Label>Satuan (UOM)</Label>
                 <select 
-                  className={styles.input}
+                  className={styles.select}
                   value={formData.satuanId}
                   onChange={e => setFormData(p => ({ ...p, satuanId: e.target.value }))}
                   required
@@ -82,6 +88,8 @@ export default function ModalTambahItem({ onClose, onConfirm }: ModalTambahItemP
                   className={styles.input} 
                   value={formData.stokAktual} 
                   onChange={e => setFormData(p => ({ ...p, stokAktual: Number(e.target.value) }))}
+                  min="0"
+                  step="0.01"
                   required
                 />
               </div>
@@ -92,15 +100,30 @@ export default function ModalTambahItem({ onClose, onConfirm }: ModalTambahItemP
                   className={styles.input} 
                   value={formData.stokMinimum} 
                   onChange={e => setFormData(p => ({ ...p, stokMinimum: Number(e.target.value) }))}
+                  min="0"
+                  step="0.01"
                   required
                 />
               </div>
             </div>
+
+            <div className={styles.field}>
+              <Label>Harga per Satuan (HPP)</Label>
+              <input 
+                type="number" 
+                className={styles.input} 
+                value={formData.hargaSatuan} 
+                onChange={e => setFormData(p => ({ ...p, hargaSatuan: Number(e.target.value) }))}
+                placeholder="0"
+                min="0"
+              />
+              <span className={styles.hint}>Digunakan untuk kalkulasi total nilai inventaris.</span>
+            </div>
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button variant="ghost" onClick={onClose}>Batal</Button>
-          <Button variant="primary" type="submit">Simpan Item</Button>
+          <Button variant="ghost" onClick={onClose} type="button">Batal</Button>
+          <Button variant="primary" type="submit">Simpan Bahan Baku</Button>
         </ModalFooter>
       </form>
     </Modal>

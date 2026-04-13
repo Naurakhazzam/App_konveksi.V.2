@@ -1,10 +1,11 @@
 export interface InventoryItem {
   id: string;
   nama: string;
-  kategoriId: string;
+  jenisBahan?: 'kain' | 'aksesori' | 'kemasan' | 'lainnya';
   satuanId: string;
   stokAktual: number;
   stokMinimum: number;
+  hargaSatuan?: number;
 }
 
 export interface TransaksiMasuk {

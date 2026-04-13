@@ -11,31 +11,31 @@ import Pagination from '@/components/atoms/Pagination';
 import { useInventoryStore } from '@/stores/useInventoryStore';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { InventoryItem } from '@/types';
-import ModalTambahItem from './ModalTambahItem';
+import { formatRupiah } from '@/lib/utils/formatters';
+import FormBahanBaku from './FormBahanBaku';
 import styles from './OverviewStokView.module.css';
 
 export default function OverviewStokView() {
   const { items, addItem } = useInventoryStore();
-  const { kategori, satuan } = useMasterStore();
+  const { satuan } = useMasterStore();
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
   const stats = useMemo(() => {
-    const total = items.length;
-    const aman = items.filter(i => i.stokAktual > i.stokMinimum).length;
-    const rendah = items.filter(i => i.stokAktual <= i.stokMinimum && i.stokAktual > 0).length;
-    const habis = items.filter(i => i.stokAktual <= 0).length;
-    return { total, aman, rendah, habis };
+    const totalJenis = items.length;
+    const totalNilaiStok = items.reduce((acc, curr) => acc + (curr.stokAktual * (curr.hargaSatuan || 0)), 0);
+    const rendah = items.filter(i => i.stokAktual <= i.stokMinimum).length;
+    
+    return { totalJenis, totalNilaiStok, rendah };
   }, [items]);
 
   const kpiRow = (
     <div className={styles.kpiRow}>
-      <KpiCard label="Total Item" value={stats.total} accent="blue" />
-      <KpiCard label="Stok Aman" value={stats.aman} accent="green" />
-      <KpiCard label="Stok Rendah" value={stats.rendah} accent="yellow" />
-      <KpiCard label="Stok Habis" value={stats.habis} accent="red" />
+      <KpiCard label="Total Jenis Bahan" value={stats.totalJenis} accent="blue" />
+      <KpiCard label="Total Nilai Stok (HPP)" value={formatRupiah(stats.totalNilaiStok)} accent="cyan" />
+      <KpiCard label="Bahan Hampir Habis" value={stats.rendah} accent="yellow" />
     </div>
   );
 
@@ -54,11 +54,15 @@ export default function OverviewStokView() {
 
   const columns: Column<InventoryItem>[] = [
     { key: 'id', header: 'Kode', render: (v) => <code className={styles.code}>{v}</code> },
-    { key: 'nama', header: 'Nama Barang', render: (v) => <strong>{v}</strong> },
     { 
-      key: 'kategoriId', 
-      header: 'Kategori', 
-      render: (v) => kategori.find(k => k.id === v)?.nama || v 
+      key: 'nama', 
+      header: 'Nama Bahan Baku', 
+      render: (v, row) => (
+        <div className={styles.itemNameWrapper}>
+          <span className={styles.itemName}>{v}</span>
+          {row.jenisBahan && <Badge variant="neutral" className={styles.jenisBadge}>{row.jenisBahan}</Badge>}
+        </div>
+      )
     },
     { 
       key: 'satuanId', 
@@ -66,11 +70,16 @@ export default function OverviewStokView() {
       render: (v) => satuan.find(s => s.id === v)?.nama || v 
     },
     { 
+      key: 'hargaSatuan', 
+      header: 'Harga (HPP)', 
+      render: (v) => formatRupiah(v || 0)
+    },
+    { 
       key: 'stokAktual', 
       header: 'Stok AKTUAL', 
-      render: (_, row) => (
-        <span className={row.stokAktual <= 0 ? styles.habis : row.stokAktual <= row.stokMinimum ? styles.rendah : ''}>
-          {row.stokAktual}
+      render: (v, row) => (
+        <span className={v <= row.stokMinimum ? styles.rendah : ''}>
+          {v}
         </span>
       )
     },
@@ -89,21 +98,21 @@ export default function OverviewStokView() {
   return (
     <PageWrapper 
       title="Inventory — Overview Stok" 
-      subtitle="Monitoring ketersediaan bahan baku dan aksesori"
+      subtitle="Manajemen ketersediaan bahan baku, aksesori, dan kemasan"
       kpiRow={kpiRow}
       action={
         <Button variant="primary" onClick={() => setShowModal(true)}>
-          ➕ Tambah Item Baru
+          ➕ Tambah Bahan Baku
         </Button>
       }
     >
       <div className={styles.container}>
-        <Panel title="Daftar Inventaris Barang">
+        <Panel title="Daftar Inventaris Bahan Baku">
           <div className={styles.toolbar}>
             <input 
               type="text" 
               className={styles.searchInput} 
-              placeholder="Cari kode atau nama barang..." 
+              placeholder="Cari kode atau nama bahan..." 
               value={search}
               onChange={e => {
                 setSearch(e.target.value);
@@ -123,7 +132,7 @@ export default function OverviewStokView() {
       </div>
 
       {showModal && (
-        <ModalTambahItem 
+        <FormBahanBaku 
           onClose={() => setShowModal(false)}
           onConfirm={(data) => {
             addItem(data);

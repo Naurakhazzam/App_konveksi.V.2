@@ -14,7 +14,7 @@ import styles from './AlertOrderView.module.css';
 
 export default function AlertOrderView() {
   const { items } = useInventoryStore();
-  const { kategori } = useMasterStore();
+  const { satuan } = useMasterStore();
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 10;
 
@@ -29,21 +29,17 @@ export default function AlertOrderView() {
   }, [alertItems, currentPage]);
 
   const columns: Column<InventoryItem>[] = [
+    { key: 'id', header: 'Kode', render: (v) => <code className={styles.code}>{v}</code> },
+    { key: 'nama', header: 'Nama Bahan Baku', render: (v) => <strong>{v}</strong> },
     { 
       key: 'satuanId', 
       header: 'Satuan', 
-      render: (v) => useMasterStore.getState().satuan.find(s => s.id === v)?.nama || v
-    },
-    { key: 'nama', header: 'Nama Barang', render: (v) => <strong>{v}</strong> },
-    { 
-      key: 'kategoriId', 
-      header: 'Kategori', 
-      render: (v) => kategori.find(k => k.id === v)?.nama || v 
+      render: (v) => satuan.find(s => s.id === v)?.nama || v
     },
     { 
       key: 'stokAktual', 
       header: 'Stok AKTUAL', 
-      render: (v) => <span className={v <= 0 ? styles.habis : styles.rendah}>{v}</span>
+      render: (v, row) => <span className={v <= 0 ? styles.habis : styles.rendah}>{v}</span>
     },
     { key: 'stokMinimum', header: 'Stok MIN' },
     {
@@ -60,7 +56,7 @@ export default function AlertOrderView() {
   return (
     <PageWrapper 
       title="Alert Order — Stok Di Bawah Minimum" 
-      subtitle="Daftar barang yang perlu dipesan ulang (Restock)"
+      subtitle="Daftar bahan baku yang perlu dipesan ulang (Restock)"
     >
       <div className={styles.container}>
         {alertItems.length > 0 ? (
@@ -77,7 +73,7 @@ export default function AlertOrderView() {
         ) : (
           <EmptyState 
             title="Semua Stok Aman" 
-            message="Tidak ada barang yang berada di bawah batas minimum stok."
+            message="Tidak ada bahan baku yang berada di bawah batas minimum stok."
           />
         )}
       </div>

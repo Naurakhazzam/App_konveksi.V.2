@@ -1,0 +1,39 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input, .select {
+  background: var(--color-bg-primary, #111315);
+  border: 1px solid var(--color-border, #2a2d31);
+  color: var(--color-text-primary, #e8eaed);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  width: 100%;
+}
+
+.input:focus, .select:focus {
+  border-color: var(--color-cyan, #d49b6a);
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--color-text-sub, #9aa0a6);
+  font-style: italic;
+}
