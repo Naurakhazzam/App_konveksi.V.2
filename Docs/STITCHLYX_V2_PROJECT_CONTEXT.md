@@ -11,18 +11,19 @@ Tagline        : Garment Operating System — Precision Engine
 Tipe           : Full-Stack Web Application (rencana dijual sebagai SaaS)
 Pemilik        : Owner konveksi skala menengah, omset miliaran
 Tujuan         : Menggantikan sistem Excel manual dengan sistem digital terintegrasi
-Status         : **PHASE 1 - 6.5 SELESAI (100% Frontend)** — Core workflow, UI, & logic sudah stabil.
+Status         : **PHASE 1 - 6.5+ SELESAI (100% Frontend)** — Core workflow, UI, QTY Correction System & Laporan sudah stabil.
 Identitas Visual: **2026 High-End Aesthetics** (Refined Charcoal & Muted Copper)
-Terakhir Update : 13 April 2026 (Memulai Sprint 7 - Database Migration)
+Terakhir Update : 13 April 2026 (Sprint 6.8 — QTY Correction & Reporting System SELESAI)
 
 > **PENTING — KONTEKS HANDOVER (FINAL):**
 > 1.  **Data Produksi 100%**: 662 produk real telah dimigrasikan dengan sanitasi data kategori "Polo-Wangky".
 > 2.  **UI Folder Explorer**: Navigasi hirarkis Kategori > Model > Detail untuk performa maksimal.
 > 3.  **Smart Form PO**: Filter Warna/Size cerdas & **Auto-Fill SKU Klien** untuk efisiensi input.
 > 4.  **Premium iOS Dashboard UX**: Implementasi **Slide Push Transition 100% width** dan **Segmented Control** (Static Animated Tabs) khusus untuk area Dashboard.
-> 5.  **Print Support**: Dukungan cetak Slip Gaji & Surat Jalan via `@media print`.
+> 5.  **Print Support**: Dukungan cetak Slip Gaji, Surat Jalan & Laporan Koreksi QTY via `@media print`.
 > 6.  **Global Harmony Animations**: Seluruh tabel otomatis berputar berlawanan arah dari panel luarnya.
-> 7.  **Status**: Frontend Lengkap & Stabil. FOKUS SAAT INI: Mengerjakan Migrasi Database (Sprint 7).
+> 7.  **QTY Correction System (C1-C4)**: Sistem koreksi QTY produksi lengkap — filter karyawan per tahap, sistem reject/hilang/surplus, validasi Surat Jalan, dan laporan per tahap.
+> 8.  **Status**: Frontend Lengkap & Stabil. FOKUS SAAT INI: Mengerjakan Migrasi Database (Sprint 7).
 
 
 
@@ -363,7 +364,7 @@ export const NAV = [
     label: 'Produksi',
     icon: 'Factory',
     color: 'green',
-    subs: ['Input PO', 'Cutting', 'Jahit', 'Lubang Kancing', 'Buang Benang', 'QC', 'Steam', 'Packing', 'Monitoring'],
+    subs: ['Input PO', 'Antrian Cutting', 'Cutting', 'Jahit', 'Lubang Kancing', 'Buang Benang', 'QC', 'Steam', 'Packing', 'Monitoring', 'Approval QTY'],
     basePath: '/produksi',
   },
   {
@@ -391,14 +392,14 @@ export const NAV = [
     label: 'Keuangan',
     icon: 'TrendingUp',
     color: 'green',
-    subs: ['Ringkasan', 'Jurnal Umum', 'Laporan Per PO', 'Laporan Per Bulan', 'Laporan Gaji', 'Laporan Reject'],
+    subs: ['Ringkasan', 'Jurnal Umum', 'Laporan Per PO', 'Laporan Per Bulan', 'Laporan Gaji', 'Laporan Koreksi QTY'],
     basePath: '/keuangan',
   },
   {
     label: 'Master Data',
     icon: 'Database',
     color: 'blue',
-    subs: ['Master Detail', 'Produk & HPP', 'Karyawan', 'Klien', 'Jenis Reject', 'Kategori Transaksi', 'Satuan (UOM)', 'User & Role'],
+    subs: ['Master Detail', 'Produk & HPP', 'Komponen HPP', 'Karyawan', 'Klien', 'Jenis Reject', 'Alasan Reject', 'Kategori Transaksi', 'Satuan (UOM)', 'User & Role'],
     basePath: '/master-data',
   },
   {
@@ -453,7 +454,7 @@ Keuangan > Jurnal Umum          /keuangan/jurnal-umum                 JurnalUmum
 Keuangan > Laporan Per PO       /keuangan/laporan-po                  LaporanPerPO
 Keuangan > Laporan Per Bulan    /keuangan/laporan-bulan               LaporanPerBulan
 Keuangan > Laporan Gaji         /keuangan/laporan-gaji                LaporanGaji
-Keuangan > Laporan Reject       /keuangan/laporan-reject              LaporanReject
+Keuangan > Laporan Koreksi QTY  /keuangan/laporan-reject              LaporanKoreksiQTY
 
 Master Data > Master Detail     /master-data/detail                   MasterDetail
 Master Data > Produk & HPP      /master-data/produk-hpp               MasterProduk
@@ -508,7 +509,7 @@ Aturan:
   1. Input Pemakaian Bahan (berlaku untuk 1 artikel/PO).
   2. Input Hasil Potong (Actual Yield).
 - **Stasiun Lain**: Semua 7 tahap (Cutting s/d Packing) wajib input QTY aktual setelah scan.
-- **Operator**: Cutting & Jahit wajib pilih nama karyawan → upah dicatat per karyawan.
+- **Operator (All Stages)**: **Semua 7 tahap** wajib pilih nama karyawan (tidak hanya Cutting & Jahit) → upah dan akuntabilitas dicatat per karyawan per tahap. Filter karyawan berdasarkan `tahapList` di master karyawan.
 - **Riwayat**: Semua aktivitas scan dicatat di `useScanStore` dan tampil di tabel riwayat di bawah area scan.
 
 ### Logika Sinkron Antar Tahap
@@ -533,35 +534,54 @@ Packing   → maks = hasil Steam bundle itu
 - Simpan PO → barcode di-generate sekali untuk semua bundle
 - 1 PO bisa banyak model, banyak SKU klien
 
-### Koreksi Data — Validasi QTY Produksi (Owner Review)
+### Koreksi Data — Sistem Koreksi QTY Produksi (Sprint 6.8)
 
-**Tujuan:** Mencegah overpay dengan memvalidasi QTY di setiap tahap produksi.
+**Tujuan:** Mencegah overpay, mencatat kehilangan barang, dan memotong gaji otomatis berdasarkan kesalahan/kerusakan yang terjadi di setiap tahap produksi.
 
-**Alur QTY Lebih:**
-```
-Scan Selesai → QTY > Target → Owner auth (kode 030503) di lapangan
-       ↓
-  statusTahap.koreksiStatus = "pending"
-  Bundle DIBLOKIR dari tahap berikutnya
-       ↓
-  Masuk Halaman Koreksi Data → Owner review
-       ↓
-  APPROVE → qtySelesai tetap (aktual), bundle UNBLOCK
-  REJECT  → qtySelesai dikembalikan ke target, bundle UNBLOCK, cegah overpay
-```
+**Tiga Skenario Utama:**
 
-**Alur QTY Kurang:**
+**1. QTY Kurang — Reject (Barang Rusak)**
 ```
-Scan Selesai → QTY < Target → wajib isi alasan
+Scan Selesai → QTY < Target → ModalKoreksiKurang muncul
+       ↓ Pilih Jenis: REJECT
+  Alasan Reject dipilih dari Master Alasan Reject (detail: tahap mana yang bertanggung jawab)
        ↓
-  statusTahap.koreksiStatus = "approved" (otomatis)
-  Bundle TIDAK diblokir
-  Owner hanya bisa lihat + acknowledge (tidak ada tombol REJECT)
+  addKoreksi (jenisKoreksi: 'reject', statusPotongan: 'pending')
+  Gaji karyawan bertanggung jawab DIPOTONG senilai nominalPotongan
+       ↓ Jika diperbaiki:
+  Re-scan bundle → cancelKoreksi() → statusPotongan: 'cancelled' → Potongan dibatalkan
 ```
 
-**Blocking Logic:**
-- Sebelum scan tahap berikut, cek `statusTahap[tahapSebelumKey].koreksiStatus`
-- Jika `"pending"` → scan ditolak: "Bundle menunggu review koreksi"
+**2. QTY Kurang — Hilang / Salah Hitung**
+```
+Scan Selesai → QTY < Target → ModalKoreksiKurang muncul
+       ↓ Pilih Jenis: HILANG atau SALAH HITUNG
+  Sistem otomatis menentukan tahap yang bertanggung jawab (tahap sebelumnya)
+  Gaji karyawan di tahap tsb dipotong secara otomatis
+  TIDAK dapat diperbaiki (permanen)
+```
+
+**3. QTY Lebih — Surplus**
+```
+Scan Selesai → QTY > Target → ModalKoreksiLebih muncul
+       ↓
+  Admin wajib mengisi Alasan Kelebihan
+  addKoreksi (jenisKoreksi: 'lebih', statusApproval: 'menunggu')
+  QTY yang dicatat TETAP di target (bukan aktual)
+  Bundle masuk ke Halaman Approval QTY
+       ↓
+  Owner APPROVE → qtySelesai diupdate ke aktual
+  Owner TOLAK → qtySelesai tetap di target
+```
+
+**Cascading QTY:** `getExpectedQTY(bundle, tahap, koreksiList)` menghitung QTY ekspektasi tahap berikutnya secara dinamis berdasarkan koreksi yang sudah terjadi.
+
+**Validasi Surat Jalan:**
+- Setiap barcode yang discan untuk Surat Jalan memunculkan `ModalKonfirmasiSJ`.
+- Admin input QTY yang dikirim, dibandingkan dengan `qtySelesai` Packing.
+- Jika kurang: muncul peringatan merah **QTY BERKURANG**.
+- Jika lebih: wajib mengisi Alasan Surplus sebelum bisa melanjutkan.
+- Semua selisih dicatat di `SuratJalanItem.alasanSelisih` untuk audit.
 
 ### Gaji Ledger
 - **upah** = hanya dari entri tipe `"selesai"` (jumlah semua total)
@@ -641,8 +661,9 @@ Sistem mendukung **dual role** — satu akun bisa punya lebih dari satu role.
 // Actions: updateBundleStatus, getBundle, blockBundle, unblockBundle
 
 // src/stores/useKoreksiStore.ts
-// Data: koreksiQueue (antrian item pending)
-// Actions: addToQueue, approve, reject, getByStatus
+// Data: koreksiList (semua koreksi QTY)
+// Actions: addKoreksi, cancelKoreksi (re-scan perbaikan), approveKoreksiLebih, rejectKoreksiLebih
+// Selectors: getKoreksiByTahap, getKoreksiByKaryawan, getPendingApproval, getActiveRejectByTahap, getPendingCount
 
 // src/stores/useInventoryStore.ts
 // Data: inventory items, trxKeluar, trxMasuk
@@ -698,11 +719,11 @@ useBundleStore → usePayrollStore
 
 interface StatusTahap {
   status: null | 'terima' | 'selesai';
-  qtyTerima: number;
-  qtySelesai: number;
+  qtyTerima: number | null;
+  qtySelesai: number | null;
   waktuTerima: string | null;
   waktuSelesai: string | null;
-  karyawan: string | null;        // Hanya untuk cutting & jahit
+  karyawan: string | null;        // Semua tahap (bukan hanya cutting & jahit)
   koreksiStatus: null | 'pending' | 'approved' | 'rejected';
   koreksiAlasan: string | null;
 }

@@ -8,7 +8,9 @@ import Button from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
 import { usePOStore } from '@/stores/usePOStore';
 import { useMasterStore } from '@/stores/useMasterStore';
+import { useBundleStore } from '@/stores/useBundleStore';
 import { POItem, PurchaseOrder } from '@/types';
+import BarcodeVisual from '../InputPO/BarcodeVisual';
 import styles from './CuttingRoomView.module.css';
 
 interface CuttingQueueItem extends POItem {
@@ -20,6 +22,7 @@ interface CuttingQueueItem extends POItem {
 export default function CuttingRoomView() {
   const { poList, updateItemCuttingStatus } = usePOStore();
   const { model, warna, sizes } = useMasterStore();
+  const { bundles } = useBundleStore();
   
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
@@ -65,6 +68,11 @@ export default function CuttingRoomView() {
     // 3. Clear selection
     setSelectedIds([]);
   };
+
+  const bundlesToPrint = useMemo(() => {
+    const selectedItems = queue.filter(i => selectedIds.includes(i.id));
+    return bundles.filter(b => selectedItems.some(i => b.po === i.poId && b.model === i.modelId && b.warna === i.warnaId && b.size === i.sizeId));
+  }, [bundles, queue, selectedIds]);
 
   const columns: Column<CuttingQueueItem>[] = [
     { 
@@ -153,6 +161,16 @@ export default function CuttingRoomView() {
           <div className={styles.printFooter}>
              <p>* Harap laporkan input pemakaian bahan setelah cutting selesai.</p>
           </div>
+
+          {bundlesToPrint.length > 0 && (
+            <div style={{ pageBreakBefore: 'always', paddingTop: '20px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+                {bundlesToPrint.map(b => (
+                  <BarcodeVisual key={b.barcode} bundle={b} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </PageWrapper>

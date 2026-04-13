@@ -8,5 +8,5 @@ export * from './finance.types';
 export * from './auth.types';
 export * from './pengiriman.types';
 
-export type { SerahTerimaJahit, SerahTerimaItem } from './production.types';
+export type { SerahTerimaJahit, SerahTerimaItem, KoreksiQTY } from './production.types';
 export type { InventoryBatch } from './inventory.types';

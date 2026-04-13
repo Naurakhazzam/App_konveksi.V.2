@@ -13,6 +13,12 @@ import ScanBarcodeSJ from './ScanBarcodeSJ';
 import FormSuratJalan from './FormSuratJalan';
 import styles from './BuatSuratJalanView.module.css';
 
+interface LocalSJItem {
+  bundle: Bundle;
+  qtySJ: number;
+  alasan?: string;
+}
+
 export default function BuatSuratJalanView() {
   const router = useRouter();
   const { klien } = useMasterStore();
@@ -23,39 +29,41 @@ export default function BuatSuratJalanView() {
   const [selectedKlien, setSelectedKlien] = useState('');
   const [pengirim, setPengirim] = useState('');
   const [catatan, setCatatan] = useState('');
-  const [items, setItems] = useState<Bundle[]>([]);
+  const [localItems, setLocalItems] = useState<LocalSJItem[]>([]);
 
-  const handleBundleFound = (bundle: Bundle) => {
+  const handleBundleFound = (bundle: Bundle, qtySJ: number, alasan?: string) => {
     // Cross-check PO client
     const po = getPOById(bundle.po);
     if (!po || po.klienId !== selectedKlien) {
       alert('Bundel ini bukan milik klien yang dipilih');
       return;
     }
-    setItems(prev => [...prev, bundle]);
+    setLocalItems(prev => [...prev, { bundle, qtySJ, alasan }]);
   };
 
   const handleRemove = (barcode: string) => {
-    setItems(prev => prev.filter(item => item.barcode !== barcode));
+    setLocalItems(prev => prev.filter(item => item.bundle.barcode !== barcode));
   };
 
   const handleSubmit = () => {
-    if (!selectedKlien || items.length === 0) return;
+    if (!selectedKlien || localItems.length === 0) return;
 
-    if (!confirm(`Buat Surat Jalan untuk ${items.length} bundel?`)) return;
+    if (!confirm(`Buat Surat Jalan untuk ${localItems.length} bundel?`)) return;
 
     const sjId = `SJ-${Date.now()}`;
     const nomorSJ = getNextNomorSJ();
     
-    const sjItems: SuratJalanItem[] = items.map(item => ({
-      id: `${sjId}-${item.barcode}`,
-      bundleBarcode: item.barcode,
-      poId: item.po,
-      modelId: item.model,
-      warnaId: item.warna,
-      sizeId: item.size,
-      skuKlien: item.skuKlien,
-      qty: item.qtyBundle
+    const sjItems: SuratJalanItem[] = localItems.map(it => ({
+      id: `${sjId}-${it.bundle.barcode}`,
+      bundleBarcode: it.bundle.barcode,
+      poId: it.bundle.po,
+      modelId: it.bundle.model,
+      warnaId: it.bundle.warna,
+      sizeId: it.bundle.size,
+      skuKlien: it.bundle.skuKlien,
+      qty: it.qtySJ,
+      qtyPacking: it.bundle.statusTahap.packing.qtySelesai || 0,
+      alasanSelisih: it.alasan
     }));
 
     addSuratJalan({
@@ -64,8 +72,8 @@ export default function BuatSuratJalanView() {
       klienId: selectedKlien,
       tanggal: new Date().toISOString(),
       items: sjItems,
-      totalQty: items.reduce((sum, i) => sum + i.qtyBundle, 0),
-      totalBundle: items.length,
+      totalQty: localItems.reduce((sum, i) => sum + i.qtySJ, 0),
+      totalBundle: localItems.length,
       catatan,
       status: 'dikirim',
       dibuatOleh: 'ADMIN',
@@ -73,11 +81,11 @@ export default function BuatSuratJalanView() {
     });
 
     // Update bundles with SJ tracking
-    items.forEach(item => {
-      // We need a way to store SJ ID in bundle. 
-      // Option: use updateStatusTahap if we add a field or create a new bundle store action.
-      // For now, I'll just assume the store has been updated in memory if I had the action.
-      // Re-reading implementation plan: I should add suratJalanId to Bundle.
+    localItems.forEach(it => {
+      updateStatusTahap(it.bundle.barcode, 'packing', {
+        ...it.bundle.statusTahap.packing,
+        // Optional: We could mark as shipped here in the bundle store if needed
+      });
     });
 
     // In a real app we'd need an action: updateBundle(barcode, { suratJalanId: sjId })
@@ -100,9 +108,9 @@ export default function BuatSuratJalanView() {
                   className={styles.select} 
                   value={selectedKlien} 
                   onChange={(e) => {
-                    if (items.length > 0 && !confirm('Mengganti klien akan menghapus daftar bundle. Lanjut?')) return;
+                    if (localItems.length > 0 && !confirm('Mengganti klien akan menghapus daftar bundle. Lanjut?')) return;
                     setSelectedKlien(e.target.value);
-                    setItems([]);
+                    setLocalItems([]);
                   }}
                 >
                   <option value="">-- Pilih Klien --</option>
@@ -136,19 +144,19 @@ export default function BuatSuratJalanView() {
           <ScanBarcodeSJ 
             klienId={selectedKlien} 
             onBundleFound={handleBundleFound}
-            addedBarcodes={items.map(i => i.barcode)}
+            addedBarcodes={localItems.map(i => i.bundle.barcode)}
           />
         </div>
 
         <div className={styles.rightCol}>
-          <Panel title={`Daftar Bundle (${items.length})`}>
-            {items.length === 0 ? (
+          <Panel title={`Daftar Bundle (${localItems.length})`}>
+            {localItems.length === 0 ? (
               <div className={styles.empty}>
                 <p>Belum ada bundle yang di-scan.</p>
                 <p className={styles.hint}>Pilih klien dan scan barcode bundle untuk memulai.</p>
               </div>
             ) : (
-              <FormSuratJalan items={items} onRemove={handleRemove} />
+              <FormSuratJalan items={localItems} onRemove={handleRemove} />
             )}
 
             <div className={styles.actions}>
@@ -156,7 +164,7 @@ export default function BuatSuratJalanView() {
                 variant="primary" 
                 size="lg" 
                 fullWidth 
-                disabled={items.length === 0}
+                disabled={localItems.length === 0}
                 onClick={handleSubmit}
               >
                 🚚 Konfirmasi & Buat Surat Jalan

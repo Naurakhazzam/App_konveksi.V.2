@@ -10,6 +10,8 @@ import { TahapKey, SLUG_TO_KEY, TAHAP_LABEL } from '@/lib/utils/production-helpe
 import { useScanStore, ScanRecord } from '@/stores/useScanStore';
 import ScanInput from './ScanInput';
 import ScanResult from './ScanResult';
+import ListAntrianTahap from './ListAntrianTahap';
+import RejectListTahap from './RejectListTahap';
 import styles from './ScanStationView.module.css';
 
 interface ScanStationViewProps {
@@ -77,7 +79,7 @@ export default function ScanStationView({ tahapSlug }: ScanStationViewProps) {
         
         {/* Area Scan & Hasil */}
         <div className={styles.scanArea}>
-          <Panel title="Scan Barcode">
+          <Panel title="Scan Barcode" overflowVisible={true}>
             <ScanInput onFound={handleFound} onError={handleError} tahap={tahap} />
             {errorMsg && <div className={styles.errorMsg}>{errorMsg}</div>}
           </Panel>
@@ -90,6 +92,10 @@ export default function ScanStationView({ tahapSlug }: ScanStationViewProps) {
             />
           )}
         </div>
+
+        <ListAntrianTahap tahap={tahap} />
+
+        <RejectListTahap tahap={tahap} />
 
         {/* Tabel Riwayat */}
         <Panel title={`Riwayat Scan Hari Ini (${TAHAP_LABEL[tahap]})`}>

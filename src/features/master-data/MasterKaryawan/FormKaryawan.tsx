@@ -5,6 +5,7 @@ import TextInput from '@/components/atoms/Input/TextInput';
 import Select from '@/components/atoms/Select/Select';
 import Button from '@/components/atoms/Button';
 import { Karyawan } from '@/types';
+import { TAHAP_ORDER, TAHAP_LABEL, TahapKey } from '@/lib/utils/production-helpers';
 
 export interface FormKaryawanProps {
   open: boolean;
@@ -17,6 +18,7 @@ export default function FormKaryawan({ open, onClose, initialValues, onSubmit }:
   const [nama, setNama] = useState('');
   const [jabatan, setJabatan] = useState('');
   const [aktif, setAktif] = useState(true);
+  const [tahapList, setTahapList] = useState<string[]>([]);
 
   useEffect(() => {
     if (open) {
@@ -24,18 +26,26 @@ export default function FormKaryawan({ open, onClose, initialValues, onSubmit }:
         setNama(initialValues.nama);
         setJabatan(initialValues.jabatan);
         setAktif(initialValues.aktif);
+        setTahapList(initialValues.tahapList || []);
       } else {
         setNama('');
         setJabatan('');
         setAktif(true);
+        setTahapList([]);
       }
     }
   }, [open, initialValues]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ nama, jabatan, aktif });
+    onSubmit({ nama, jabatan, aktif, tahapList });
     onClose();
+  };
+
+  const toggleTahap = (tahap: string) => {
+    setTahapList(prev => 
+      prev.includes(tahap) ? prev.filter(t => t !== tahap) : [...prev, tahap]
+    );
   };
 
   const jabatanOptions = [
@@ -76,6 +86,34 @@ export default function FormKaryawan({ open, onClose, initialValues, onSubmit }:
               style={{ width: '16px', height: '16px' }}
             />
             <label htmlFor="aktif-checkbox" style={{ fontSize: '14px' }}>Status Aktif</label>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
+            <Label>Tahap Produksi <span style={{ color: 'var(--color-text-sub)', fontSize: '12px' }}>(Posisi Kerja)</span></Label>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: '1fr 1fr', 
+              gap: '12px', 
+              padding: '12px', 
+              background: 'rgba(255,255,255,0.03)', 
+              borderRadius: '8px',
+              border: '1px solid var(--color-border)'
+            }}>
+              {TAHAP_ORDER.map((t) => (
+                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <input 
+                    type="checkbox" 
+                    id={`tahap-${t}`} 
+                    checked={tahapList.includes(t)} 
+                    onChange={() => toggleTahap(t)}
+                    style={{ cursor: 'pointer' }}
+                  />
+                  <label htmlFor={`tahap-${t}`} style={{ fontSize: '13px', cursor: 'pointer' }}>
+                    {TAHAP_LABEL[t]}
+                  </label>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

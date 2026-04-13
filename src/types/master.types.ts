@@ -26,6 +26,7 @@ export interface Karyawan {
   nama: string;
   jabatan: string;
   aktif: boolean;
+  tahapList: string[];
 }
 
 export interface Klien {
@@ -81,4 +82,14 @@ export interface ProdukHPPItem {
   harga: number;
   qty: number;
   qtyFisik?: number;  // BARU: berapa unit FISIK per 1 baju (contoh: 5 kancing per baju)
+}
+
+export interface AlasanReject {
+  id: string;
+  nama: string;                    // e.g., "Rusak Jahitan", "Bolong", "Kain Sobek", "Salah Potong"
+  tahapBertanggungJawab: string;   // Tahap mana yang kena (e.g., 'jahit', 'cutting')
+  bisaDiperbaiki: boolean;         // true = bisa di-scan ulang, false = masuk kerugian permanen
+  dampakPotongan: 'upah_tahap' | 'hpp_po';
+  // 'upah_tahap' = potong upah karyawan di tahap tsb
+  // 'hpp_po' = potong sesuai HPP PO (untuk salah potong kain)
 }

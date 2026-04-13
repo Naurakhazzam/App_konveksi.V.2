@@ -55,29 +55,33 @@
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: var(--color-card);
+  background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: 12px;
   list-style: none;
   margin: 0;
-  padding: 4px 0;
-  z-index: 100;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-  max-height: 220px;
+  padding: 8px 0;
+  z-index: 500;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+  max-height: 250px;
   overflow-y: auto;
 }
 
 .suggestionItem {
-  padding: 10px 16px;
+  padding: 12px 20px;
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 14px;
+  color: var(--color-text);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
 }
 
 .suggestionItem:hover {
-  background: var(--color-card2);
-  color: var(--color-cyan);
+  background: rgba(255,255,255,0.05);
+  color: var(--color-cyan-dim);
+  padding-left: 24px;
+  border-left-color: var(--color-cyan-dim);
 }
 
 @media (max-width: 640px) {

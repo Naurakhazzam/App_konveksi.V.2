@@ -12,12 +12,13 @@ import { useKoreksiStore } from '@/stores/useKoreksiStore';
 import { useScanStore } from '@/stores/useScanStore';
 import {
   TahapKey, TAHAP_ORDER, TAHAP_LABEL, REQUIRES_KARYAWAN,
-  validateCanTerima, getQtyTerima, getTahapStatusIcon
+  validateCanTerima, getQtyTerima, getTahapStatusIcon, getPrevTahap, getExpectedQTY
 } from '@/lib/utils/production-helpers';
 import ModalQtySelesai from './ModalQtySelesai';
 import ModalReject from './ModalReject';
 import ModalPemakaianBahan from './ModalPemakaianBahan';
 import ModalSerahTerimaJahit from './ModalSerahTerimaJahit';
+import { ModalKoreksiKurang, ModalKoreksiLebih, KoreksiKurangResult, KoreksiLebihResult } from './ModalKoreksiQTY';
 import { useSerahTerimaStore } from '@/stores/useSerahTerimaStore';
 import styles from './ScanResult.module.css';
 
@@ -28,17 +29,22 @@ interface ScanResultProps {
 }
 
 export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProps) {
-  const { model, warna, sizes, karyawan } = useMasterStore();
+  const { model, warna, sizes, karyawan, hppKomponen, produkHPPItems } = useMasterStore();
   const { updateStatusTahap } = useBundleStore();
   const { poList, getPemakaianBahan, addPemakaianBahan, updateItemCuttingStatus } = usePOStore();
-  const { addToQueue } = useKoreksiStore();
+  const { addKoreksi, koreksiList } = useKoreksiStore();
   const { addRecord } = useScanStore();
-  
+
   const [showQtyModal, setShowQtyModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [showBahanModal, setShowBahanModal] = useState(false);
   const [showSerahTerima, setShowSerahTerima] = useState(false);
+  const [showKoreksiKurang, setShowKoreksiKurang] = useState(false);
+  const [showKoreksiLebih, setShowKoreksiLebih] = useState(false);
   const [selectedKaryawan, setSelectedKaryawan] = useState('');
+
+  // Pending qty data passed through to koreksi modals
+  const [pendingQtySelesai, setPendingQtySelesai] = useState(0);
 
   const { getByBarcode } = useSerahTerimaStore();
 
@@ -48,18 +54,20 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
 
   const currentStatus = bundle.statusTahap[tahap];
   const validation = validateCanTerima(bundle, tahap);
+
+  // Use cascading QTY as expected instead of raw qtyBundle
+  const expectedQty = getExpectedQTY(bundle, tahap, koreksiList);
   const qtyTerimaDefault = getQtyTerima(bundle, tahap);
+
   const needsKaryawan = REQUIRES_KARYAWAN.includes(tahap);
 
   // Status Cutting Check
-  const po = poList.find(p => p.nomorPO === bundle.po);
+  const po = poList.find(p => p.id === bundle.po);
   const poItem = po?.items.find(i => i.modelId === bundle.model && i.warnaId === bundle.warna && i.sizeId === bundle.size);
-  
-  // Strict logic for Cutting stage
+
   const isCuttingStage = tahap === 'cutting';
   const isCuttingStarted = !isCuttingStage || (poItem?.statusCutting === 'started' || poItem?.statusCutting === 'finished');
-  
-  // Explicit block reason for cutting
+
   let cuttingBlockReason = null;
   if (isCuttingStage) {
     if (!poItem) {
@@ -69,13 +77,21 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     }
   }
 
-  const canTerima = validation.canTerima && 
-                    (!needsKaryawan || !!selectedKaryawan) && 
-                    isCuttingStarted && 
+  const canTerima = validation.canTerima &&
+                    (!needsKaryawan || !!selectedKaryawan) &&
+                    isCuttingStarted &&
                     !cuttingBlockReason;
-                    
+
   const canSelesai = currentStatus.status === 'terima';
   const canReject = currentStatus.status === 'terima' || currentStatus.status === 'selesai';
+
+  // Check active reject pending for this bundle at this tahap (re-scan perbaikan)
+  const activeRejectForThisBundle = koreksiList.filter(
+    k =>
+      k.barcode === bundle.barcode &&
+      k.tahapBertanggungJawab === tahap &&
+      k.statusPotongan === 'pending'
+  );
 
   const handleTerima = () => {
     if (tahap === 'cutting') {
@@ -84,20 +100,18 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         setShowBahanModal(true);
         return;
       }
-      // If bahan exists but we are in cutting, we might still want to prompt for Qty immediately
       setShowQtyModal(true);
       return;
     }
 
     if (tahap === 'jahit' && currentStatus.status === null) {
-      // Check if already handed over
       const existingRecord = getByBarcode(bundle.barcode);
       if (!existingRecord) {
         setShowSerahTerima(true);
         return;
       }
     }
-    
+
     executeTerima(qtyTerimaDefault);
   };
 
@@ -115,7 +129,6 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       karyawan: needsKaryawan ? selectedKaryawan : null,
     });
 
-    // Record to Scan Store
     addRecord({
       id: `SCAN-${Date.now()}`,
       barcode: bundle.barcode,
@@ -143,8 +156,6 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       waktuInput: new Date().toISOString()
     });
     setShowBahanModal(false);
-    
-    // Step 2: Open Qty Modal after Bahan
     if (tahap === 'cutting') {
       setShowQtyModal(true);
     } else {
@@ -152,15 +163,38 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     }
   };
 
-  const handleQtyConfirm = (qtySelesai: number, alasan: string, needsKoreksi: boolean) => {
+  // Hitung nominal potongan berdasarkan jenis dampak
+  const calcNominalPotongan = (
+    dampakPotongan: 'upah_tahap' | 'hpp_po',
+    tahapBertanggungjawab: string,
+    qty: number
+  ): number => {
+    if (dampakPotongan === 'hpp_po') {
+      // HPP per pcs dari PO: pakai semua HPP komponen kategori bahan_baku
+      const bahanKomponen = hppKomponen.filter(k => k.kategori === 'bahan_baku');
+      const totalHPP = bahanKomponen.reduce((sum, k) => {
+        const item = produkHPPItems.find(i => i.komponenId === k.id);
+        return sum + (item ? item.harga * item.qty : 0);
+      }, 0);
+      return totalHPP * qty;
+    }
+    // upah_tahap: cari HPP komponen upah untuk tahap tersebut
+    const tahapLabel = TAHAP_LABEL[tahapBertanggungjawab as TahapKey] || tahapBertanggungjawab;
+    const komponen = hppKomponen.find(k =>
+      k.nama.toLowerCase().includes(tahapLabel.toLowerCase())
+    );
+    if (!komponen) return 0;
+    const hppItem = produkHPPItems.find(i => i.komponenId === komponen.id);
+    return (hppItem?.harga || 0) * qty;
+  };
+
+  const handleQtyConfirm = (qtySelesai: number, alasan: string, needsKoreksiOld: boolean) => {
     const now = new Date().toISOString();
-    
+
     if (tahap === 'cutting' && currentStatus.status === null) {
       if (poItem) {
         updateItemCuttingStatus(poItem.id, 'finished');
       }
-      
-      // Lompat langsung ke Selesai untuk Cutting, catat Qty & Karyawan (Penting untuk Upah)
       updateStatusTahap(bundle.barcode, tahap, {
         status: 'selesai',
         qtyTerima: qtySelesai,
@@ -169,7 +203,6 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         waktuSelesai: now,
         karyawan: selectedKaryawan,
       });
-
       addRecord({
         id: `SCAN-${Date.now()}`,
         barcode: bundle.barcode,
@@ -179,37 +212,47 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         qty: qtySelesai,
         waktu: now
       });
-
       setShowQtyModal(false);
       if (onComplete) onComplete();
       return;
     }
 
-    // Normal 'Selesai' Flow
-    if (needsKoreksi) {
-      addToQueue({
-        id: `KOR-${Date.now()}`,
-        barcode: bundle.barcode,
-        tahap,
-        qtyTarget: currentStatus.qtyTerima || qtyTerimaDefault,
-        qtyAktual: qtySelesai,
-        tipe: 'lebih',
-        alasan: alasan || 'QTY Melebihi target',
-        status: 'pending',
-        diajukanOleh: 'ADMIN',
-        waktuAjukan: now
-      });
+    const qtyTarget = currentStatus.qtyTerima ?? qtyTerimaDefault;
+    const diff = qtySelesai - qtyTarget;
+
+    if (diff < 0) {
+      // QTY KURANG → simpan pending qty, buka modal koreksi kurang
+      setPendingQtySelesai(qtySelesai);
+      setShowQtyModal(false);
+      setShowKoreksiKurang(true);
+      return;
     }
 
+    if (diff > 0) {
+      // QTY LEBIH → buka modal koreksi lebih
+      setPendingQtySelesai(qtySelesai);
+      setShowQtyModal(false);
+      setShowKoreksiLebih(true);
+      return;
+    }
+
+    // QTY tepat → selesai normal
+    executeSelesai(qtySelesai, null, null);
+  };
+
+  const executeSelesai = (
+    qtySelesai: number,
+    koreksiStatus: 'pending' | null,
+    koreksiAlasan: string | null
+  ) => {
+    const now = new Date().toISOString();
     updateStatusTahap(bundle.barcode, tahap, {
       status: 'selesai',
       qtySelesai,
       waktuSelesai: now,
-      koreksiStatus: needsKoreksi ? 'pending' : null,
-      koreksiAlasan: alasan || null,
+      koreksiStatus,
+      koreksiAlasan,
     });
-
-    // Record to Scan Store
     addRecord({
       id: `SCAN-${Date.now()}`,
       barcode: bundle.barcode,
@@ -219,7 +262,115 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       qty: qtySelesai,
       waktu: now
     });
+    if (onComplete) onComplete();
+  };
 
+  const handleKoreksiKurangConfirm = (result: KoreksiKurangResult) => {
+    const qtyTarget = currentStatus.qtyTerima ?? qtyTerimaDefault;
+    const qtyKurang = qtyTarget - pendingQtySelesai;
+    const now = new Date().toISOString();
+
+    // Tentukan tahap bertanggung jawab
+    let tahapBertanggungJawab: string = tahap;
+    let dampakPotongan: 'upah_tahap' | 'hpp_po' = 'upah_tahap';
+
+    if (result.jenisKoreksi === 'reject' && result.alasanReject) {
+      tahapBertanggungJawab = result.alasanReject.tahapBertanggungJawab;
+      dampakPotongan = result.alasanReject.dampakPotongan;
+    } else {
+      // Hilang / salah hitung → tahap sebelumnya
+      const prev = getPrevTahap(tahap);
+      if (prev) tahapBertanggungJawab = prev;
+    }
+
+    // Cari karyawan di tahap yang bertanggungjawab pada bundle ini
+    const statusBertanggungjawab = bundle.statusTahap[tahapBertanggungJawab as TahapKey] || bundle.statusTahap[tahap];
+    const karyawanBertanggungJawab = statusBertanggungjawab?.karyawan || '';
+
+    const nominal = calcNominalPotongan(dampakPotongan, tahapBertanggungJawab, qtyKurang);
+
+    addKoreksi({
+      id: `KOR-${Date.now()}`,
+      barcode: bundle.barcode,
+      poId: bundle.po,
+      tahapDitemukan: tahap,
+      tahapBertanggungJawab,
+      karyawanPelapor: selectedKaryawan || 'ADMIN',
+      karyawanBertanggungJawab,
+      jenisKoreksi: result.jenisKoreksi,
+      alasanRejectId: result.alasanReject?.id,
+      qtyKoreksi: qtyKurang,
+      nominalPotongan: nominal,
+      statusPotongan: 'pending',
+      waktuLapor: now,
+    });
+
+    executeSelesai(
+      pendingQtySelesai,
+      'pending',
+      result.jenisKoreksi === 'reject'
+        ? `Reject: ${result.alasanReject?.nama}`
+        : result.jenisKoreksi === 'hilang'
+        ? 'Hilang'
+        : 'Salah Hitung'
+    );
+  };
+
+  const handleKoreksiLebihConfirm = (result: KoreksiLebihResult) => {
+    const qtyTarget = currentStatus.qtyTerima ?? qtyTerimaDefault;
+    const qtyLebih = pendingQtySelesai - qtyTarget;
+    const now = new Date().toISOString();
+
+    addKoreksi({
+      id: `KOR-${Date.now()}`,
+      barcode: bundle.barcode,
+      poId: bundle.po,
+      tahapDitemukan: tahap,
+      tahapBertanggungJawab: tahap,
+      karyawanPelapor: selectedKaryawan || 'ADMIN',
+      karyawanBertanggungJawab: currentStatus.karyawan || '',
+      jenisKoreksi: 'lebih',
+      alasanLebih: result.alasanLebih,
+      alasanLebihText: result.alasanLebihText,
+      qtyKoreksi: qtyLebih,
+      nominalPotongan: 0,
+      statusPotongan: 'pending',
+      statusApproval: 'menunggu',
+      waktuLapor: now,
+    });
+
+    // QTY tetap sesuai target, bukan qtyLebih, sampai di-approve
+    executeSelesai(
+      qtyTarget,
+      'pending',
+      `QTY Lebih +${qtyLebih} — Menunggu Approval`
+    );
+  };
+
+  // Handle re-scan perbaikan reject
+  const handleSelesaiReScan = () => {
+    const now = new Date().toISOString();
+    activeRejectForThisBundle.forEach(k => {
+      // Cancel koreksi → potongan dibatalkan
+      useKoreksiStore.getState().cancelKoreksi(k.id);
+    });
+    const totalQtyPerbaikan = activeRejectForThisBundle.reduce((s, k) => s + k.qtyKoreksi, 0);
+    updateStatusTahap(bundle.barcode, tahap, {
+      status: 'selesai',
+      qtySelesai: totalQtyPerbaikan,
+      waktuSelesai: now,
+      koreksiStatus: null,
+      koreksiAlasan: null,
+    });
+    addRecord({
+      id: `SCAN-${Date.now()}`,
+      barcode: bundle.barcode,
+      po: bundle.po,
+      tahap,
+      aksi: 'selesai',
+      qty: totalQtyPerbaikan,
+      waktu: now
+    });
     if (onComplete) onComplete();
   };
 
@@ -231,7 +382,15 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         <div className={styles.infoItem}><Label color="sub">Model</Label><span>{modelName}</span></div>
         <div className={styles.infoItem}><Label color="sub">Warna</Label><span>{warnaName}</span></div>
         <div className={styles.infoItem}><Label color="sub">Size</Label><span>{sizeName}</span></div>
-        <div className={styles.infoItem}><Label color="sub">QTY Bundle</Label><strong>{bundle.qtyBundle} pcs</strong></div>
+        <div className={styles.infoItem}>
+          <Label color="sub">QTY Bundle</Label>
+          <strong>
+            {expectedQty !== bundle.qtyBundle
+              ? <><span style={{ textDecoration: 'line-through', opacity: 0.5, marginRight: '6px' }}>{bundle.qtyBundle}</span>{expectedQty} pcs</>
+              : `${bundle.qtyBundle} pcs`
+            }
+          </strong>
+        </div>
         <div className={styles.infoItem}><Label color="sub">Barcode</Label><code className={styles.barcode}>{bundle.barcode}</code></div>
       </div>
 
@@ -250,23 +409,38 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         })}
       </div>
 
-      {/* Validation warning */}
+      {/* Validasi warning */}
       {validation.blockReason && (
         <div className={styles.blockAlert}>⛔ {validation.blockReason}</div>
       )}
-
-      {/* Cutting specific warning */}
       {cuttingBlockReason && (
         <div className={styles.blockAlert}>⚠️ {cuttingBlockReason}</div>
       )}
 
-      {/* Select Karyawan (hanya cutting & jahit) */}
+      {/* Notifikasi reject perbaikan */}
+      {activeRejectForThisBundle.length > 0 && (
+        <div className={styles.blockAlert} style={{ background: 'rgba(245, 158, 11, 0.1)', borderColor: 'rgba(245, 158, 11, 0.4)', color: '#b45309' }}>
+          ⚠️ Bundle ini memiliki <strong>{activeRejectForThisBundle.reduce((s, k) => s + k.qtyKoreksi, 0)} pcs reject</strong> yang perlu diperbaiki.
+          <Button
+            variant="ghost"
+            size="sm"
+            style={{ marginLeft: '12px' }}
+            onClick={handleSelesaiReScan}
+          >
+            ✅ Selesai Diperbaiki
+          </Button>
+        </div>
+      )}
+
+      {/* Select Karyawan */}
       {needsKaryawan && currentStatus.status === null && (
         <div className={styles.karyawanField}>
           <Label>Operator / Karyawan <span className={styles.req}>*</span></Label>
           <select className={styles.select} value={selectedKaryawan} onChange={e => setSelectedKaryawan(e.target.value)}>
             <option value="">-- Pilih karyawan --</option>
-            {karyawan.map(k => <option key={k.id} value={k.id}>{k.nama}</option>)}
+            {karyawan
+              .filter(k => k.aktif && k.tahapList.includes(tahap))
+              .map(k => <option key={k.id} value={k.id}>{k.nama}</option>)}
           </select>
         </div>
       )}
@@ -278,9 +452,9 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
             ✅ Terima
           </Button>
         )}
-        <Button 
-          variant={tahap === 'cutting' ? 'primary' : 'secondary'} 
-          onClick={tahap === 'cutting' ? handleTerima : () => setShowQtyModal(true)} 
+        <Button
+          variant={tahap === 'cutting' ? 'primary' : 'secondary'}
+          onClick={tahap === 'cutting' ? handleTerima : () => setShowQtyModal(true)}
           disabled={tahap === 'cutting' ? !canTerima : !canSelesai}
         >
           🏁 Selesai
@@ -305,7 +479,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         tahap={tahap}
         qtyMax={currentStatus.qtyTerima || qtyTerimaDefault}
       />
-      <ModalPemakaianBahan 
+      <ModalPemakaianBahan
         open={showBahanModal}
         onClose={() => setShowBahanModal(false)}
         artikelNama={`${modelName} - ${warnaName} - ${sizeName}`}
@@ -318,6 +492,20 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         onApprove={handleSerahTerimaApprove}
         bundle={bundle}
         karyawanId={selectedKaryawan}
+      />
+      <ModalKoreksiKurang
+        open={showKoreksiKurang}
+        onClose={() => setShowKoreksiKurang(false)}
+        onConfirm={handleKoreksiKurangConfirm}
+        qtyKurang={(currentStatus.qtyTerima ?? qtyTerimaDefault) - pendingQtySelesai}
+        tahapSaatIni={TAHAP_LABEL[tahap]}
+      />
+      <ModalKoreksiLebih
+        open={showKoreksiLebih}
+        onClose={() => setShowKoreksiLebih(false)}
+        onConfirm={handleKoreksiLebihConfirm}
+        qtyLebih={pendingQtySelesai - (currentStatus.qtyTerima ?? qtyTerimaDefault)}
+        tahapSaatIni={TAHAP_LABEL[tahap]}
       />
     </div>
   );

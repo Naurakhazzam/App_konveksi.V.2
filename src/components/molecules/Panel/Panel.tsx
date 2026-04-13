@@ -11,9 +11,10 @@ export interface PanelProps {
   className?: string;
   sequenceIndex?: number;
   reverse?: boolean;
+  overflowVisible?: boolean;
 }
 
-export default function Panel({ title, children, action, onAction, accent, className, sequenceIndex, reverse }: PanelProps) {
+export default function Panel({ title, children, action, onAction, accent, className, sequenceIndex, reverse, overflowVisible }: PanelProps) {
   const accentStyle = accent ? { borderTopColor: `var(--color-${accent})` } : {};
   
   // Automated simultaneous logic: use sequenceIndex for stable random-offset if provided
@@ -27,7 +28,7 @@ export default function Panel({ title, children, action, onAction, accent, class
   return (
     <div 
       className={`${styles.panel} ${className || ''}`} 
-      style={accentStyle}
+      style={{ ...accentStyle, ...(overflowVisible ? { overflow: 'visible' } : {}) }}
       data-beam-container="true"
     >
       <div className="beam-border" style={beamDelay} aria-hidden="true" />

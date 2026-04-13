@@ -1,6 +1,9 @@
 .modal {
   max-width: 800px;
   width: 95%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
@@ -22,6 +25,8 @@
 
 .content {
   padding: 24px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .bundleInfo {

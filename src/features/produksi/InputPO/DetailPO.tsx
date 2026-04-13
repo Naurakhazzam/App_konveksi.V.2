@@ -21,8 +21,6 @@ export default function DetailPO({ poId }: DetailPOProps) {
   const { klien, model, warna, sizes } = useMasterStore();
   const { success, error, warning } = useToast();
   
-  const [showPrint, setShowPrint] = useState(false);
-
   const po = getPOById(poId);
   const bundles = getBundlesByPO(poId);
 
@@ -50,6 +48,21 @@ export default function DetailPO({ poId }: DetailPOProps) {
 
   // Flatten logic to group per item for summary table
   const itemSummary = po.items.map((item: any) => {
+    const itemBundles = bundles.filter(b => b.po === poId && b.model === item.modelId && b.warna === item.warnaId && b.size === item.sizeId);
+    
+    const sequences = itemBundles.map(b => {
+      const parts = b.barcode.split('-');
+      // format: PO1-MDL-WRN-SZ-00001-BDL01-DD-MM-YY
+      return parseInt(parts[4]) || 0;
+    }).filter(s => s > 0).sort((a,b) => a - b);
+
+    let rentangSeq = '-';
+    if (sequences.length > 0) {
+      const minSeq = sequences[0].toString().padStart(5, '0');
+      const maxSeq = sequences[sequences.length - 1].toString().padStart(5, '0');
+      rentangSeq = minSeq === maxSeq ? minSeq : `${minSeq} - ${maxSeq}`;
+    }
+
     return {
       id: item.id,
       model: model.find(m => m.id === item.modelId)?.nama,
@@ -57,7 +70,8 @@ export default function DetailPO({ poId }: DetailPOProps) {
       size: sizes.find((s: any) => s.id === item.sizeId)?.nama,
       qty: item.qty,
       isiBundle: item.qtyPerBundle,
-      totalBundle: item.jumlahBundle
+      totalBundle: item.jumlahBundle,
+      rentangSeq
     };
   });
 
@@ -67,12 +81,9 @@ export default function DetailPO({ poId }: DetailPOProps) {
     { key: 'size', header: 'Size' },
     { key: 'qty', header: 'QTY Order' },
     { key: 'isiBundle', header: 'Isi/Bundle' },
-    { key: 'totalBundle', header: 'Total Bundle' }
+    { key: 'totalBundle', header: 'Total Bundle' },
+    { key: 'rentangSeq', header: 'Range Seq Global', render: (v) => <MonoText>{v}</MonoText> }
   ];
-
-  if (showPrint) {
-    return <TiketBarcode bundles={bundles} onBack={() => setShowPrint(false)} />;
-  }
 
   return (
     <div className={styles.container}>
@@ -85,9 +96,6 @@ export default function DetailPO({ poId }: DetailPOProps) {
           <div>
             <Button variant="danger" size="sm" onClick={handleDelete} className={styles.deleteBtn}>
               🗑️ Hapus PO
-            </Button>
-            <Button variant="primary" onClick={() => setShowPrint(true)}>
-              🖨️ Cetak Barcode ({bundles.length} Tiket)
             </Button>
           </div>
         </div>

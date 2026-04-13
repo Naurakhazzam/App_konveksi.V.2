@@ -2,70 +2,99 @@ import React from 'react';
 import DataTable, { Column } from '@/components/organisms/DataTable';
 import Badge from '@/components/atoms/Badge';
 import Button from '@/components/atoms/Button';
-import { KoreksiItem } from '@/stores/useKoreksiStore';
-import { TAHAP_LABEL } from '@/lib/utils/production-helpers';
-import { formatRelativeTime } from '@/lib/utils/formatters';
+import { KoreksiQTY } from '@/types';
+import { TAHAP_LABEL, TahapKey } from '@/lib/utils/production-helpers';
 
 interface KoreksiTableProps {
-  items: KoreksiItem[];
-  onApprove: (item: KoreksiItem) => void;
-  onReject: (item: KoreksiItem) => void;
+  items: KoreksiQTY[];
+  onApprove: (item: KoreksiQTY) => void;
+  onReject: (item: KoreksiQTY) => void;
 }
 
+const JENIS_LABEL: Record<string, string> = {
+  reject: 'Reject',
+  hilang: 'Hilang',
+  salah_hitung: 'Salah Hitung',
+  lebih: 'QTY Lebih',
+};
+
 export default function KoreksiTable({ items, onApprove, onReject }: KoreksiTableProps) {
-  const columns: Column<KoreksiItem>[] = [
-    { key: 'barcode', header: 'Barcode', render: (v) => <code style={{ fontSize: '12px' }}>{v}</code> },
-    { key: 'tahap', header: 'Tahap', render: (v) => TAHAP_LABEL[v as keyof typeof TAHAP_LABEL] },
-    { 
-      key: 'qtyTarget', 
-      header: 'QTY (Target | Aktual)', 
-      render: (_, row) => (
-        <span>{row.qtyTarget} pcs | <strong>{row.qtyAktual} pcs</strong></span>
-      )
+  const columns: Column<KoreksiQTY>[] = [
+    {
+      key: 'barcode',
+      header: 'Barcode',
+      render: (v) => <code style={{ fontSize: '12px' }}>{v}</code>,
     },
-    { 
-      key: 'qtyAktual', 
-      header: 'Selisih', 
-      render: (v, row) => {
-        const diff = v - row.qtyTarget;
-        const color = diff > 0 ? 'var(--color-danger)' : 'var(--color-success)';
-        return <span style={{ color, fontWeight: 700 }}>{diff > 0 ? '+' : ''}{diff}</span>;
-      }
+    {
+      key: 'tahapDitemukan',
+      header: 'Tahap',
+      render: (v) => TAHAP_LABEL[v as TahapKey] || v,
     },
-    { key: 'tipe', header: 'Tipe', render: (v) => <Badge variant={v === 'lebih' ? 'warning' : 'info'}>{v}</Badge> },
-    { key: 'alasan', header: 'Alasan' },
-    { 
-      key: 'status', 
-      header: 'Status', 
-      render: (v) => (
-        <Badge variant={v === 'pending' ? 'warning' : v === 'approved' ? 'success' : 'danger'}>
-          {v.toUpperCase()}
-        </Badge>
-      ) 
-    },
-    { 
-      key: 'waktuAjukan', 
-      header: 'Diajukan', 
+    {
+      key: 'qtyKoreksi',
+      header: 'QTY Koreksi',
       render: (v, row) => (
-        <div style={{ fontSize: '12px' }}>
-          <div>{row.diajukanOleh}</div>
-          <div style={{ color: 'var(--color-text-secondary)' }}>{formatRelativeTime(v)}</div>
-        </div>
-      ) 
+        <span>
+          <strong style={{ color: row.jenisKoreksi === 'lebih' ? 'var(--color-danger)' : 'var(--color-warning)' }}>
+            {row.jenisKoreksi === 'lebih' ? '+' : '-'}{v} pcs
+          </strong>
+        </span>
+      ),
+    },
+    {
+      key: 'jenisKoreksi',
+      header: 'Jenis',
+      render: (v) => (
+        <Badge variant={v === 'lebih' ? 'warning' : 'danger'}>
+          {JENIS_LABEL[v] || v}
+        </Badge>
+      ),
+    },
+    {
+      key: 'statusApproval',
+      header: 'Status Approval',
+      render: (v, row) => {
+        if (row.jenisKoreksi !== 'lebih') return <span style={{ opacity: 0.5 }}>—</span>;
+        if (v === 'approved') return <Badge variant="success">Disetujui</Badge>;
+        if (v === 'ditolak') return <Badge variant="danger">Ditolak</Badge>;
+        return <Badge variant="warning">Menunggu</Badge>;
+      },
+    },
+    {
+      key: 'statusPotongan',
+      header: 'Status Potongan',
+      render: (v) => {
+        if (v === 'cancelled') return <Badge variant="success">Dibatalkan</Badge>;
+        if (v === 'applied') return <Badge variant="danger">Diterapkan</Badge>;
+        return <Badge variant="warning">Pending</Badge>;
+      },
+    },
+    {
+      key: 'waktuLapor',
+      header: 'Waktu',
+      render: (v) => (
+        <span style={{ fontSize: '12px', opacity: 0.7 }}>
+          {new Date(v).toLocaleString('id-ID')}
+        </span>
+      ),
     },
     {
       key: 'id',
       header: 'Aksi',
       render: (_, row) => {
-        if (row.status !== 'pending') return null;
+        if (row.jenisKoreksi !== 'lebih' || row.statusApproval !== 'menunggu') return null;
         return (
           <div style={{ display: 'flex', gap: '8px' }}>
-            <Button size="sm" variant="primary" onClick={() => onApprove(row)}>✅ Approve</Button>
-            <Button size="sm" variant="danger" onClick={() => onReject(row)}>❌ Reject</Button>
+            <Button size="sm" variant="primary" onClick={() => onApprove(row)}>
+              ✅ Approve
+            </Button>
+            <Button size="sm" variant="danger" onClick={() => onReject(row)}>
+              ❌ Reject
+            </Button>
           </div>
         );
-      }
-    }
+      },
+    },
   ];
 
   return <DataTable columns={columns} data={items} keyField="id" />;

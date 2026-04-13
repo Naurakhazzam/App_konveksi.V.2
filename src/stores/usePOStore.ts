@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { PurchaseOrder, PemakaianBahan } from '@/types';
 import { useLogStore } from './useLogStore';
 import { useAuthStore } from './useAuthStore';
+import { fixedPOs } from '../data/fixed-testing-data';
 
 interface POState {
   poList: PurchaseOrder[];
@@ -21,8 +22,8 @@ interface POState {
 }
 
 export const usePOStore = create<POState>((set, get) => ({
-  poList: [],
-  globalSequence: 0,
+  poList: fixedPOs,
+  globalSequence: 13,
 
   addPO: (po: PurchaseOrder) => {
     set((state: POState) => ({ poList: [...state.poList, po] }));

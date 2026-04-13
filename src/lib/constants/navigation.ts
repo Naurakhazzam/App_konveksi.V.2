@@ -12,7 +12,7 @@ export const NAV = [
     label: 'Produksi',
     icon: 'Factory',
     color: 'green',
-    subs: ['Input PO', 'Antrian Cutting', 'Cutting', 'Jahit', 'Lubang Kancing', 'Buang Benang', 'QC', 'Steam', 'Packing', 'Monitoring'],
+    subs: ['Input PO', 'Antrian Cutting', 'Cutting', 'Jahit', 'Lubang Kancing', 'Buang Benang', 'QC', 'Steam', 'Packing', 'Monitoring', 'Approval QTY'],
     basePath: '/produksi',
   },
   {
@@ -40,14 +40,14 @@ export const NAV = [
     label: 'Keuangan',
     icon: 'TrendingUp',
     color: 'green',
-    subs: ['Ringkasan', 'Jurnal Umum', 'Laporan Per PO', 'Laporan Per Bulan', 'Laporan Gaji', 'Laporan Reject'],
+    subs: ['Ringkasan', 'Jurnal Umum', 'Laporan Per PO', 'Laporan Per Bulan', 'Laporan Gaji', 'Laporan Koreksi QTY'],
     basePath: '/keuangan',
   },
   {
     label: 'Master Data',
     icon: 'Database',
     color: 'blue',
-    subs: ['Master Detail', 'Produk & HPP', 'Komponen HPP', 'Karyawan', 'Klien', 'Jenis Reject', 'Kategori Transaksi', 'Satuan (UOM)', 'User & Role'],
+    subs: ['Master Detail', 'Produk & HPP', 'Komponen HPP', 'Karyawan', 'Klien', 'Jenis Reject', 'Alasan Reject', 'Kategori Transaksi', 'Satuan (UOM)', 'User & Role'],
     basePath: '/master-data',
   },
   {
@@ -92,6 +92,7 @@ export function getSubPath(basePath: string, subLabel: string): string {
       'Steam': '/produksi/scan/steam',
       'Packing': '/produksi/scan/packing',
       'Monitoring': '/produksi/monitoring',
+      'Approval QTY': '/produksi/approval-qty',
     },
     '/pengiriman': {
       'Buat Surat Jalan': '/pengiriman/buat-surat-jalan',
@@ -113,7 +114,7 @@ export function getSubPath(basePath: string, subLabel: string): string {
       'Laporan Per PO': '/keuangan/laporan-po',
       'Laporan Per Bulan': '/keuangan/laporan-bulan',
       'Laporan Gaji': '/keuangan/laporan-gaji',
-      'Laporan Reject': '/keuangan/laporan-reject',
+      'Laporan Koreksi QTY': '/keuangan/laporan-reject',
     },
     '/master-data': {
       'Master Detail': '/master-data/detail',
@@ -122,6 +123,7 @@ export function getSubPath(basePath: string, subLabel: string): string {
       'Karyawan': '/master-data/karyawan',
       'Klien': '/master-data/klien',
       'Jenis Reject': '/master-data/jenis-reject',
+      'Alasan Reject': '/master-data/alasan-reject',
       'Kategori Transaksi': '/master-data/kategori-transaksi',
       'Satuan (UOM)': '/master-data/satuan',
       'User & Role': '/master-data/user-role',

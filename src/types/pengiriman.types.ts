@@ -6,7 +6,9 @@ export interface SuratJalanItem {
   warnaId: string;
   sizeId: string;
   skuKlien: string;        
-  qty: number;             
+  qty: number;             // Qty yang dikirim di SJ
+  qtyPacking: number;      // Qty hasil akhir packing (sebagai referensi)
+  alasanSelisih?: string;  // Alasan jika qty SJ berbeda dengan qty packing
 }
 
 export interface SuratJalan {

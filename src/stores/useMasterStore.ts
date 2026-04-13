@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { 
-  Kategori, Model, Size, Warna, Karyawan, Klien, JenisReject, KategoriTrx, Satuan, Produk, HPPKomponen, ProdukHPPItem
+import {
+  Kategori, Model, Size, Warna, Karyawan, Klien, JenisReject, KategoriTrx, Satuan, Produk, HPPKomponen, ProdukHPPItem, AlasanReject
 } from '../types';
 import { 
   initialClients, initialKategori, initialModels, initialWarna, initialSizes, initialHPPKomponen, initialProduk, initialProdukHPPItems 
@@ -8,6 +8,14 @@ import {
 import {
   dummyJenisReject, dummyKategoriTrx, dummySatuan
 } from '../data/dummy-master';
+import { fixedEmployees } from '../data/fixed-testing-data';
+
+const initialAlasanReject: AlasanReject[] = [
+  { id: 'RJ-001', nama: 'Rusak Jahitan', tahapBertanggungJawab: 'jahit', bisaDiperbaiki: true, dampakPotongan: 'upah_tahap' },
+  { id: 'RJ-002', nama: 'Bolong', tahapBertanggungJawab: 'jahit', bisaDiperbaiki: true, dampakPotongan: 'upah_tahap' },
+  { id: 'RJ-003', nama: 'Kain Sobek', tahapBertanggungJawab: 'cutting', bisaDiperbaiki: false, dampakPotongan: 'hpp_po' },
+  { id: 'RJ-004', nama: 'Salah Potong Kain', tahapBertanggungJawab: 'cutting', bisaDiperbaiki: false, dampakPotongan: 'hpp_po' },
+];
 
 interface MasterState {
   kategori: Kategori[];
@@ -17,6 +25,7 @@ interface MasterState {
   karyawan: Karyawan[];
   klien: Klien[];
   jenisReject: JenisReject[];
+  alasanReject: AlasanReject[];
   kategoriTrx: KategoriTrx[];
   satuan: Satuan[];
   produk: Produk[];
@@ -53,6 +62,9 @@ interface MasterState {
   addJenisReject: (item: JenisReject) => void;
   updateJenisReject: (id: string, data: Partial<JenisReject>) => void;
   removeJenisReject: (id: string) => void;
+  addAlasanReject: (item: AlasanReject) => void;
+  updateAlasanReject: (id: string, data: Partial<AlasanReject>) => void;
+  removeAlasanReject: (id: string) => void;
   addKategoriTrx: (item: KategoriTrx) => void;
   updateKategoriTrx: (id: string, data: Partial<KategoriTrx>) => void;
   removeKategoriTrx: (id: string) => void;
@@ -81,9 +93,10 @@ export const useMasterStore = create<MasterState>((set, get) => ({
   model: initialModels,
   sizes: initialSizes,
   warna: initialWarna,
-  karyawan: [],
+  karyawan: fixedEmployees,
   klien: initialClients,
   jenisReject: dummyJenisReject,
+  alasanReject: initialAlasanReject,
   kategoriTrx: dummyKategoriTrx,
   satuan: dummySatuan,
   produk: initialProduk,
@@ -138,6 +151,10 @@ export const useMasterStore = create<MasterState>((set, get) => ({
   addJenisReject: (item) => set((state) => ({ jenisReject: [...state.jenisReject, item] })),
   updateJenisReject: (id, data) => set((state) => ({ jenisReject: state.jenisReject.map(i => i.id === id ? { ...i, ...data } : i) })),
   removeJenisReject: (id) => set((state) => ({ jenisReject: state.jenisReject.filter(i => i.id !== id) })),
+
+  addAlasanReject: (item) => set((state) => ({ alasanReject: [...state.alasanReject, item] })),
+  updateAlasanReject: (id, data) => set((state) => ({ alasanReject: state.alasanReject.map(i => i.id === id ? { ...i, ...data } : i) })),
+  removeAlasanReject: (id) => set((state) => ({ alasanReject: state.alasanReject.filter(i => i.id !== id) })),
 
   addKategoriTrx: (item) => set((state) => ({ kategoriTrx: [...state.kategoriTrx, item] })),
   updateKategoriTrx: (id, data) => set((state) => ({ kategoriTrx: state.kategoriTrx.map(i => i.id === id ? { ...i, ...data } : i) })),

@@ -4,94 +4,202 @@
   gap: 24px;
 }
 
-.topRow {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  background: var(--color-bg-secondary);
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.filterGroup {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.select, .input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-text);
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
   gap: 24px;
 }
 
-.summaryCard {
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 12px;
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
 }
 
-.summaryCard span {
-  font-size: 13px;
-  font-weight: 700;
+.statCard {
+  padding: 20px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.statCard::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.statCard[data-type="total"]::after { background: var(--color-text-sub); }
+.statCard[data-type="reject"]::after { background: var(--color-danger); }
+.statCard[data-type="loss"]::after { background: var(--color-warning); }
+.statCard[data-type="surplus"]::after { background: var(--color-success); }
+
+.statLabel {
+  font-size: 12px;
+  font-weight: 600;
   color: var(--color-text-sub);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.summaryCard strong {
-  font-size: 32px;
-  color: var(--color-red);
-  font-family: var(--font-mono);
+.statValue {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-text);
 }
 
-.summaryCard p {
-  font-size: 12px;
+.statSub {
+  font-size: 11px;
   color: var(--color-text-sub);
-  margin: 0;
+  margin-top: 4px;
 }
 
-.chartContainer {
+.financialSummary {
+  background: var(--color-card);
+  border: 2px solid var(--color-border);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.finCol {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 10px 0;
+  gap: 4px;
+  align-items: center;
 }
 
-.chartRow {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.finDivider {
+  width: 1px;
+  height: 40px;
+  background: var(--color-border);
+  margin: 0 24px;
 }
 
-.chartLabel {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
+.redValue { color: #ef4444; font-size: 20px; font-weight: 700; }
+.greenValue { color: #10b981; font-size: 20px; font-weight: 700; }
+.nettValue { font-size: 24px; font-weight: 800; color: var(--color-text); }
+
+.finCol[data-highlight="true"] {
+  background: rgba(255,255,255,0.03);
+  padding: 12px;
+  border-radius: 12px;
 }
 
-.chartLabel span {
-  color: var(--color-text-primary);
-  font-weight: 600;
+.tableWrapper {
+  margin-top: 12px;
 }
 
-.chartLabel strong {
-  color: var(--color-text-secondary);
+.dateCell { color: var(--color-text-sub); font-size: 13px; }
+.barcode { background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; color: var(--color-cyan-dim); }
+
+.redText { color: #ef4444; font-weight: 600; }
+.greenText { color: #10b981; font-weight: 600; }
+.cancelledText { 
+  color: var(--color-text-sub); 
+  text-decoration: line-through; 
+  opacity: 0.5;
 }
 
-.barWrapper {
-  height: 8px;
-  background: var(--color-bg-secondary);
-  border-radius: 4px;
-  overflow: hidden;
+.noPrint { display: flex; }
+.printOnly { display: none; }
+
+@media print {
+  .noPrint { display: none !important; }
+  .printOnly { display: block !important; }
+
+  @page {
+    size: A4 landscape;
+    margin: 1cm;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .container {
+    gap: 15px;
+  }
+
+  .statCard, .financialSummary, .statCard * , .financialSummary * {
+    background: white !important;
+    border-color: #ddd !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+
+  .statCard::after { display: none; }
+
+  .printFooter {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .printSig {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+    font-size: 12px;
+  }
+
+  .sigLine {
+    width: 180px;
+    border-bottom: 1px solid black;
+  }
 }
 
-.bar {
-  height: 100%;
-  background: var(--color-red-dim);
-  border: 1px solid var(--color-red);
-  border-left: none;
-  border-radius: 0 4px 4px 0;
-  transition: width 0.6s ease-out;
-}
-
-.red {
-  color: var(--color-red);
-}
-
-.empty {
-  color: var(--color-text-sub);
-  font-size: 13px;
-  text-align: center;
-  padding: 20px 0;
+@media (max-width: 768px) {
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .filterGroup { flex-direction: column; }
+  .financialSummary { flex-direction: column; gap: 16px; padding: 16px; }
+  .finDivider { width: 100%; height: 1px; margin: 8px 0; }
 }

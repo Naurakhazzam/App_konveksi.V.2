@@ -1,20 +1,25 @@
 import React, { useState } from 'react';
 import { Bundle } from '@/types';
 import { useBundleStore } from '@/stores/useBundleStore';
+import { useMasterStore } from '@/stores/useMasterStore';
 import Panel from '@/components/molecules/Panel';
 import { Label } from '@/components/atoms/Typography';
+import ModalKonfirmasiSJ from './ModalKonfirmasiSJ';
 import styles from './ScanBarcodeSJ.module.css';
 
 interface ScanBarcodeSJProps {
   klienId: string;
-  onBundleFound: (bundle: Bundle) => void;
+  onBundleFound: (bundle: Bundle, qtySJ: number, alasan?: string) => void;
   addedBarcodes: string[];
 }
 
 export default function ScanBarcodeSJ({ klienId, onBundleFound, addedBarcodes }: ScanBarcodeSJProps) {
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [pendingBundle, setPendingBundle] = useState<Bundle | null>(null);
+  
   const { bundles } = useBundleStore();
+  const { model, warna, sizes } = useMasterStore();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,10 +58,24 @@ export default function ScanBarcodeSJ({ klienId, onBundleFound, addedBarcodes }:
       return;
     }
 
-    // Need to check PO for Client matching - we need usePOStore for this
-    // I'll handle PO validation in the parent view for cleaner logic or inject it here.
-    onBundleFound(bundle);
-    setInput('');
+    // Match found
+    setPendingBundle(bundle);
+    setError(null);
+  };
+
+  const handleConfirm = (qty: number, alasan?: string) => {
+    if (pendingBundle) {
+      onBundleFound(pendingBundle, qty, alasan);
+      setPendingBundle(null);
+      setInput('');
+    }
+  };
+
+  const getArtikelNama = (b: Bundle) => {
+    const m = model.find(it => it.id === b.model)?.nama || b.model;
+    const w = warna.find(it => it.id === b.warna)?.nama || b.warna;
+    const s = (sizes as any[]).find(it => it.id === b.size)?.nama || b.size;
+    return `${m} - ${w} - ${s}`;
   };
 
   return (
@@ -78,6 +97,14 @@ export default function ScanBarcodeSJ({ klienId, onBundleFound, addedBarcodes }:
           Mendukung pencarian parsial (Contoh: ketik "00001" untuk mencari bundel seri 1)
         </div>
       </form>
+
+      <ModalKonfirmasiSJ
+        open={!!pendingBundle}
+        onClose={() => setPendingBundle(null)}
+        bundle={pendingBundle}
+        artikelNama={pendingBundle ? getArtikelNama(pendingBundle) : ''}
+        onConfirm={handleConfirm}
+      />
     </Panel>
   );
 }

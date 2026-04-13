@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Bundle, StatusTahap } from '../types';
+import { fixedBundles } from '../data/fixed-testing-data';
 
 export interface RejectRecord {
   id: string;
@@ -36,7 +37,7 @@ const defaultStatus: StatusTahap = {
 };
 
 export const useBundleStore = create<BundleState>((set, get) => ({
-  bundles: [],
+  bundles: fixedBundles,
   rejectRecords: [],
   addBundle: (bundle) => set((state) => ({ bundles: [...state.bundles, bundle] })),
   updateStatusTahap: (barcode, tahap, updates) => set((state) => ({

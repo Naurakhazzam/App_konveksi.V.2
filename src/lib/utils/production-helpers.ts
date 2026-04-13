@@ -1,4 +1,4 @@
-import { Bundle, StatusTahap } from '@/types';
+import { Bundle, StatusTahap, KoreksiQTY } from '@/types';
 
 export type TahapKey = 'cutting' | 'jahit' | 'lkancing' | 'bbenang' | 'qc' | 'steam' | 'packing';
 
@@ -36,7 +36,7 @@ export const KEY_TO_SLUG: Record<TahapKey, string> = {
   packing: 'packing',
 };
 
-export const REQUIRES_KARYAWAN: TahapKey[] = ['cutting', 'jahit'];
+export const REQUIRES_KARYAWAN: TahapKey[] = ['cutting', 'jahit', 'lkancing', 'bbenang', 'qc', 'steam', 'packing'];
 
 /** Ambil tahap sebelumnya */
 export function getPrevTahap(tahap: TahapKey): TahapKey | null {
@@ -202,6 +202,45 @@ export function getWarnings(bundles: Bundle[], stuckThresholdHours: number = 24)
   });
 
   return warnings;
+}
+
+/**
+ * Hitung QTY expected di setiap tahap, mempertimbangkan semua koreksi yang sudah terjadi.
+ * - Koreksi kurang yang masih 'pending' / 'applied' mengurangi QTY.
+ * - Koreksi kurang yang 'cancelled' (sudah diperbaiki) tidak mengurangi QTY.
+ * - Koreksi lebih yang sudah 'approved' menambah QTY.
+ */
+export function getExpectedQTY(
+  bundle: Bundle,
+  tahap: TahapKey,
+  koreksiList: KoreksiQTY[]
+): number {
+  let qty = bundle.qtyBundle;
+  const tahapIndex = TAHAP_ORDER.indexOf(tahap);
+
+  for (let i = 0; i < tahapIndex; i++) {
+    const prevTahap = TAHAP_ORDER[i];
+
+    const koreksiKurang = koreksiList.filter(
+      (k) =>
+        k.barcode === bundle.barcode &&
+        k.tahapDitemukan === prevTahap &&
+        k.jenisKoreksi !== 'lebih' &&
+        k.statusPotongan !== 'cancelled'
+    );
+    koreksiKurang.forEach((k) => (qty -= k.qtyKoreksi));
+
+    const koreksiLebih = koreksiList.filter(
+      (k) =>
+        k.barcode === bundle.barcode &&
+        k.tahapDitemukan === prevTahap &&
+        k.jenisKoreksi === 'lebih' &&
+        k.statusApproval === 'approved'
+    );
+    koreksiLebih.forEach((k) => (qty += k.qtyKoreksi));
+  }
+
+  return Math.max(0, qty);
 }
 
 /** Total bundle yang sudah selesai packing */
