@@ -71,6 +71,13 @@ export const NAV = [
     subs: [],
     basePath: '/panduan',
   },
+  {
+    label: 'Pengaturan',
+    icon: 'Settings',
+    color: 'cyan',
+    subs: [],
+    basePath: '/settings',
+  },
 ];
 
 export function getSubPath(basePath: string, subLabel: string): string {

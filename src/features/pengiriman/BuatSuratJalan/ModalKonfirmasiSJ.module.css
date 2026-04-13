@@ -17,23 +17,35 @@
 
 .bundleInfo {
   background: var(--color-bg-secondary);
-  padding: 16px;
+  padding: 20px;
   border-radius: 12px;
   border: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px;
+  align-items: center; /* Center everything */
+  text-align: center;
+  min-height: 220px; /* Ensure height is stable regardless of text wrapping */
+  justify-content: center;
 }
 
 .dataRow {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column; /* Stack label and value for symmetry */
+  gap: 4px;
   align-items: center;
+  width: 100%;
+}
+
+.dataRow strong, .dataRow span {
+  font-size: 1.05rem;
+  word-break: break-all; /* Prevent long barcodes from breaking layout */
 }
 
 .packingQty {
-  font-size: 1.1rem;
+  font-size: 1.8rem !important; /* Make the main QTY prominent and centered */
   color: var(--color-cyan-dim);
+  font-weight: 800;
 }
 
 .inputSection {
@@ -111,4 +123,45 @@
 
 .req {
   color: #ef4444;
+}
+
+.criticalAlert {
+  background: #7f1d1d; /* Deep red */
+  border: 2px solid #ef4444;
+  border-radius: 12px;
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: pulse 2s infinite ease-in-out;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+}
+
+.criticalAlert strong {
+  font-size: 1.25rem;
+  letter-spacing: 0.1em;
+  color: #ff8a8a;
+}
+
+.criticalAlert .desc {
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.criticalAlert .action {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  background: rgba(0,0,0,0.3);
+  padding: 8px;
+  border-radius: 6px;
+  margin-top: 4px;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+  50% { transform: scale(1.02); box-shadow: 0 0 40px rgba(239, 68, 68, 0.6); }
+  100% { transform: scale(1); box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
 }

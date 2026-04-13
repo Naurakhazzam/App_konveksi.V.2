@@ -12,7 +12,8 @@ import { useKoreksiStore } from '@/stores/useKoreksiStore';
 import { useScanStore } from '@/stores/useScanStore';
 import {
   TahapKey, TAHAP_ORDER, TAHAP_LABEL, REQUIRES_KARYAWAN,
-  validateCanTerima, getQtyTerima, getTahapStatusIcon, getPrevTahap, getExpectedQTY
+  validateCanTerima, getQtyTerima, getTahapStatusIcon, getPrevTahap, getExpectedQTY,
+  getBundleIssueSummary
 } from '@/lib/utils/production-helpers';
 import ModalQtySelesai from './ModalQtySelesai';
 import ModalReject from './ModalReject';
@@ -315,7 +316,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
 
     executeSelesai(
       pendingQtySelesai,
-      'pending',
+      null, // Fixed: Do not block for shortages (Rejects/Lost). Let the remaining pieces move forward.
       result.jenisKoreksi === 'reject'
         ? `Reject: ${result.alasanReject?.nama}`
         : result.jenisKoreksi === 'hilang'
@@ -401,6 +402,31 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         </div>
         <div className={styles.infoItem}><Label color="sub">Barcode</Label><code className={styles.barcode}>{bundle.barcode}</code></div>
       </div>
+
+      {/* Warning Banner untuk Riwayat Masalah (Histori Reject/Hilang) */}
+      {(() => {
+        const issueSummary = getBundleIssueSummary(bundle.barcode, koreksiList);
+        if (!issueSummary) return null;
+        return (
+          <div className={styles.historyAlert}>
+            <div className={styles.alertHeader}>
+              <span className={styles.alertIcon}>🚨</span>
+              <strong>RIWAYAT MASALAH TERDETEKSI</strong>
+            </div>
+            <div className={styles.alertContent}>
+              Bundle ini memiliki catatan pengurangan di tahap sebelumnya:
+              <ul className={styles.issueList}>
+                {issueSummary.split(', ').map((issue, idx) => (
+                  <li key={idx}>⚠️ {issue}</li>
+                ))}
+              </ul>
+              <p className={styles.alertAction}>
+                Harap konfirmasi ke tim terkait dan pastikan jumlah fisik sesuai dengan sistem ({expectedQty} pcs).
+              </p>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Timeline 7 tahap */}
       <div className={styles.timeline}>

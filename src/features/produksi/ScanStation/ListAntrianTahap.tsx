@@ -5,7 +5,8 @@ import { usePOStore } from '@/stores/usePOStore';
 import { useMasterStore } from '@/stores/useMasterStore';
 import DataTable, { Column } from '@/components/organisms/DataTable';
 import Badge from '@/components/atoms/Badge';
-import { TahapKey, TAHAP_ORDER, TAHAP_LABEL } from '@/lib/utils/production-helpers';
+import { useKoreksiStore } from '@/stores/useKoreksiStore';
+import { TahapKey, TAHAP_ORDER, TAHAP_LABEL, getBundleIssueSummary, getExpectedQTY } from '@/lib/utils/production-helpers';
 import Panel from '@/components/molecules/Panel';
 import styles from './ListAntrianTahap.module.css';
 
@@ -76,6 +77,8 @@ export default function ListAntrianTahap({ tahap }: ListAntrianTahapProps) {
     return list;
   }, [bundles, poList, tahap, nextStage, prevStage]);
 
+  const { koreksiList } = useKoreksiStore(); // Get corrections for real qty calculation
+
   const columns: Column<any>[] = [
     { key: 'po', header: 'Nomor PO', render: (val) => <strong>{val}</strong> },
     { 
@@ -93,7 +96,28 @@ export default function ListAntrianTahap({ tahap }: ListAntrianTahapProps) {
       header: 'Barcode', 
       render: (val) => <code style={{ fontSize: '11px' }}>{val}</code> 
     },
-    { key: 'qtyBundle', header: 'Isi (pcs)', align: 'center' },
+    { 
+      key: 'qtyBundle', 
+      header: 'Isi (pcs)', 
+      align: 'center',
+      render: (_, row) => {
+        const expected = getExpectedQTY(row, tahap, koreksiList);
+        const isShort = expected < row.qtyBundle;
+        return (
+          <div style={{ color: isShort ? '#ef4444' : 'inherit', fontWeight: isShort ? 'bold' : 'normal' }}>
+            {expected} {isShort && <small style={{ opacity: 0.7 }}> (Asli: {row.qtyBundle})</small>}
+          </div>
+        );
+      }
+    },
+    {
+      key: 'koreksi',
+      header: 'Keterangan',
+      render: (_, row) => {
+        const summary = getBundleIssueSummary(row.barcode, koreksiList);
+        return summary ? <span style={{ color: '#f59e0b', fontSize: '11px' }}>⚠️ {summary}</span> : <span style={{ opacity: 0.4 }}>-</span>;
+      }
+    },
     { 
       key: 'viewStatus', 
       header: 'Status', 

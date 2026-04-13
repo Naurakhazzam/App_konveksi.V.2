@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useBundleStore } from '@/stores/useBundleStore';
 import { Bundle } from '@/types';
-import { TahapKey, validateCanTerima } from '@/lib/utils/production-helpers';
+import { TahapKey, validateCanTerima, TAHAP_LABEL } from '@/lib/utils/production-helpers';
 import styles from './ScanInput.module.css';
 
 interface ScanInputProps {
@@ -43,18 +43,13 @@ export default function ScanInput({ onFound, onError, tahap }: ScanInputProps) {
     const trimmed = barcode.trim();
     setSuggestions([]);
     if (!trimmed) return;
-    
-    // Coba exact match dulu
+
+    // 1. Cari bundle di seluruh data, bukan hanya yang eligible
     let found = getBundleByBarcode(trimmed);
     
-    // Jika tidak exact, cari partial match di antrian yang valid
+    // 2. Jika tidak exact, cari partial match di seluruh data
     if (!found) {
-      let eligible = bundles;
-      if (tahap) {
-        eligible = bundles.filter(b => validateCanTerima(b, tahap).canTerima || b.statusTahap[tahap].status === 'terima');
-      }
-      const partials = eligible.filter(b => b.barcode.toLowerCase().includes(trimmed.toLowerCase()));
-      
+      const partials = bundles.filter(b => b.barcode.toLowerCase().includes(trimmed.toLowerCase()));
       if (partials.length === 1) {
         found = partials[0];
       } else if (partials.length > 1) {
@@ -64,11 +59,24 @@ export default function ScanInput({ onFound, onError, tahap }: ScanInputProps) {
       }
     }
 
+    // 3. Jika ketemu, baru cek validasi tahap
     if (found) {
-      onFound(found);
-      setValue('');
+      const validation = validateCanTerima(found, tahap || 'cutting');
+      
+      // Jika bundle sudah di-terima (sedang dikerjakan), boleh di-scan
+      const isOngoing = tahap && found.statusTahap[tahap].status === 'terima';
+      const isFinished = tahap && found.statusTahap[tahap].status === 'selesai';
+
+      if (validation.canTerima || isOngoing || isFinished) {
+        onFound(found);
+        setValue('');
+      } else {
+        // TAMPILKAN ALASAN BLOKIR yang spesifik
+        onError(validation.blockReason || `Bundle ini tidak valid di tahap ${tahap ? TAHAP_LABEL[tahap] : ''}`);
+        setValue('');
+      }
     } else {
-      onError(`Bundle dengan kode "${trimmed}" tidak antri di tahap ini / tidak ditemukan.`);
+      onError(`Bundle dengan kode "${trimmed}" tidak ditemukan.`);
       setValue('');
     }
   };
@@ -98,6 +106,10 @@ export default function ScanInput({ onFound, onError, tahap }: ScanInputProps) {
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
+          onBlur={() => {
+            // Delay slightly so onClick on suggestion can trigger before list is removed
+            setTimeout(() => setSuggestions([]), 200);
+          }}
           placeholder="Scan atau ketik barcode bundle…"
           autoFocus
           autoComplete="off"

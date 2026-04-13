@@ -5,10 +5,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999; /* Ensure it is on top of everything including animations */
   backdrop-filter: blur(2px);
   animation: fadeIn 0.15s ease-out;
   padding: 24px;
+  isolation: isolate; /* Create new stacking context */
+  will-change: opacity; /* Prepare GPU for smoother overlay transitions */
+  pointer-events: auto;
 }
 
 .card {

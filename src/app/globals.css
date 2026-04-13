@@ -145,16 +145,17 @@
 }
 
 .beam-border {
+  display: var(--beam-display, block); /* Control visibility from settings */
   pointer-events: none;
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  padding: var(--beam-size);
+  padding: var(--beam-size, 2px);
   background: conic-gradient(
     from var(--beam-angle),
     transparent 85%,
-    var(--beam-color-1) 94%,
-    var(--beam-color-2) 98%,
+    var(--beam-color-1, #ffcf7d) 94%,
+    var(--beam-color-2, #d4a017) 98%,
     transparent
   );
   -webkit-mask: 
@@ -165,9 +166,9 @@
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  filter: var(--beam-glow);
+  filter: var(--beam-glow, blur(0px));
   animation: 
-    beam-rotate var(--beam-duration) linear infinite var(--beam-direction, normal);
+    beam-rotate var(--beam-duration, 4s) linear infinite var(--beam-direction, normal);
   z-index: 10;
 }
 

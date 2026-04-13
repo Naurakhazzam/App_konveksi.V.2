@@ -55,16 +55,19 @@
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: var(--color-bg-secondary);
+  background: var(--color-card); /* Fixed: Use solid color instead of undefined variable */
   border: 1px solid var(--color-border);
   border-radius: 12px;
   list-style: none;
   margin: 0;
   padding: 8px 0;
-  z-index: 500;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+  z-index: 1000; /* Higher z-index to stay above beams */
+  box-shadow: 0 20px 48px rgba(0,0,0,0.5);
   max-height: 250px;
-  overflow-y: auto;
+  overflow-y: scroll; /* Fixed width to prevent flickering when scrollbar appears */
+  backdrop-filter: none !important; 
+  isolation: isolate;
+  backface-visibility: hidden; /* GPU optimization */
 }
 
 .suggestionItem {
@@ -73,15 +76,16 @@
   font-size: 14px;
   color: var(--color-text);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, transform 0.2s, border-color 0.2s;
   border-left: 3px solid transparent;
+  will-change: transform, background;
 }
 
 .suggestionItem:hover {
   background: rgba(255,255,255,0.05);
   color: var(--color-cyan-dim);
-  padding-left: 24px;
   border-left-color: var(--color-cyan-dim);
+  transform: translateX(6px); /* Use transform instead of padding-left to avoid layout shift */
 }
 
 @media (max-width: 640px) {

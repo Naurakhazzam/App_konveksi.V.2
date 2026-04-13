@@ -87,7 +87,6 @@
 .variant-primary:hover:not(:disabled) {
   background: linear-gradient(135deg, rgba(229, 193, 123, 0.6), rgba(229, 193, 123, 0.3));
   box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.8), 0 10px 30px rgba(229, 193, 123, 0.3);
-  transform: translateY(-2px);
 }
 
 .variant-secondary {
@@ -98,7 +97,6 @@
 
 .variant-secondary:hover:not(:disabled) {
   background: var(--color-border);
-  transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -121,7 +119,6 @@
 
 .variant-danger:hover:not(:disabled) {
   background: linear-gradient(135deg, rgba(230, 92, 92, 0.5), rgba(230, 92, 92, 0.2));
-  transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(230, 92, 92, 0.2);
 }
 

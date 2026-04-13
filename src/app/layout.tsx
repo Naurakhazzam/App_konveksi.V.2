@@ -26,6 +26,7 @@ export const metadata: Metadata = {
 };
 
 import { ToastProvider } from "@/components/molecules/Toast";
+import SettingsInjector from "@/components/organisms/SettingsInjector";
 
 export default function RootLayout({
   children,
@@ -36,6 +37,7 @@ export default function RootLayout({
     <html lang="en" className={`${manrope.variable} ${dmSans.variable} ${geistMono.variable}`}>
       <body>
         <ToastProvider>
+          <SettingsInjector />
           {children}
         </ToastProvider>
       </body>

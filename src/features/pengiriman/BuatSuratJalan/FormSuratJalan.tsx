@@ -15,15 +15,15 @@ interface FormSuratJalanProps {
 
 export default function FormSuratJalan({ items, onRemove }: FormSuratJalanProps) {
   const columns: Column<FormSuratJalanProps['items'][0]>[] = [
-    { key: 'sku', header: 'SKU Klien', render: (row) => row.bundle.skuKlien },
-    { key: 'po', header: 'No. PO', render: (row) => row.bundle.po },
-    { key: 'model', header: 'Model', render: (row) => row.bundle.model },
-    { key: 'warna', header: 'Warna', render: (row) => row.bundle.warna },
-    { key: 'size', header: 'Size', render: (row) => row.bundle.size },
+    { key: 'sku', header: 'SKU Klien', render: (_, row) => row.bundle.skuKlien },
+    { key: 'po', header: 'No. PO', render: (_, row) => row.bundle.po },
+    { key: 'model', header: 'Model', render: (_, row) => row.bundle.model },
+    { key: 'warna', header: 'Warna', render: (_, row) => row.bundle.warna },
+    { key: 'size', header: 'Size', render: (_, row) => row.bundle.size },
     { 
       key: 'packing', 
       header: 'Packing (pcs)', 
-      render: (row) => <span style={{ opacity: 0.6 }}>{row.bundle.statusTahap.packing.qtySelesai}</span> 
+      render: (_, row) => <span style={{ opacity: 0.6 }}>{row.bundle.statusTahap.packing.qtySelesai}</span> 
     },
     { 
       key: 'qtySJ', 
@@ -47,7 +47,7 @@ export default function FormSuratJalan({ items, onRemove }: FormSuratJalanProps)
     {
       key: 'action',
       header: 'Aksi',
-      render: (row) => (
+      render: (_, row) => (
         <Button variant="ghost" size="sm" onClick={() => onRemove(row.bundle.barcode)}>
           <span style={{ color: 'var(--color-danger)' }}>❌</span>
         </Button>

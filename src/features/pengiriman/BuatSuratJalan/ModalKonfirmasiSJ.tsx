@@ -76,9 +76,14 @@ export default function ModalKonfirmasiSJ({
           </div>
 
           {isShortage && (
-            <div className={styles.warningBox}>
-              ⚠️ <strong>QTY BERKURANG</strong><br />
-              Barang yang dikirim lebih sedikit dari hasil packing (Kurang {qtyPacking - qtySJ} pcs).
+            <div className={styles.criticalAlert}>
+              <strong>⚠️ PERINGATAN! BUNDEL INI MENGALAMI PENGURANGAN QTY!</strong>
+              <div className={styles.desc}>
+                Barang yang dikirim lebih sedikit dari hasil packing (Kurang {qtyPacking - qtySJ} pcs).
+              </div>
+              <div className={styles.action}>
+                HARAP SEGERA KOORDINASI DENGAN TIM PACKING ATAU ADMIN SEBELUM MELANJUTKAN!
+              </div>
             </div>
           )}
 

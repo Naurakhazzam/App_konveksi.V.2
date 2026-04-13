@@ -31,6 +31,7 @@ export interface DataTableProps<T> {
   sortDirection?: 'asc' | 'desc';
   sequenceIndex?: number;
   reverse?: boolean;
+  hideBeam?: boolean;
 }
 
 const tbodyVariants = {
@@ -58,7 +59,8 @@ export default function DataTable<T extends Record<string, any>>({
   sortKey,
   sortDirection,
   sequenceIndex,
-  reverse = true, // Automatically reverse ALL tables for global harmony
+  reverse = true,
+  hideBeam = false,
 }: DataTableProps<T>) {
   // Automated simultaneous logic: use sequenceIndex for stable random-offset if provided
   const index = sequenceIndex ?? 0;
@@ -74,7 +76,7 @@ export default function DataTable<T extends Record<string, any>>({
       style={{ maxHeight, overflowY: maxHeight ? 'auto' : 'visible', position: 'relative' }}
       data-beam-container="true"
     >
-      <div className="beam-border" style={beamDelay} aria-hidden="true" />
+      {!hideBeam && <div className="beam-border" style={beamDelay} aria-hidden="true" />}
       <div className={styles.tableWrapper}>
         <table className={`${styles.table} ${striped ? styles.striped : ''} ${compact ? styles.compact : ''}`}>
           <DataTableHeader 

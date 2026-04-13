@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './Modal.module.css';
 
 export interface ModalProps {
@@ -18,8 +19,10 @@ export default function Modal({
   closeOnBackdrop = true, 
   closeOnEsc = true 
 }: ModalProps) {
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     if (!open) return;
     
     // Store original overflow
@@ -39,13 +42,13 @@ export default function Modal({
     };
   }, [open, closeOnEsc, onClose]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
-  const handleBackdropClick = () => {
+  const handleBackdropClick = (e: React.MouseEvent) => {
     if (closeOnBackdrop) onClose();
   };
 
-  return (
+  const modalContent = (
     <div className={styles.overlay} onMouseDown={handleBackdropClick}>
       <div 
         className={`${styles.card} ${styles[`size-${size}`]}`} 
@@ -55,4 +58,6 @@ export default function Modal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

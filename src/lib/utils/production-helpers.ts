@@ -286,3 +286,14 @@ export function getBundlesByFlowState(
     return bundles.filter(b => b.statusTahap[currentStage].status === 'terima');
   }
 }
+
+/** Ringkasan masalah (reject/hilang) untuk suatu bundle */
+export function getBundleIssueSummary(barcode: string, koreksiList: KoreksiQTY[]): string {
+  const issues = koreksiList.filter(k => k.barcode === barcode && k.jenisKoreksi !== 'lebih' && k.statusPotongan !== 'cancelled');
+  if (issues.length === 0) return '';
+  
+  return issues.map(k => {
+    const tahap = TAHAP_LABEL[k.tahapDitemukan as TahapKey] || k.tahapDitemukan;
+    return `${k.qtyKoreksi} pcs (${tahap}: ${k.jenisKoreksi})`;
+  }).join(', ');
+}
