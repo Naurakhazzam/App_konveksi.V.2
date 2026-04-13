@@ -15,15 +15,15 @@ interface FormSuratJalanProps {
 
 export default function FormSuratJalan({ items, onRemove }: FormSuratJalanProps) {
   const columns: Column<FormSuratJalanProps['items'][0]>[] = [
-    { key: 'bundle', header: 'SKU Klien', render: (b) => b.skuKlien },
-    { key: 'bundle', header: 'No. PO', render: (b) => b.po },
-    { key: 'bundle', header: 'Model', render: (b) => b.model },
-    { key: 'bundle', header: 'Warna', render: (b) => b.warna },
-    { key: 'bundle', header: 'Size', render: (b) => b.size },
+    { key: 'sku', header: 'SKU Klien', render: (row) => row.bundle.skuKlien },
+    { key: 'po', header: 'No. PO', render: (row) => row.bundle.po },
+    { key: 'model', header: 'Model', render: (row) => row.bundle.model },
+    { key: 'warna', header: 'Warna', render: (row) => row.bundle.warna },
+    { key: 'size', header: 'Size', render: (row) => row.bundle.size },
     { 
-      key: 'bundle', 
+      key: 'packing', 
       header: 'Packing (pcs)', 
-      render: (b) => <span style={{ opacity: 0.6 }}>{b.statusTahap.packing.qtySelesai}</span> 
+      render: (row) => <span style={{ opacity: 0.6 }}>{row.bundle.statusTahap.packing.qtySelesai}</span> 
     },
     { 
       key: 'qtySJ', 
@@ -45,21 +45,26 @@ export default function FormSuratJalan({ items, onRemove }: FormSuratJalanProps)
       }
     },
     {
-      key: 'bundle',
+      key: 'action',
       header: 'Aksi',
-      render: (b) => (
-        <Button variant="ghost" size="sm" onClick={() => onRemove(b.barcode)}>
+      render: (row) => (
+        <Button variant="ghost" size="sm" onClick={() => onRemove(row.bundle.barcode)}>
           <span style={{ color: 'var(--color-danger)' }}>❌</span>
         </Button>
       )
     }
   ];
 
+  const tableData = items.map(item => ({
+    ...item,
+    id: item.bundle.barcode // Flat ID for DataTable keyField
+  }));
+
   const totalQty = items.reduce((sum, item) => sum + item.qtySJ, 0);
 
   return (
     <div className={styles.container}>
-      <DataTable columns={columns} data={items} keyField="barcode" />
+      <DataTable columns={columns} data={tableData} keyField="id" />
       
       <div className={styles.footer}>
         <div className={styles.stat}>

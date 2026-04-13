@@ -40,9 +40,10 @@ export default function RejectListTahap({ tahap }: RejectListTahapProps) {
       render: (val) => <code style={{ fontSize: '11px' }}>{val}</code>,
     },
     {
-      key: 'barcode',
+      key: 'artikel',
       header: 'Artikel',
-      render: (val) => {
+      render: (_, row) => {
+        const val = row.barcode;
         const bundle = bundles.find(b => b.barcode === val);
         if (!bundle) return <span style={{ opacity: 0.5 }}>—</span>;
         return <span style={{ fontSize: '13px' }}>{bundle.po} / {bundle.model}</span>;

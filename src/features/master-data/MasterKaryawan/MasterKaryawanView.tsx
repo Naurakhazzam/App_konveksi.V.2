@@ -53,7 +53,8 @@ export default function MasterKaryawanView() {
         id: `KRY-${Date.now()}`,
         nama: data.nama!,
         jabatan: data.jabatan!,
-        aktif: data.aktif !== undefined ? data.aktif : true
+        aktif: data.aktif !== undefined ? data.aktif : true,
+        tahapList: data.tahapList || []
       });
     }
   };
