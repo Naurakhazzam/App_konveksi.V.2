@@ -17,6 +17,8 @@ import {
 import ModalQtySelesai from './ModalQtySelesai';
 import ModalReject from './ModalReject';
 import ModalPemakaianBahan from './ModalPemakaianBahan';
+import ModalSerahTerimaJahit from './ModalSerahTerimaJahit';
+import { useSerahTerimaStore } from '@/stores/useSerahTerimaStore';
 import styles from './ScanResult.module.css';
 
 interface ScanResultProps {
@@ -35,7 +37,10 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
   const [showQtyModal, setShowQtyModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [showBahanModal, setShowBahanModal] = useState(false);
+  const [showSerahTerima, setShowSerahTerima] = useState(false);
   const [selectedKaryawan, setSelectedKaryawan] = useState('');
+
+  const { getByBarcode } = useSerahTerimaStore();
 
   const modelName = model.find(m => m.id === bundle.model)?.nama || bundle.model;
   const warnaName = warna.find(w => w.id === bundle.warna)?.nama || bundle.warna;
@@ -83,7 +88,21 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       setShowQtyModal(true);
       return;
     }
+
+    if (tahap === 'jahit' && currentStatus.status === null) {
+      // Check if already handed over
+      const existingRecord = getByBarcode(bundle.barcode);
+      if (!existingRecord) {
+        setShowSerahTerima(true);
+        return;
+      }
+    }
     
+    executeTerima(qtyTerimaDefault);
+  };
+
+  const handleSerahTerimaApprove = () => {
+    setShowSerahTerima(false);
     executeTerima(qtyTerimaDefault);
   };
 
@@ -292,6 +311,13 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         artikelNama={`${modelName} - ${warnaName} - ${sizeName}`}
         poNomor={bundle.po}
         onConfirm={handleBahanConfirm}
+      />
+      <ModalSerahTerimaJahit
+        open={showSerahTerima}
+        onClose={() => setShowSerahTerima(false)}
+        onApprove={handleSerahTerimaApprove}
+        bundle={bundle}
+        karyawanId={selectedKaryawan}
       />
     </div>
   );
