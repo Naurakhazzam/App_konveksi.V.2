@@ -13,6 +13,8 @@ import { KoreksiQTY } from '@/types';
 import { TAHAP_LABEL, TahapKey } from '@/lib/utils/production-helpers';
 import { useToast } from '@/components/molecules/Toast';
 import KpiRow from '@/components/organisms/KpiRow';
+import KpiCard from '@/components/molecules/KpiCard';
+import { Clock, CheckCircle, XCircle } from 'lucide-react';
 import styles from './ApprovalQTYView.module.css';
 
 const ALASAN_LEBIH_LABEL: Record<string, string> = {
@@ -225,31 +227,26 @@ export default function ApprovalQTYView() {
       subtitle="Permintaan persetujuan penambahan QTY melebihi target PO"
     >
       <div className={styles.container}>
-        <KpiRow
-          items={[
-            {
-              label: 'Menunggu Approval',
-              value: pending.length,
-              unit: 'Bundle',
-              color: 'warning',
-              icon: 'Clock'
-            },
-            {
-              label: 'Total Disetujui',
-              value: approved.length,
-              unit: 'Bundle',
-              color: 'success',
-              icon: 'CheckCircle'
-            },
-            {
-              label: 'Total Ditolak',
-              value: rejected.length,
-              unit: 'Bundle',
-              color: 'danger',
-              icon: 'XCircle'
-            }
-          ]}
-        />
+        <KpiRow columns={3}>
+          <KpiCard
+            label="Menunggu Approval"
+            value={pending.length}
+            accent="yellow"
+            icon={<Clock size={20} />}
+          />
+          <KpiCard
+            label="Total Disetujui"
+            value={approved.length}
+            accent="green"
+            icon={<CheckCircle size={20} />}
+          />
+          <KpiCard
+            label="Total Ditolak"
+            value={rejected.length}
+            accent="red"
+            icon={<XCircle size={20} />}
+          />
+        </KpiRow>
 
         {pending.length > 0 && (
           <div className={styles.alertBanner}>
