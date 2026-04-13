@@ -16,7 +16,7 @@ import FormBahanBaku from './FormBahanBaku';
 import styles from './OverviewStokView.module.css';
 
 export default function OverviewStokView() {
-  const { items, addItem } = useInventoryStore();
+  const { items, addItem, batches, getHargaRataRata } = useInventoryStore();
   const { satuan } = useMasterStore();
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState('');
@@ -25,16 +25,17 @@ export default function OverviewStokView() {
 
   const stats = useMemo(() => {
     const totalJenis = items.length;
-    const totalNilaiStok = items.reduce((acc, curr) => acc + (curr.stokAktual * (curr.hargaSatuan || 0)), 0);
+    // Calculate total stock value from active batches
+    const totalNilaiStok = batches.reduce((acc, curr) => acc + ((curr.qty - curr.qtyTerpakai) * curr.hargaSatuan), 0);
     const rendah = items.filter(i => i.stokAktual <= i.stokMinimum).length;
     
     return { totalJenis, totalNilaiStok, rendah };
-  }, [items]);
+  }, [items, batches]);
 
   const kpiRow = (
     <div className={styles.kpiRow}>
       <KpiCard label="Total Jenis Bahan" value={stats.totalJenis} accent="blue" />
-      <KpiCard label="Total Nilai Stok (HPP)" value={formatRupiah(stats.totalNilaiStok)} accent="cyan" />
+      <KpiCard label="Total Nilai Stok (HPP Real)" value={formatRupiah(stats.totalNilaiStok)} accent="cyan" />
       <KpiCard label="Bahan Hampir Habis" value={stats.rendah} accent="yellow" />
     </div>
   );
@@ -70,9 +71,9 @@ export default function OverviewStokView() {
       render: (v) => satuan.find(s => s.id === v)?.nama || v 
     },
     { 
-      key: 'hargaSatuan', 
-      header: 'Harga (HPP)', 
-      render: (v) => formatRupiah(v || 0)
+      key: 'id', 
+      header: 'Harga (Avg HPP)', 
+      render: (v) => formatRupiah(getHargaRataRata(v))
     },
     { 
       key: 'stokAktual', 

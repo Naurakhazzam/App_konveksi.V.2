@@ -5,7 +5,17 @@ export interface InventoryItem {
   satuanId: string;
   stokAktual: number;
   stokMinimum: number;
-  hargaSatuan?: number;
+}
+
+export interface InventoryBatch {
+  id: string;
+  itemId: string;
+  invoiceNo: string;
+  qty: number;
+  qtyTerpakai: number;
+  hargaSatuan: number;
+  tanggal: string;
+  keterangan?: string;
 }
 
 export interface TransaksiMasuk {
@@ -24,4 +34,8 @@ export interface TransaksiKeluar {
   tanggal: string;
   referensiPO: string;
   keterangan: string;
+  fifoData?: {
+    totalCost: number;
+    consumedBatches: { batchId: string; qty: number; harga: number }[];
+  };
 }

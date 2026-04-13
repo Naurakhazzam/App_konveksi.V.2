@@ -23,8 +23,7 @@ export default function FormBahanBaku({ onClose, onConfirm, item }: FormBahanBak
     jenisBahan: 'kain',
     satuanId: '',
     stokAktual: 0,
-    stokMinimum: 0,
-    hargaSatuan: 0
+    stokMinimum: 0
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -105,19 +104,6 @@ export default function FormBahanBaku({ onClose, onConfirm, item }: FormBahanBak
                   required
                 />
               </div>
-            </div>
-
-            <div className={styles.field}>
-              <Label>Harga per Satuan (HPP)</Label>
-              <input 
-                type="number" 
-                className={styles.input} 
-                value={formData.hargaSatuan} 
-                onChange={e => setFormData(p => ({ ...p, hargaSatuan: Number(e.target.value) }))}
-                placeholder="0"
-                min="0"
-              />
-              <span className={styles.hint}>Digunakan untuk kalkulasi total nilai inventaris.</span>
             </div>
           </div>
         </ModalBody>

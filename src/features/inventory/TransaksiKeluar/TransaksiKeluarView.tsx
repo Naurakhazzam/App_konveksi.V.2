@@ -8,7 +8,7 @@ import DataTable, { Column } from '@/components/organisms/DataTable';
 import Pagination from '@/components/atoms/Pagination';
 import { useInventoryStore } from '@/stores/useInventoryStore';
 import { TransaksiKeluar } from '@/types';
-import { formatDate } from '@/lib/utils/formatters';
+import { formatDate, formatRupiah } from '@/lib/utils/formatters';
 import ModalTransaksiKeluar from './ModalTransaksiKeluar';
 import styles from './TransaksiKeluarView.module.css';
 
@@ -32,7 +32,7 @@ export default function TransaksiKeluarView() {
     { key: 'tanggal', header: 'Tanggal', render: (v) => formatDate(v) },
     { 
       key: 'itemId', 
-      header: 'Nama Barang', 
+      header: 'Nama Bahan Baku', 
       render: (v) => items.find(i => i.id === v)?.nama || v 
     },
     { 
@@ -41,6 +41,11 @@ export default function TransaksiKeluarView() {
       render: (v, row) => (
         <span className={styles.qty}>
           {v} {items.find(i => i.id === row.itemId)?.satuanId || ''}
+          {row.fifoData && (
+            <div className={styles.hppInfo}>
+              (HPP: {formatRupiah(row.fifoData.totalCost)})
+            </div>
+          )}
         </span>
       )
     },

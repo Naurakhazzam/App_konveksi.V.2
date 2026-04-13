@@ -6,6 +6,7 @@ import Button from '@/components/atoms/Button';
 import { Label } from '@/components/atoms/Typography';
 import { useInventoryStore } from '@/stores/useInventoryStore';
 import { usePOStore } from '@/stores/usePOStore';
+import { formatRupiah } from '@/lib/utils/formatters';
 import styles from './ModalTransaksiKeluar.module.css';
 
 interface ModalTransaksiKeluarProps {
@@ -14,7 +15,7 @@ interface ModalTransaksiKeluarProps {
 }
 
 export default function ModalTransaksiKeluar({ onClose, onConfirm }: ModalTransaksiKeluarProps) {
-  const { items } = useInventoryStore();
+  const { items, consumeFIFO } = useInventoryStore();
   const { poList } = usePOStore();
   
   const [formData, setFormData] = useState({
@@ -33,21 +34,30 @@ export default function ModalTransaksiKeluar({ onClose, onConfirm }: ModalTransa
     if (!formData.itemId || formData.qty <= 0) return;
     
     if (selectedItem && formData.qty > selectedItem.stokAktual) {
-      alert(`Stok tidak mencukupi! Maksimal: ${selectedItem.stokAktual}`);
+      alert(`Stok tidak mencukupi! Tersedia: ${selectedItem.stokAktual}`);
       return;
     }
 
-    onConfirm(formData);
+    // Process FIFO and get real Cost (HPP)
+    const { totalCost, consumedBatches } = consumeFIFO(formData.itemId, formData.qty);
+
+    onConfirm({
+      ...formData,
+      fifoData: {
+        totalCost,
+        consumedBatches
+      }
+    });
   };
 
   return (
     <Modal open={true} onClose={onClose} size="md">
       <form onSubmit={handleSubmit}>
-        <ModalHeader title="Catat Pemakaian (Out)" onClose={onClose} />
+        <ModalHeader title="Catat Pemakaian (FIFO Out)" onClose={onClose} />
         <ModalBody>
           <div className={styles.container}>
             <div className={styles.field}>
-              <Label>Pilih Barang</Label>
+              <Label>Pilih Bahan Baku</Label>
               <select 
                 className={styles.input}
                 value={formData.itemId}
@@ -70,6 +80,8 @@ export default function ModalTransaksiKeluar({ onClose, onConfirm }: ModalTransa
                   value={formData.qty}
                   onChange={e => setFormData(p => ({ ...p, qty: Number(e.target.value) }))}
                   max={selectedItem?.stokAktual}
+                  min="0"
+                  step="0.01"
                   required
                 />
               </div>
@@ -81,7 +93,7 @@ export default function ModalTransaksiKeluar({ onClose, onConfirm }: ModalTransa
                   onChange={e => setFormData(p => ({ ...p, referensiPO: e.target.value }))}
                 >
                   <option value="">-- Umum --</option>
-                  {poList.map((p: any) => <option key={p.id} value={p.noPO}>{p.noPO}</option>)}
+                  {poList.map((p: any) => <option key={p.id} value={p.nomorPO}>{p.nomorPO}</option>)}
                 </select>
               </div>
             </div>
@@ -98,8 +110,8 @@ export default function ModalTransaksiKeluar({ onClose, onConfirm }: ModalTransa
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button variant="ghost" onClick={onClose}>Batal</Button>
-          <Button variant="primary" type="submit">Catat Transaksi</Button>
+          <Button variant="ghost" onClick={onClose} type="button">Batal</Button>
+          <Button variant="primary" type="submit">Catat Transaksi (FIFO)</Button>
         </ModalFooter>
       </form>
     </Modal>

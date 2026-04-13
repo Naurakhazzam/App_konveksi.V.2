@@ -17,3 +17,11 @@
   font-family: var(--font-mono);
   font-size: 11px;
 }
+
+.hppInfo {
+  font-size: 10px;
+  color: var(--color-text-sub, #9aa0a6);
+  font-style: italic;
+  font-weight: 400;
+  margin-top: 2px;
+}

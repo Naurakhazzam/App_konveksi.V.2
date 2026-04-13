@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '@/components/organisms/Modal';
 import Button from '@/components/atoms/Button';
 import { Label } from '@/components/atoms/Typography';
@@ -8,6 +8,7 @@ import { useMasterStore } from '@/stores/useMasterStore';
 import { usePOStore } from '@/stores/usePOStore';
 import { useInventoryStore } from '@/stores/useInventoryStore';
 import { JenisTransaksi } from '@/types';
+import { formatRupiah } from '@/lib/utils/formatters';
 import styles from './ModalTambahJurnal.module.css';
 
 interface ModalTambahJurnalProps {
@@ -16,9 +17,9 @@ interface ModalTambahJurnalProps {
 }
 
 export default function ModalTambahJurnal({ onClose, onConfirm }: ModalTambahJurnalProps) {
-  const { kategoriTrx } = useMasterStore();
+  const { kategoriTrx, satuan } = useMasterStore();
   const { poList } = usePOStore();
-  const { items: inventoryItems, addTrxMasuk } = useInventoryStore();
+  const { items: inventoryItems, addBatch, generateInvoiceNo } = useInventoryStore();
   
   const [formData, setFormData] = useState({
     id: `JRN-${Date.now()}`,
@@ -31,36 +32,72 @@ export default function ModalTambahJurnal({ onClose, onConfirm }: ModalTambahJur
     poId: '',
     keterangan: '',
     inventoryItemId: '',
-    inventoryQty: 0
+    inventoryQty: 0,
+    pricePerUnit: 0
   });
 
   const selectedKategori = kategoriTrx.find(k => k.id === formData.kategoriTrxId);
   const isBahanBaku = selectedKategori?.jenis === 'direct_bahan';
   const isUpah = selectedKategori?.jenis === 'direct_upah';
+  
+  const selectedItem = useMemo(() => 
+    inventoryItems.find(i => i.id === formData.inventoryItemId),
+  [formData.inventoryItemId, inventoryItems]);
+
+  const itemSatuan = useMemo(() => 
+    satuan.find(s => s.id === selectedItem?.satuanId)?.nama || '',
+  [selectedItem, satuan]);
+
+  // Auto-generate invoice number when isBahanBaku becomes true
+  useEffect(() => {
+    if (isBahanBaku && !formData.noFaktur) {
+      setFormData(prev => ({ ...prev, noFaktur: generateInvoiceNo() }));
+    }
+  }, [isBahanBaku, generateInvoiceNo, formData.noFaktur]);
+
+  // Auto-calculate nominal
+  useEffect(() => {
+    if (isBahanBaku) {
+      setFormData(prev => ({ ...prev, nominal: prev.inventoryQty * prev.pricePerUnit }));
+    }
+  }, [isBahanBaku, formData.inventoryQty, formData.pricePerUnit]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.kategoriTrxId || formData.nominal <= 0) return;
+    if (!formData.kategoriTrxId) return;
+    if (formData.nominal <= 0 && !isUpah) return;
+
     if (isBahanBaku && (!formData.inventoryItemId || formData.inventoryQty <= 0)) {
       alert('Untuk pembelian bahan, mohon pilih item inventory dan jumlahnya.');
       return;
     }
 
     const jurnalId = formData.id;
+    
+    // Construct detailed description for materials
+    let finalKeterangan = formData.keterangan;
+    if (isBahanBaku && selectedItem) {
+      const detailStr = `${selectedItem.nama} — ${formData.inventoryQty} ${itemSatuan} @ ${formatRupiah(formData.pricePerUnit)}`;
+      finalKeterangan = finalKeterangan ? `${detailStr} | ${finalKeterangan}` : detailStr;
+    }
+
     const finalData = {
       ...formData,
-      jenis: selectedKategori?.jenis || 'overhead'
+      jenis: selectedKategori?.jenis || 'overhead',
+      keterangan: finalKeterangan
     };
 
-    // Integrasi Inventory
+    // Integrasi Inventory Batch (FIFO)
     if (isBahanBaku && formData.inventoryItemId) {
-      addTrxMasuk({
-        id: `TRXM-${Date.now()}`,
+      addBatch({
+        id: `BATCH-${Date.now()}`,
         itemId: formData.inventoryItemId,
+        invoiceNo: formData.noFaktur,
         qty: formData.inventoryQty,
+        qtyTerpakai: 0,
+        hargaSatuan: formData.pricePerUnit,
         tanggal: formData.tanggal,
-        jurnalId: jurnalId,
-        keterangan: `Masuk dari Jurnal: ${formData.keterangan}`
+        keterangan: finalKeterangan
       });
     }
 
@@ -112,6 +149,7 @@ export default function ModalTambahJurnal({ onClose, onConfirm }: ModalTambahJur
                   className={styles.input}
                   value={formData.nominal}
                   onChange={e => setFormData(p => ({ ...p, nominal: Number(e.target.value) }))}
+                  readOnly={isBahanBaku}
                   required
                 />
               </div>
@@ -146,6 +184,13 @@ export default function ModalTambahJurnal({ onClose, onConfirm }: ModalTambahJur
                     </select>
                   </div>
                   <div className={styles.field}>
+                    <Label>Satuan</Label>
+                    <input type="text" className={styles.input} value={itemSatuan || '—'} readOnly tabIndex={-1} />
+                  </div>
+                </div>
+
+                <div className={styles.row}>
+                  <div className={styles.field}>
                     <Label>Jumlah yang Dibeli</Label>
                     <input 
                       type="number" 
@@ -154,19 +199,35 @@ export default function ModalTambahJurnal({ onClose, onConfirm }: ModalTambahJur
                       onChange={e => setFormData(p => ({ ...p, inventoryQty: Number(e.target.value) }))}
                       placeholder="Qty masuk"
                       required={isBahanBaku}
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                  <div className={styles.field}>
+                    <Label>Harga per Satuan</Label>
+                    <input 
+                      type="number" 
+                      className={styles.input}
+                      value={formData.pricePerUnit}
+                      onChange={e => setFormData(p => ({ ...p, pricePerUnit: Number(e.target.value) }))}
+                      placeholder="Harga beli"
+                      required={isBahanBaku}
+                      min="0"
                     />
                   </div>
                 </div>
+
                 <div className={styles.field}>
-                  <Label>No. Faktur / Nota</Label>
+                  <Label>No. Faktur / Nota (Otomatis)</Label>
                   <input 
                     type="text" 
                     className={styles.input}
                     value={formData.noFaktur}
-                    onChange={e => setFormData(p => ({ ...p, noFaktur: e.target.value }))}
-                    placeholder="Misal: INV/2026/001"
+                    readOnly
+                    placeholder="Auto-generated"
                   />
                 </div>
+                
                 <div className={styles.field}>
                   <Label>Tag ke PO (Biaya dibebankan ke:)</Label>
                   <div className={styles.poGrid}>
@@ -212,7 +273,7 @@ export default function ModalTambahJurnal({ onClose, onConfirm }: ModalTambahJur
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button variant="ghost" onClick={onClose}>Batal</Button>
+          <Button variant="ghost" onClick={onClose} type="button">Batal</Button>
           <Button variant="primary" type="submit" disabled={isUpah}>
             Simpan Transaksi
           </Button>
