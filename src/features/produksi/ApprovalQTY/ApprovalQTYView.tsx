@@ -11,6 +11,8 @@ import { useMasterStore } from '@/stores/useMasterStore';
 import { useBundleStore } from '@/stores/useBundleStore';
 import { KoreksiQTY } from '@/types';
 import { TAHAP_LABEL, TahapKey } from '@/lib/utils/production-helpers';
+import { useToast } from '@/components/molecules/Toast';
+import KpiRow from '@/components/organisms/KpiRow';
 import styles from './ApprovalQTYView.module.css';
 
 const ALASAN_LEBIH_LABEL: Record<string, string> = {
@@ -22,7 +24,8 @@ const ALASAN_LEBIH_LABEL: Record<string, string> = {
 export default function ApprovalQTYView() {
   const { koreksiList, approveKoreksiLebih, rejectKoreksiLebih } = useKoreksiStore();
   const { karyawan } = useMasterStore();
-  const { bundles } = useBundleStore();
+  const { bundles, updateStatusTahap } = useBundleStore();
+  const { success, error: toastError } = useToast();
 
   const pending = useMemo(
     () =>
@@ -32,13 +35,13 @@ export default function ApprovalQTYView() {
     [koreksiList]
   );
 
-  const history = useMemo(
-    () =>
-      koreksiList.filter(
-        (k) =>
-          k.jenisKoreksi === 'lebih' &&
-          (k.statusApproval === 'approved' || k.statusApproval === 'ditolak')
-      ),
+  const approved = useMemo(
+    () => koreksiList.filter(k => k.jenisKoreksi === 'lebih' && k.statusApproval === 'approved'),
+    [koreksiList]
+  );
+
+  const rejected = useMemo(
+    () => koreksiList.filter(k => k.jenisKoreksi === 'lebih' && k.statusApproval === 'ditolak'),
     [koreksiList]
   );
 
@@ -121,14 +124,31 @@ export default function ApprovalQTYView() {
           <Button
             variant="primary"
             size="sm"
-            onClick={() => approveKoreksiLebih(row.id, 'OWNER')}
+            onClick={() => {
+              const bundle = getBundle(row.barcode);
+              if (bundle) {
+                const currentQty = bundle.statusTahap[row.tahapDitemukan as TahapKey].qtySelesai || 0;
+                updateStatusTahap(bundle.barcode, row.tahapDitemukan, {
+                  qtySelesai: currentQty + row.qtyKoreksi,
+                  koreksiStatus: 'approved',
+                });
+              }
+              approveKoreksiLebih(row.id, 'OWNER');
+              success('Disetujui', `QTY Lebih untuk bundle ${row.barcode} telah disetujui.`);
+            }}
           >
             ✅ Approve
           </Button>
           <Button
             variant="danger"
             size="sm"
-            onClick={() => rejectKoreksiLebih(row.id)}
+            onClick={() => {
+              updateStatusTahap(row.barcode, row.tahapDitemukan, {
+                koreksiStatus: 'rejected',
+              });
+              rejectKoreksiLebih(row.id);
+              toastError('Ditolak', `Permintaan QTY Lebih untuk bundle ${row.barcode} berhasil ditolak.`);
+            }}
           >
             ❌ Tolak
           </Button>
@@ -136,6 +156,8 @@ export default function ApprovalQTYView() {
       ),
     },
   ];
+
+  const history = useMemo(() => [...approved, ...rejected], [approved, rejected]);
 
   const historyColumns: Column<KoreksiQTY>[] = [
     {
@@ -203,6 +225,32 @@ export default function ApprovalQTYView() {
       subtitle="Permintaan persetujuan penambahan QTY melebihi target PO"
     >
       <div className={styles.container}>
+        <KpiRow
+          items={[
+            {
+              label: 'Menunggu Approval',
+              value: pending.length,
+              unit: 'Bundle',
+              color: 'warning',
+              icon: 'Clock'
+            },
+            {
+              label: 'Total Disetujui',
+              value: approved.length,
+              unit: 'Bundle',
+              color: 'success',
+              icon: 'CheckCircle'
+            },
+            {
+              label: 'Total Ditolak',
+              value: rejected.length,
+              unit: 'Bundle',
+              color: 'danger',
+              icon: 'XCircle'
+            }
+          ]}
+        />
+
         {pending.length > 0 && (
           <div className={styles.alertBanner}>
             🔔 Ada <strong>{pending.length}</strong> permintaan yang menunggu persetujuan Owner

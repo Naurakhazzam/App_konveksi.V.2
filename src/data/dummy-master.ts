@@ -1,4 +1,4 @@
-import { Kategori, Model, Size, Warna, Karyawan, Klien, JenisReject, KategoriTrx, Satuan, HPPKomponen, ProdukHPPItem } from '../types';
+import { Kategori, Model, Size, Warna, Karyawan, Klien, JenisReject, AlasanReject, KategoriTrx, Satuan, HPPKomponen, ProdukHPPItem } from '../types';
 
 export const dummyKategori: Kategori[] = [
   { id: 'KAT-001', nama: 'Kaos' },
@@ -28,14 +28,14 @@ export const dummyWarna: Warna[] = [
 ];
 
 export const dummyKaryawan: Karyawan[] = [
-  { id: 'KRY-001', nama: 'Ahmad Fauzi', jabatan: 'Operator Cutting', aktif: true },
-  { id: 'KRY-002', nama: 'Budi Santoso', jabatan: 'Operator Jahit', aktif: true },
-  { id: 'KRY-003', nama: 'Dewi Lestari', jabatan: 'Operator Jahit', aktif: true },
-  { id: 'KRY-004', nama: 'Eko Prasetyo', jabatan: 'Operator Cutting', aktif: true },
-  { id: 'KRY-005', nama: 'Fitri Handayani', jabatan: 'Operator QC', aktif: true },
-  { id: 'KRY-006', nama: 'Gunawan', jabatan: 'Operator Packing', aktif: true },
-  { id: 'KRY-007', nama: 'Hendra Wijaya', jabatan: 'Operator Steam', aktif: true },
-  { id: 'KRY-008', nama: 'Indah Permata', jabatan: 'Operator Jahit', aktif: true },
+  { id: 'KRY-001', nama: 'Ahmad Fauzi', jabatan: 'Operator Cutting', aktif: true, tahapList: ['cutting'] },
+  { id: 'KRY-002', nama: 'Budi Santoso', jabatan: 'Operator Jahit', aktif: true, tahapList: ['jahit'] },
+  { id: 'KRY-003', nama: 'Dewi Lestari', jabatan: 'Operator Jahit', aktif: true, tahapList: ['jahit', 'qc'] },
+  { id: 'KRY-004', nama: 'Eko Prasetyo', jabatan: 'Operator Cutting', aktif: true, tahapList: ['cutting'] },
+  { id: 'KRY-005', nama: 'Fitri Handayani', jabatan: 'Operator QC', aktif: true, tahapList: ['qc', 'packing'] },
+  { id: 'KRY-006', nama: 'Gunawan', jabatan: 'Operator Packing', aktif: true, tahapList: ['packing'] },
+  { id: 'KRY-007', nama: 'Hendra Wijaya', jabatan: 'Operator Steam', aktif: true, tahapList: ['steam', 'bbenang'] },
+  { id: 'KRY-008', nama: 'Indah Permata', jabatan: 'Operator Jahit', aktif: true, tahapList: ['jahit', 'lkancing'] },
 ];
 
 export const dummyKlien: Klien[] = [
@@ -61,6 +61,16 @@ export const dummyJenisReject: JenisReject[] = [
   { id: 'RJT-003', nama: 'Ukuran Tidak Sesuai', potongan: 10000 },
   { id: 'RJT-004', nama: 'Benang Putus', potongan: 2000 },
   { id: 'RJT-005', nama: 'Kancing Lepas', potongan: 4000 },
+];
+
+export const dummyAlasanReject: AlasanReject[] = [
+  { id: 'AR-001', nama: 'Cacat Kain (Bolong/Gores)', tahapBertanggungJawab: 'cutting', bisaDiperbaiki: false, dampakPotongan: 'hpp_po' },
+  { id: 'AR-002', nama: 'Salah Potong Pola', tahapBertanggungJawab: 'cutting', bisaDiperbaiki: false, dampakPotongan: 'hpp_po' },
+  { id: 'AR-003', nama: 'Jahitan Loncat/Kendor', tahapBertanggungJawab: 'jahit', bisaDiperbaiki: true, dampakPotongan: 'upah_tahap' },
+  { id: 'AR-004', nama: 'Noda Oli/Kotor', tahapBertanggungJawab: 'jahit', bisaDiperbaiki: true, dampakPotongan: 'upah_tahap' },
+  { id: 'AR-005', nama: 'Lubang Kancing Miring', tahapBertanggungJawab: 'lkancing', bisaDiperbaiki: true, dampakPotongan: 'upah_tahap' },
+  { id: 'AR-006', nama: 'Salah Pasang Label', tahapBertanggungJawab: 'jahit', bisaDiperbaiki: true, dampakPotongan: 'upah_tahap' },
+  { id: 'AR-007', nama: 'Kain Tergunting (QC)', tahapBertanggungJawab: 'bbenang', bisaDiperbaiki: false, dampakPotongan: 'hpp_po' },
 ];
 
 export const dummySatuan: Satuan[] = [

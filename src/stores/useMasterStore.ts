@@ -6,16 +6,8 @@ import {
   initialClients, initialKategori, initialModels, initialWarna, initialSizes, initialHPPKomponen, initialProduk, initialProdukHPPItems 
 } from '../data/initial-production-data';
 import {
-  dummyJenisReject, dummyKategoriTrx, dummySatuan
+  dummyJenisReject, dummyKategoriTrx, dummySatuan, dummyKaryawan, dummyAlasanReject
 } from '../data/dummy-master';
-import { fixedEmployees } from '../data/fixed-testing-data';
-
-const initialAlasanReject: AlasanReject[] = [
-  { id: 'RJ-001', nama: 'Rusak Jahitan', tahapBertanggungJawab: 'jahit', bisaDiperbaiki: true, dampakPotongan: 'upah_tahap' },
-  { id: 'RJ-002', nama: 'Bolong', tahapBertanggungJawab: 'jahit', bisaDiperbaiki: true, dampakPotongan: 'upah_tahap' },
-  { id: 'RJ-003', nama: 'Kain Sobek', tahapBertanggungJawab: 'cutting', bisaDiperbaiki: false, dampakPotongan: 'hpp_po' },
-  { id: 'RJ-004', nama: 'Salah Potong Kain', tahapBertanggungJawab: 'cutting', bisaDiperbaiki: false, dampakPotongan: 'hpp_po' },
-];
 
 interface MasterState {
   kategori: Kategori[];
@@ -93,10 +85,10 @@ export const useMasterStore = create<MasterState>((set, get) => ({
   model: initialModels,
   sizes: initialSizes,
   warna: initialWarna,
-  karyawan: fixedEmployees,
+  karyawan: dummyKaryawan,
   klien: initialClients,
   jenisReject: dummyJenisReject,
-  alasanReject: initialAlasanReject,
+  alasanReject: dummyAlasanReject,
   kategoriTrx: dummyKategoriTrx,
   satuan: dummySatuan,
   produk: initialProduk,

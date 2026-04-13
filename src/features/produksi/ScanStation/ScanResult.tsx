@@ -93,6 +93,14 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       k.statusPotongan === 'pending'
   );
 
+  const pendingApprovalSurplus = koreksiList.find(
+    k =>
+      k.barcode === bundle.barcode &&
+      k.tahapDitemukan === tahap &&
+      k.jenisKoreksi === 'lebih' &&
+      k.statusApproval === 'menunggu'
+  );
+
   const handleTerima = () => {
     if (tahap === 'cutting') {
       const existingBahan = getPemakaianBahan(bundle.po, bundle.model, bundle.warna, bundle.size);
@@ -415,6 +423,13 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       )}
       {cuttingBlockReason && (
         <div className={styles.blockAlert}>⚠️ {cuttingBlockReason}</div>
+      )}
+
+      {/* Menunggu Approval Surplus */}
+      {pendingApprovalSurplus && (
+        <div className={styles.blockAlert} style={{ background: 'rgba(59, 130, 246, 0.1)', borderColor: 'rgba(59, 130, 246, 0.4)', color: '#1d4ed8' }}>
+          ⏳ Bundle ini sedang <strong>Menunggu Approval QTY Lebih</strong> dari Owner. Operasi selanjutnya dikunci hingga disetujui.
+        </div>
       )}
 
       {/* Notifikasi reject perbaikan */}
