@@ -70,6 +70,8 @@ export interface HPPKomponen {
   kategori: 'bahan_baku' | 'biaya_produksi' | 'overhead';
   satuan: string;
   deskripsi?: string;
+  trackInventory?: boolean;    // BARU: centang jika item ini di-track stok-nya
+  inventoryItemId?: string;    // BARU: link ke InventoryItem.id di gudang
 }
 
 export interface ProdukHPPItem {
@@ -78,4 +80,5 @@ export interface ProdukHPPItem {
   komponenId: string;
   harga: number;
   qty: number;
+  qtyFisik?: number;  // BARU: berapa unit FISIK per 1 baju (contoh: 5 kancing per baju)
 }

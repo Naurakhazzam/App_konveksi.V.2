@@ -71,9 +71,9 @@ export default function OverviewStokView() {
       render: (v) => satuan.find(s => s.id === v)?.nama || v 
     },
     { 
-      key: 'id', 
+      key: 'avgHpp', 
       header: 'Harga (Avg HPP)', 
-      render: (v) => formatRupiah(getHargaRataRata(v))
+      render: (_, row) => formatRupiah(getHargaRataRata(row.id))
     },
     { 
       key: 'stokAktual', 

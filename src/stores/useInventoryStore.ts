@@ -35,7 +35,7 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   addItem: (item) => set((state) => ({ items: [...state.items, item] })),
   
   updateStock: (id, qty) => set((state) => ({
-    items: state.items.map(i => i.id === id ? { ...i, stokAktual: Math.max(0, i.stokAktual + qty) } : i)
+    items: state.items.map(i => i.id === id ? { ...i, stokAktual: i.stokAktual + qty } : i)
   })),
 
   addBatch: (batch) => {

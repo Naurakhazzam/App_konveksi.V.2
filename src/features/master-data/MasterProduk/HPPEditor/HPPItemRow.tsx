@@ -40,6 +40,19 @@ export default function HPPItemRow({ item, komponen, onUpdate, onRemove }: HPPIt
             onChange={(e) => onUpdate({ harga: parseFloat(e.target.value) || 0 })}
           />
         </div>
+        
+        {komponen.trackInventory && (
+          <div className={styles.qtyFisikWrapper}>
+            <label className={styles.qtyFisikLabel}>Qty Fisik per Pcs:</label>
+            <input 
+              type="number"
+              className={styles.inputQtyFisik}
+              value={item.qtyFisik || ''}
+              onChange={(e) => onUpdate({ qtyFisik: parseFloat(e.target.value) || 0 })}
+              placeholder="pcs/unit"
+            />
+          </div>
+        )}
       </div>
       
       <div className={styles.subtotal}>

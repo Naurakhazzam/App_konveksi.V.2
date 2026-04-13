@@ -5,6 +5,7 @@ import DataTable, { Column } from '@/components/organisms/DataTable';
 import Button from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
 import { useMasterStore } from '@/stores/useMasterStore';
+import { useInventoryStore } from '@/stores/useInventoryStore';
 import { HPPKomponen } from '@/types';
 import MasterFormModal, { FormFieldConfig } from '../MasterDetail/MasterFormModal';
 import styles from './MasterHPPKomponenView.module.css';
@@ -32,6 +33,16 @@ export default function MasterHPPKomponenView() {
       return <Badge variant={variant}>{label}</Badge>;
     }},
     { key: 'satuan', header: 'Satuan', render: (val) => <span style={{ fontFamily: 'var(--font-mono)' }}>{val}</span> },
+    { key: 'trackInventory', header: 'Track Stok', render: (val, row) => (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <Badge variant={val ? 'success' : 'neutral'}>{val ? 'YA' : 'TIDAK'}</Badge>
+        {val && row.inventoryItemId && (
+          <span style={{ fontSize: '10px', color: 'var(--color-text-sub)' }}>
+            ID: {row.inventoryItemId}
+          </span>
+        )}
+      </div>
+    )},
     { key: 'deskripsi', header: 'Deskripsi', render: (val) => <span style={{ color: 'var(--color-text-sub)', fontSize: '13px' }}>{val || '-'}</span> },
     { key: 'action', header: '', align: 'right', render: (_, row) => (
       <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
@@ -49,14 +60,31 @@ export default function MasterHPPKomponenView() {
       { value: 'overhead', label: 'Overhead' }
     ]},
     { key: 'satuan', label: 'Satuan', type: 'text', required: true, placeholder: 'Contoh: meter, pcs, lusin' },
+    { key: 'trackInventory', label: 'Track Inventory', type: 'select', options: [
+      { value: 'false', label: 'TIDAK' },
+      { value: 'true', label: 'YA' }
+    ]},
+    { 
+      key: 'inventoryItemId', 
+      label: 'Link ke Barang Gudang', 
+      type: 'select', 
+      showIf: (vals) => vals.trackInventory === 'true' || vals.trackInventory === true,
+      options: useInventoryStore.getState().items.map(i => ({ value: i.id, label: `${i.id} — ${i.nama}` }))
+    },
     { key: 'deskripsi', label: 'Deskripsi (Opsional)', type: 'text' }
   ];
 
   const handleSubmit = (values: Record<string, any>) => {
+    // Convert string 'true'/'false' from select back to boolean
+    const processedValues = {
+      ...values,
+      trackInventory: values.trackInventory === 'true' || values.trackInventory === true
+    };
+
     if (editingItem) {
-      updateHPPKomponen(editingItem.id, values as Partial<HPPKomponen>);
+      updateHPPKomponen(editingItem.id, processedValues as Partial<HPPKomponen>);
     } else {
-      addHPPKomponen({ id: `KOMP-${Date.now()}`, ...values } as HPPKomponen);
+      addHPPKomponen({ id: `KOMP-${Date.now()}`, ...processedValues } as HPPKomponen);
     }
     setModalOpen(false);
   };
