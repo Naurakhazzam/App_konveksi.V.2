@@ -22,9 +22,12 @@ export interface SidebarItemProps {
   currentPath: string;
 }
 
+import { useAuthStore } from '@/stores/useAuthStore';
+
 export default function SidebarItem({
   label, icon, color, basePath, subs, isActive, isExpanded, onToggle, collapsed, currentPath
 }: SidebarItemProps) {
+  const { canAccess } = useAuthStore();
   const IconComponent = (LucideIcons as any)[icon] || LucideIcons.Circle;
   const hasSubs = subs && subs.length > 0;
   
@@ -74,7 +77,7 @@ export default function SidebarItem({
       
       {hasSubs && !collapsed && isExpanded && (
         <div className={styles.subsList}>
-          {subs.map(subLabel => {
+          {subs.filter(subLabel => canAccess(getSubPath(basePath, subLabel))).map(subLabel => {
             const href = getSubPath(basePath, subLabel);
             const isSubActive = href === basePath 
               ? currentPath === href 

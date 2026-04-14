@@ -17,8 +17,12 @@ export default function LoginPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    login(username, password);
-    router.push('/dashboard/produksi');
+    const result = login(username, password);
+    if (result.success) {
+      router.push('/dashboard/produksi');
+    } else {
+      alert(result.message); // Temporarily using alert, can use toast if available
+    }
   };
 
   return (
@@ -53,6 +57,17 @@ export default function LoginPage() {
           <Button type="submit" variant="primary" style={{ width: '100%', marginTop: '12px' }}>
             Masuk
           </Button>
+
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <span style={{ color: 'var(--color-text-secondary)', fontSize: '14px' }}>Belum punya akun? </span>
+            <button 
+              type="button"
+              onClick={() => router.push('/register')}
+              style={{ background: 'none', border: 'none', color: 'var(--color-cyan)', cursor: 'pointer', fontWeight: 'bold' }}
+            >
+              Daftar Sekarang
+            </button>
+          </div>
         </form>
       </Panel>
     </div>

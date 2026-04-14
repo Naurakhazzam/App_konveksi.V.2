@@ -9,11 +9,12 @@ interface AuthState {
   users: User[];
   
   // Actions
-  login: (email: string, password: string) => boolean;
+  login: (username: string, password_or_pin: string) => { success: boolean, message?: string };
   logout: () => void;
   addUser: (user: User) => void;
   updateUser: (id: string, data: Partial<User>) => void;
   removeUser: (id: string) => void;
+  approveUser: (id: string) => void; // NEW
   
   // Role Management
   addRole: (role: RoleDefinition) => void;
@@ -45,16 +46,15 @@ const defaultRoles: RoleDefinition[] = [
 ];
 
 const dummyOwner: User = {
-  id: 'USR-001',
-  username: 'owner',
-  nama: 'Owner Syncore',
-  roles: ['owner'],
+  id: 'USR-FAUZAN',
+  username: 'Fauzan',
+  nama: 'Fauzan (Godadmin)',
+  roles: ['godadmin'],
   pin: '030503'
 };
 
 const dummyUsers: User[] = [
-  dummyOwner,
-  { id: 'USR-002', username: 'admin_produksi', nama: 'Budi Produksi', roles: ['admin_produksi'] },
+  dummyOwner
 ];
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -66,47 +66,58 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   togglePreviewMode: () => set((state) => ({ isPreviewMode: !state.isPreviewMode })),
 
-  addUser: (item) => set((state) => ({ users: [...state.users, item] })),
+  addUser: (item) => set((state) => ({ users: [...state.users, { ...item, isPending: true }] })),
   updateUser: (id, data) => set((state) => ({ users: state.users.map(i => i.id === id ? { ...i, ...data } : i) })),
   removeUser: (id) => set((state) => ({ users: state.users.filter(i => i.id !== id) })),
+  approveUser: (id) => set((state) => ({ users: state.users.map(u => u.id === id ? { ...u, isPending: false } : u) })),
   
   addRole: (role) => set((state) => ({ roleDefinitions: [...state.roleDefinitions, role] })),
   updateRole: (id, data) => set((state) => ({ roleDefinitions: state.roleDefinitions.map(r => r.id === id ? { ...r, ...data } : r) })),
   removeRole: (id) => set((state) => ({ roleDefinitions: state.roleDefinitions.filter(r => r.id !== id) })),
 
   canAccess: (path) => {
-    // Preview Mode bypass
     if (get().isPreviewMode) return true;
-
     const user = get().currentUser;
     if (!user) return false;
     
-    // Owner bypass
-    if (user.roles.includes('owner')) return true;
+    // Admin God & Owner pass all
+    if (user.roles.includes('godadmin') || user.roles.includes('owner')) return true;
     
-    // Check all user's roles for access to this path
-    const roles = get().roleDefinitions.filter(rd => user.roles.includes(rd.id));
+    // Visitor Owner: Access all viewing
+    if (user.roles.includes('visitor_owner')) return true;
+
+    // Supervisor Admin: Access all
+    if (user.roles.includes('supervisor_admin')) return true;
+
+    // Supervisor Produksi: Specific restrictions
+    if (user.roles.includes('supervisor_produksi')) {
+      const hiddenPaths = ['/keuangan', '/master-data', '/koreksi-data', '/audit-log'];
+      if (hiddenPaths.some(hp => path.startsWith(hp))) return false;
+      return true;
+    }
     
-    return roles.some(role => 
-      role.permissions.some(p => (path.startsWith(p.path) || p.path === 'all') && p.access)
-    );
+    return false;
   },
 
   canEdit: (path) => {
-    // Preview Mode bypass
     if (get().isPreviewMode) return true;
-
     const user = get().currentUser;
     if (!user) return false;
     
-    // Owner bypass
-    if (user.roles.includes('owner')) return true;
+    if (user.roles.includes('godadmin') || user.roles.includes('owner')) return true;
+    if (user.roles.includes('visitor_owner')) return false;
+
+    if (user.roles.includes('supervisor_admin')) {
+      const editAllowed = ['/produksi/input-po', '/retur/penerimaan'];
+      return editAllowed.some(ea => path.startsWith(ea));
+    }
+
+    if (user.roles.includes('supervisor_produksi')) {
+      if (path.startsWith('/dashboard/produksi')) return false;
+      return true;
+    }
     
-    const roles = get().roleDefinitions.filter(rd => user.roles.includes(rd.id));
-    
-    return roles.some(role => 
-      role.permissions.some(p => (path.startsWith(p.path) || p.path === 'all') && p.access && p.level === 'edit')
-    );
+    return false;
   },
 
   hasRole: (roleId) => {
@@ -114,9 +125,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     return user ? user.roles.includes(roleId) : false;
   },
 
-  login: () => {
-    set({ currentUser: dummyOwner, isAuthenticated: true });
-    return true;
+  login: (username, password_or_pin) => {
+    const user = get().users.find(u => u.username === username);
+    if (!user) return { success: false, message: 'User tidak ditemukan' };
+    
+    // Checks (Since we use PIN and Password interchangeably here based on user data)
+    const isOwnerLogin = user.roles.includes('godadmin') || user.roles.includes('owner');
+    const validPass = isOwnerLogin 
+      ? (user.pin === password_or_pin || (user as any).password === password_or_pin) 
+      : (user as any).password === password_or_pin;
+
+    if (!validPass) return { success: false, message: 'Password/PIN salah' };
+    if ((user as any).isPending) return { success: false, message: 'Akun Anda sedang menunggu persetujuan Admin' };
+
+    set({ currentUser: user, isAuthenticated: true });
+    return { success: true };
   },
   
   logout: () => set({ currentUser: null, isAuthenticated: false }),
