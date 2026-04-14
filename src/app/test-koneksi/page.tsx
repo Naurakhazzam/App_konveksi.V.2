@@ -72,7 +72,7 @@ export default function TestKoneksiPage() {
             )}
 
             <Button 
-              variant="outline" 
+              variant="secondary" 
               onClick={testConnection} 
               disabled={status === 'testing'}
             >
