@@ -170,6 +170,7 @@ export const useAuthStore = create<AuthState>()(
           nama: data.nama,
           roles: data.roles || [],
           pin: data.pin,
+          isPending: data.is_pending || false,
         };
 
         set({ currentUser: user, isAuthenticated: true });

@@ -74,6 +74,7 @@ export default function UserRoleView() {
     } else {
       addUser({
         id: `USR-${Date.now()}`,
+        isPending: true, // Baru terdaftar = Menunggu
         ...data
       } as User);
     }
