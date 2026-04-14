@@ -984,7 +984,7 @@ PHASE 4 — Production Ready ⏳ BELUM
 8. Gunakan **CSS Modules** untuk styling — BUKAN inline styles, BUKAN Tailwind
 9. Gunakan **Zustand** untuk shared state — BUKAN prop drilling
 10. Gunakan **TypeScript** — semua file `.tsx` atau `.ts`
-11. Masih fase **dummy data** — jangan buat koneksi database
+11. Sekarang di **PHASE 3 — Database Migration** — gunakan Supabase + Prisma untuk koneksi database. Dummy data di `src/data/` akan digantikan bertahap dengan API calls.
 12. Format barcode SUDAH FINAL — jangan diubah
 13. Logika sinkron antar tahap produksi SUDAH FINAL — jangan diubah
 14. Navigasi melalui **file-based routing Next.js** — sidebar hanya untuk navigasi URL
