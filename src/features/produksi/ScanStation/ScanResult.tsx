@@ -21,6 +21,7 @@ import ModalPemakaianBahan from './ModalPemakaianBahan';
 import ModalSerahTerimaJahit from './ModalSerahTerimaJahit';
 import { ModalKoreksiKurang, ModalKoreksiLebih, KoreksiKurangResult, KoreksiLebihResult } from './ModalKoreksiQTY';
 import { useSerahTerimaStore } from '@/stores/useSerahTerimaStore';
+import { usePayrollStore } from '@/stores/usePayrollStore';
 import styles from './ScanResult.module.css';
 
 interface ScanResultProps {
@@ -255,6 +256,8 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     koreksiAlasan: string | null
   ) => {
     const now = new Date().toISOString();
+    
+    // 1. Update Bundle Store
     updateStatusTahap(bundle.barcode, tahap, {
       status: 'selesai',
       qtySelesai,
@@ -262,6 +265,8 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       koreksiStatus,
       koreksiAlasan,
     });
+
+    // 2. Add Scan Record
     addRecord({
       id: `SCAN-${Date.now()}`,
       barcode: bundle.barcode,
@@ -271,6 +276,29 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       qty: qtySelesai,
       waktu: now
     });
+
+    // 3. LOGIKA BARU: Sambungkan ke Payroll
+    // Hanya jika tahap ini membutuhkan karyawan dan ada karyawan terpilih
+    const operatorId = currentStatus.karyawan || selectedKaryawan;
+    if (operatorId && qtySelesai > 0) {
+      // Hitung upah per pcs untuk tahap ini
+      const upahPerPcs = calcNominalPotongan('upah_tahap', tahap, 1);
+      const totalUpah = upahPerPcs * qtySelesai;
+
+      const { addLedgerEntry } = usePayrollStore.getState();
+      addLedgerEntry({
+        id: `PAY-${Date.now()}-${bundle.barcode}-${tahap}`,
+        karyawanId: operatorId,
+        tanggal: now,
+        deskripsi: `Upah ${TAHAP_LABEL[tahap]} - PO: ${bundle.po} (${bundle.barcode})`,
+        qty: qtySelesai,
+        tarif: upahPerPcs,
+        total: totalUpah,
+        tipe: 'selesai',
+        status: 'belum_bayar'
+      });
+    }
+
     if (onComplete) onComplete();
   };
 
@@ -297,9 +325,10 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     const karyawanBertanggungJawab = statusBertanggungjawab?.karyawan || '';
 
     const nominal = calcNominalPotongan(dampakPotongan, tahapBertanggungJawab, qtyKurang);
+    const koreksiId = `KOR-${Date.now()}`;
 
     addKoreksi({
-      id: `KOR-${Date.now()}`,
+      id: koreksiId,
       barcode: bundle.barcode,
       poId: bundle.po,
       tahapDitemukan: tahap,
@@ -313,6 +342,22 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       statusPotongan: 'pending',
       waktuLapor: now,
     });
+
+    // LOGIKA BARU: Tambah Potongan ke Payroll
+    if (karyawanBertanggungJawab && nominal > 0) {
+      usePayrollStore.getState().addLedgerEntry({
+        id: `DED-${Date.now()}-${koreksiId}`,
+        karyawanId: karyawanBertanggungJawab,
+        tanggal: now,
+        deskripsi: `POTONGAN ${result.jenisKoreksi.toUpperCase()} (${TAHAP_LABEL[tahap]}) - ${bundle.barcode}`,
+        qty: qtyKurang,
+        tarif: - (nominal / qtyKurang),
+        total: -nominal,
+        tipe: 'reject_potong',
+        status: 'belum_bayar',
+        metadata: { koreksiId }
+      });
+    }
 
     executeSelesai(
       pendingQtySelesai,
@@ -364,6 +409,24 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       useKoreksiStore.getState().cancelKoreksi(k.id);
     });
     const totalQtyPerbaikan = activeRejectForThisBundle.reduce((s, k) => s + k.qtyKoreksi, 0);
+    
+    // LOGIKA BARU: Catat Upah Perbaikan (Rework)
+    const operatorId = currentStatus.karyawan || selectedKaryawan;
+    if (operatorId && totalQtyPerbaikan > 0) {
+      const upahPerPcs = calcNominalPotongan('upah_tahap', tahap, 1);
+      usePayrollStore.getState().addLedgerEntry({
+        id: `RWK-${Date.now()}-${bundle.barcode}`,
+        karyawanId: operatorId,
+        tanggal: now,
+        deskripsi: `Upah Perbaikan (Rework) ${TAHAP_LABEL[tahap]} - ${bundle.barcode}`,
+        qty: totalQtyPerbaikan,
+        tarif: upahPerPcs,
+        total: upahPerPcs * totalQtyPerbaikan,
+        tipe: 'rework',
+        status: 'belum_bayar'
+      });
+    }
+
     updateStatusTahap(bundle.barcode, tahap, {
       status: 'selesai',
       qtySelesai: totalQtyPerbaikan,

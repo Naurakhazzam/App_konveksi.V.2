@@ -22,8 +22,8 @@ interface POState {
 }
 
 export const usePOStore = create<POState>((set, get) => ({
-  poList: fixedPOs,
-  globalSequence: 13,
+  poList: [],
+  globalSequence: 1,
 
   addPO: (po: PurchaseOrder) => {
     set((state: POState) => ({ poList: [...state.poList, po] }));

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { JurnalEntry, JenisTransaksi } from '../types';
 import { dummyJurnal } from '../data/dummy-journal';
+import { useInventoryStore } from './useInventoryStore';
 
 interface JurnalState {
   entries: JurnalEntry[];
@@ -14,7 +15,24 @@ interface JurnalState {
 export const useJurnalStore = create<JurnalState>((set, get) => ({
   entries: [],
   
-  addEntry: (entry) => set((state) => ({ entries: [...state.entries, entry] })),
+  addEntry: (entry) => {
+    set((state) => ({ entries: [...state.entries, entry] }));
+
+    // 4. LOGIKA BARU: Jika ini pembelian bahan (direct_bahan), sambungkan ke Inventory
+    if (entry.jenis === 'direct_bahan' && entry.kategori === 'keluar' && entry.metadata?.inventoryItemId) {
+      const { addBatch } = useInventoryStore.getState();
+      addBatch({
+        id: `BTC-AUTO-${Date.now()}`,
+        itemId: entry.metadata.inventoryItemId,
+        qty: entry.metadata.qty || 0,
+        qtyTerpakai: 0,
+        hargaSatuan: entry.nominal / (entry.metadata.qty || 1),
+        tanggal: entry.tanggal,
+        supplier: 'Unknown (via Jurnal)',
+        keterangan: `Input otomatis via Jurnal: ${entry.deskripsi}`
+      });
+    }
+  },
   
   getByPeriode: (startDate, endDate) => {
     const start = new Date(startDate).getTime();

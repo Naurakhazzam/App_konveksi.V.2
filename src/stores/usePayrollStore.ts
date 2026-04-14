@@ -23,6 +23,7 @@ interface PayrollState {
 
 import { useLogStore } from './useLogStore';
 import { useAuthStore } from './useAuthStore';
+import { useJurnalStore } from './useJurnalStore';
 
 export const usePayrollStore = create<PayrollState>((set, get) => ({
   ledger: [],
@@ -96,6 +97,22 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
       return { ledger: newLedger, kasbon: newKasbon };
     });
 
+    // 3. LOGIKA BARU: Sambungkan ke Jurnal Umum
+    const { addEntry } = useJurnalStore.getState();
+    const totalBersihPay = upahData.upahBersih - inputKasbon;
+    
+    if (totalBersihPay > 0) {
+      addEntry({
+        id: `JUR-PAY-${Date.now()}`,
+        tanggal: tanggalBayar,
+        deskripsi: `Pembayaran Gaji Karyawan: ${karyawanId}`,
+        nominal: totalBersihPay,
+        jenis: 'direct_upah',
+        kategori: 'keluar',
+        metadata: { karyawanId, entryCount: entryIds.length }
+      });
+    }
+
     // Log Activity
     const user = useAuthStore.getState().currentUser;
     if (user) {
@@ -107,7 +124,7 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
         metadata: { 
           totalUpah: upahData.upahBersih, 
           potongKasbon: inputKasbon,
-          netto: upahData.upahBersih - inputKasbon
+          netto: totalBersihPay
         }
       });
     }

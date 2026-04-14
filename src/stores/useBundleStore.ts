@@ -37,7 +37,7 @@ const defaultStatus: StatusTahap = {
 };
 
 export const useBundleStore = create<BundleState>((set, get) => ({
-  bundles: fixedBundles,
+  bundles: [],
   rejectRecords: [],
   addBundle: (bundle) => set((state) => ({ bundles: [...state.bundles, bundle] })),
   updateStatusTahap: (barcode, tahap, updates) => set((state) => ({
