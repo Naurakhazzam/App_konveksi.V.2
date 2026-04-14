@@ -91,7 +91,7 @@ export default function TestKoneksiPage() {
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                     {item.columns.length > 0 ? item.columns.map(col => (
-                      <Badge key={col} variant="secondary">
+                      <Badge key={col} variant="neutral">
                         {col}
                       </Badge>
                     )) : (
