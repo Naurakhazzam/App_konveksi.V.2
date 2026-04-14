@@ -22,8 +22,6 @@ export default function Sidebar({ currentPath, isOpen, onClose }: SidebarProps) 
     logout, 
     canAccess, 
     currentUser, 
-    previewRole, 
-    setPreviewRole, 
     roleDefinitions 
   } = useAuthStore();
   
@@ -62,28 +60,6 @@ export default function Sidebar({ currentPath, isOpen, onClose }: SidebarProps) 
           <Menu size={20} />
         </button>
       </div>
-      
-      {!collapsed && (
-        <div className={styles.systemInfo}>
-          {isFauzan && (
-            <div className={styles.previewSection}>
-              <label className={styles.previewLabel}>Simulasi Role:</label>
-              <select 
-                className={styles.roleSelector}
-                value={previewRole || ''} 
-                onChange={(e) => setPreviewRole(e.target.value || null)}
-              >
-                <option value="">Normal (Admin)</option>
-                {roleDefinitions
-                  .filter(role => role.id !== 'godadmin')
-                  .map(role => (
-                    <option key={role.id} value={role.id}>{role.label}</option>
-                  ))}
-              </select>
-            </div>
-          )}
-        </div>
-      )}
 
       <div className={styles.navArea}>
         {NAV.filter(item => canAccess(item.basePath)).map(item => {
