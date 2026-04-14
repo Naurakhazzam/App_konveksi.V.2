@@ -115,10 +115,12 @@ export const useAuthStore = create<AuthState>()(
       currentUser: null,
       isAuthenticated: false,
       _hasHydrated: false,
+      previewRole: null,
       roleDefinitions: defaultRoles,
       users: [],
 
       setHasHydrated: (val) => set({ _hasHydrated: val }),
+      setPreviewRole: (role) => set({ previewRole: role }),
 
       // Load semua users dari Supabase
       loadUsers: async () => {
@@ -237,19 +239,24 @@ export const useAuthStore = create<AuthState>()(
         if (!user) return false;
         
         const isFauzan = user.id === 'USR-FAUZAN' || user.roles.includes('godadmin');
+        const previewRole = get().previewRole;
 
-        // 1. PINTU DARURAT/GHOST MODE: Akses penuh untuk Fauzan
-        if (isFauzan) return true;
+        // 1. PINTU DARURAT: Sub-tab User & Role HARUS selalu bisa dibuka oleh Fauzan
+        if (isFauzan && (path === '/master-data/pendaftaran' || path.includes('/pendaftaran'))) return true;
 
-        // 2. Cek role asli user
-        const rolesToUse = user.roles;
+        // 2. Jika Fauzan sedang TIDAK simulasi, beri akses penuh
+        if (isFauzan && !previewRole) return true;
+
+        // 3. Cek simulasi atau role asli
+        const rolesToUse = previewRole ? [previewRole] : user.roles;
         
         if (rolesToUse.includes('owner')) return true;
         if (rolesToUse.includes('visitor_owner')) return true;
         if (rolesToUse.includes('supervisor_admin')) return true;
         if (rolesToUse.includes('supervisor_produksi')) {
           const hiddenPaths = ['/keuangan', '/master-data', '/koreksi-data', '/audit-log'];
-          if (hiddenPaths.some(hp => path.startsWith(hp))) return false;
+          // Kecuali jika ini adalah path pendaftaran (sudah dihandle di atas, tapi ini untuk safety)
+          if (hiddenPaths.some(hp => path.startsWith(hp)) && !path.includes('/pendaftaran')) return false;
           return true;
         }
         return false;
@@ -262,7 +269,8 @@ export const useAuthStore = create<AuthState>()(
         // 1. GHOST MODE: Fauzan (Godadmin) selalu punya akses edit penuh
         if (user.roles.includes('godadmin') || user.id === 'USR-FAUZAN') return true;
 
-        const rolesToUse = user.roles;
+        // 2. Simulasikan role jika sedang dalam mode preview
+        const rolesToUse = get().previewRole ? [get().previewRole!] : user.roles;
 
         if (rolesToUse.includes('owner')) return true;
         if (rolesToUse.includes('visitor_owner')) return false;
@@ -319,6 +327,7 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         currentUser: state.currentUser,
         isAuthenticated: state.isAuthenticated,
+        previewRole: state.previewRole,
       }),
       onRehydrateStorage: (state) => {
         return () => state?.setHasHydrated(true);

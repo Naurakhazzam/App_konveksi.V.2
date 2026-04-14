@@ -3,7 +3,6 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import Sidebar from '../../organisms/Sidebar';
-import RoleSwitcher from '../../molecules/RoleSwitcher';
 import MobileHeader from '../../molecules/MobileHeader/MobileHeader';
 import { useSidebar } from '@/lib/hooks/useSidebar';
 import { useSettingsStore } from '@/stores/useSettingsStore';
@@ -61,9 +60,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         />
         
         <main className={styles.mainContent}>
-          <div className={styles.fabContainer}>
-            <RoleSwitcher />
-          </div>
           {children}
         </main>
       </div>
