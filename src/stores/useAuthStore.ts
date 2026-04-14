@@ -315,7 +315,9 @@ export const useAuthStore = create<AuthState>()(
             id: 'USR-VISITOR',
             username: 'pengunjung',
             nama: 'Pengunjung / Tamu',
-            roles: ['visitor_owner']
+            roles: ['visitor_owner'],
+            pin: '',
+            isPending: false,
           };
           set({ currentUser: visitorUser, isAuthenticated: true });
           return { success: true };
