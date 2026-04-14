@@ -149,7 +149,7 @@ export const useAuthStore = create<AuthState>()(
         const { data, error } = await supabase
           .from('users')
           .select('*')
-          .eq('username', username)
+          .ilike('username', username)
           .single();
 
         if (error || !data) {
