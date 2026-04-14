@@ -85,7 +85,7 @@ export default function TestKoneksiPage() {
           <Panel title="Hasil Inspeksi Struktur Tabel">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '10px' }}>
               {schema.map(item => (
-                <div key={item.table} style={{ borderBottom: '1px solid var(--color-border)', pb: '15px' }}>
+                <div key={item.table} style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '15px' }}>
                   <div style={{ fontWeight: 'bold', color: 'var(--color-cyan)', marginBottom: '8px', textTransform: 'uppercase' }}>
                     Tabel: {item.table}
                   </div>
