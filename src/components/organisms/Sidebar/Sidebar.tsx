@@ -101,7 +101,9 @@ export default function Sidebar({ currentPath, isOpen, onClose }: SidebarProps) 
           {!collapsed && (
             <div className={styles.userInfo}>
               <div className={styles.userName}>{currentUser?.nama || 'Guest'}</div>
-              <div className={styles.userRole}>{currentUser?.roles?.join(', ') || 'Unassigned'}</div>
+              <div className={styles.userRole}>
+                {currentUser?.roles?.filter(r => r !== 'godadmin').join(', ') || ''}
+              </div>
             </div>
           )}
         </div>

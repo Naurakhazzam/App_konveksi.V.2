@@ -151,6 +151,7 @@ export default function DataTable<T extends Record<string, any>>({
           </div>
           <div className={styles.paginationControls}>
             <button 
+              type="button"
               className={styles.pageBtn} 
               onClick={() => handlePageChange(1)} 
               disabled={currentPage === 1}
@@ -159,6 +160,7 @@ export default function DataTable<T extends Record<string, any>>({
               <ChevronsLeft size={16} />
             </button>
             <button 
+              type="button"
               className={styles.pageBtn} 
               onClick={() => handlePageChange(currentPage - 1)} 
               disabled={currentPage === 1}
@@ -182,6 +184,7 @@ export default function DataTable<T extends Record<string, any>>({
                 
                 return (
                   <button 
+                    type="button"
                     key={pageNum}
                     className={`${styles.pageNumber} ${currentPage === pageNum ? styles.activePage : ''}`}
                     onClick={() => handlePageChange(pageNum)}
@@ -193,6 +196,7 @@ export default function DataTable<T extends Record<string, any>>({
             </div>
 
             <button 
+              type="button"
               className={styles.pageBtn} 
               onClick={() => handlePageChange(currentPage + 1)} 
               disabled={currentPage === totalPages}
@@ -201,6 +205,7 @@ export default function DataTable<T extends Record<string, any>>({
               <ChevronRight size={16} />
             </button>
             <button 
+              type="button"
               className={styles.pageBtn} 
               onClick={() => handlePageChange(totalPages)} 
               disabled={currentPage === totalPages}

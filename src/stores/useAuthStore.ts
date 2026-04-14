@@ -34,21 +34,49 @@ interface AuthState {
 }
 
 // Initial default roles (Seed data)
+const allPaths = [
+  '/dashboard', '/dashboard/produksi', '/dashboard/keuangan', '/dashboard/penggajian',
+  '/produksi', '/produksi/input-po', '/produksi/cutting', '/produksi/monitoring', '/produksi/approval-qty',
+  '/produksi/scan/cutting', '/produksi/scan/jahit', '/produksi/scan/lubang-kancing', 
+  '/produksi/scan/buang-benang', '/produksi/scan/qc', '/produksi/scan/steam', '/produksi/scan/packing',
+  '/pengiriman', '/pengiriman/buat-surat-jalan', '/pengiriman/riwayat',
+  '/penggajian', '/penggajian/rekap-gaji', '/penggajian/kasbon', '/penggajian/slip-gaji',
+  '/inventory', '/inventory/overview', '/inventory/transaksi-keluar', '/inventory/alert-order',
+  '/keuangan', '/keuangan/ringkasan', '/keuangan/jurnal-umum', '/keuangan/laporan-po', 
+  '/keuangan/laporan-bulan', '/keuangan/laporan-gaji', '/keuangan/laporan-reject',
+  '/retur', '/retur/penerimaan', '/retur/perbaikan', '/retur/pengiriman', '/retur/monitoring',
+  '/master-data', '/master-data/detail', '/master-data/produk-hpp', '/master-data/hpp-komponen', 
+  '/master-data/karyawan', '/master-data/jabatan', '/master-data/klien', '/master-data/jenis-reject', 
+  '/master-data/alasan-reject', '/master-data/kategori-transaksi', '/master-data/satuan', '/master-data/pendaftaran',
+  '/koreksi-data', '/audit-log', '/panduan', '/settings'
+];
+
 const defaultRoles: RoleDefinition[] = [
-  { id: 'owner', label: 'Owner', permissions: [] }, // Empty permissions means full access for owner logic
-  { id: 'admin_produksi', label: 'Admin Produksi', permissions: [
-    { path: '/produksi', access: true, level: 'edit' },
-    { path: '/dashboard/produksi', access: true, level: 'view' },
-  ]},
-  { id: 'mandor', label: 'Mandor', permissions: [
-    { path: '/produksi/scan', access: true, level: 'edit' },
-  ]},
+  { id: 'godadmin', label: 'Godadmin', permissions: [] },
+  { id: 'owner', label: 'Owner', permissions: allPaths.map(path => ({ path, access: true, level: 'edit' })) },
+  { id: 'visitor_owner', label: 'Visitor Owner', permissions: allPaths.map(path => ({ path, access: true, level: 'view' })) },
+  { id: 'supervisor_admin', label: 'Supervisor Admin', permissions: allPaths.map(path => ({ 
+    path, 
+    access: true, 
+    level: (path === '/produksi/input-po' || path === '/retur/penerimaan' || path === '/settings') ? 'edit' : 'view' 
+  })) },
+  { id: 'supervisor_produksi', label: 'Supervisor Produksi', permissions: allPaths
+    .filter(path => {
+      const hidden = ['/keuangan', '/master-data', '/koreksi-data', '/audit-log'];
+      return !hidden.some(h => path.startsWith(h));
+    })
+    .map(path => ({ 
+      path, 
+      access: true, 
+      level: (path.startsWith('/dashboard') && path !== '/settings') ? 'view' : 'edit' 
+    })) 
+  },
 ];
 
 const dummyOwner: User = {
   id: 'USR-FAUZAN',
   username: 'Fauzan',
-  nama: 'Fauzan (Godadmin)',
+  nama: 'Fauzan',
   roles: ['godadmin'],
   pin: '030503'
 };

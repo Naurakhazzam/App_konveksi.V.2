@@ -35,6 +35,7 @@ export default function Pagination({
     <div className={`${styles.container} ${className || ''}`}>
       <div className={styles.controls}>
         <button 
+          type="button"
           className={styles.btn} 
           onClick={() => onPageChange(1)} 
           disabled={currentPage === 1}
@@ -43,6 +44,7 @@ export default function Pagination({
           <ChevronsLeft size={16} />
         </button>
         <button 
+          type="button"
           className={styles.btn} 
           onClick={() => onPageChange(currentPage - 1)} 
           disabled={currentPage === 1}
@@ -55,6 +57,7 @@ export default function Pagination({
       <div className={styles.pages}>
         {renderPages().map(page => (
           <button
+            type="button"
             key={page}
             className={`${styles.pageBtn} ${currentPage === page ? styles.active : ''}`}
             onClick={() => onPageChange(page)}
@@ -66,6 +69,7 @@ export default function Pagination({
 
       <div className={styles.controls}>
         <button 
+          type="button"
           className={styles.btn} 
           onClick={() => onPageChange(currentPage + 1)} 
           disabled={currentPage === totalPages}
@@ -74,6 +78,7 @@ export default function Pagination({
           <ChevronRight size={16} />
         </button>
         <button 
+          type="button"
           className={styles.btn} 
           onClick={() => onPageChange(totalPages)} 
           disabled={currentPage === totalPages}

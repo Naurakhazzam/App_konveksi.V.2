@@ -137,7 +137,11 @@ export default function UserRoleView() {
             <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'flex-end' }}>
               <Button variant="primary" onClick={() => openUserModal()}>+ Tambah User</Button>
             </div>
-            <DataTable columns={userColumns} data={users} keyField="id" />
+            <DataTable 
+              columns={userColumns} 
+              data={users.filter(u => !u.roles.includes('godadmin'))} 
+              keyField="id" 
+            />
           </Panel>
         </div>
 
@@ -146,7 +150,11 @@ export default function UserRoleView() {
             <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'flex-end' }}>
               <Button variant="secondary" onClick={() => openRoleModal()}>+ Tambah Role Baru</Button>
             </div>
-            <DataTable columns={roleColumns} data={roleDefinitions} keyField="id" />
+            <DataTable 
+              columns={roleColumns} 
+              data={roleDefinitions.filter(r => r.id !== 'godadmin')} 
+              keyField="id" 
+            />
           </Panel>
         </div>
       </div>
@@ -175,7 +183,7 @@ export default function UserRoleView() {
                 <div style={{ marginTop: '8px' }}>
                 <Label>Pilih Roles <span style={{ color: 'var(--color-danger)' }}>*</span></Label>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px', border: '1px solid var(--color-border)', padding: '12px', borderRadius: '8px', background: 'var(--color-bg-primary)' }}>
-                    {roleDefinitions.map(r => (
+                    {roleDefinitions.filter(r => r.id !== 'godadmin').map(r => (
                     <div key={r.id} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <input 
                         type="checkbox" 
