@@ -9,9 +9,15 @@ import ModalApproveReject from './ModalApproveReject';
 import styles from './KoreksiView.module.css';
 
 export default function KoreksiView() {
-  const { koreksiList, approveKoreksiLebih, rejectKoreksiLebih } = useKoreksiStore();
+  const { 
+    koreksiList, 
+    approveKoreksiLebih, 
+    rejectKoreksiLebih,
+    pendingActions,
+    resolveActionApproval
+  } = useKoreksiStore();
 
-  const [filterType, setFilterType] = useState<'semua' | 'lebih' | 'kurang'>('semua');
+  const [filterType, setFilterType] = useState<'semua' | 'lebih' | 'kurang' | 'aksi'>('semua');
   const [selectedItem, setSelectedItem] = useState<KoreksiQTY | null>(null);
   const [modalMode, setModalMode] = useState<'approve' | 'reject' | null>(null);
 
@@ -24,16 +30,16 @@ export default function KoreksiView() {
   const kpis = {
     menunggu: koreksiList.filter((k) => k.jenisKoreksi === 'lebih' && k.statusApproval === 'menunggu').length,
     approved: koreksiList.filter((k) => k.statusApproval === 'approved').length,
-    pending: koreksiList.filter((k) => k.statusPotongan === 'pending' && k.jenisKoreksi !== 'lebih').length,
-    total: koreksiList.length,
+    pendingAksi: pendingActions.filter((a) => a.status === 'pending').length,
+    total: koreksiList.length + pendingActions.length,
   };
 
   const kpiRow = (
     <div style={{ display: 'flex', gap: '16px', width: '100%' }}>
-      <KpiCard label="Tunggu Approval" value={kpis.menunggu} accent="yellow" icon="Clock" />
+      <KpiCard label="Tunggu Approval QTY" value={kpis.menunggu} accent="yellow" icon="Clock" />
+      <KpiCard label="Tunggu Approval Aksi" value={kpis.pendingAksi} accent="orange" icon="Shield" />
       <KpiCard label="Disetujui" value={kpis.approved} accent="green" icon="CheckCircle" />
-      <KpiCard label="Potongan Pending" value={kpis.pending} accent="red" icon="XCircle" />
-      <KpiCard label="Total Koreksi" value={kpis.total} accent="blue" icon="ShieldCheck" />
+      <KpiCard label="Total Histori" value={kpis.total} accent="blue" icon="ShieldCheck" />
     </div>
   );
 
@@ -70,16 +76,46 @@ export default function KoreksiView() {
             <button className={filterType === 'kurang' ? styles.active : ''} onClick={() => setFilterType('kurang')}>
               QTY Kurang / Reject
             </button>
+            <button className={filterType === 'aksi' ? styles.active : ''} onClick={() => setFilterType('aksi')}>
+              Persetujuan Tindakan
+            </button>
           </div>
         </div>
 
-        <Panel title="Daftar Koreksi QTY">
-          <KoreksiTable
-            items={filteredData}
-            onApprove={(item) => handleAction(item, 'approve')}
-            onReject={(item) => handleAction(item, 'reject')}
-          />
-        </Panel>
+        {filterType === 'aksi' ? (
+          <Panel title="Antrean Persetujuan Tindakan">
+            <DataTable
+              keyField="id"
+              data={pendingActions}
+              columns={[
+                { key: 'requestedAt', header: 'Waktu Aktvitas', render: (v) => new Date(v).toLocaleString('id-ID') },
+                { key: 'label', header: 'Aksi yang Diajukan', render: (v) => <strong>{v}</strong> },
+                { key: 'requestedBy', header: 'Oleh' },
+                { key: 'status', header: 'Status', render: (v) => (
+                  <span style={{ color: v === 'pending' ? 'var(--color-yellow)' : v === 'approved' ? 'var(--color-green)' : 'var(--color-red)' }}>
+                    {v.toUpperCase()}
+                  </span>
+                )},
+                { key: 'action', header: '', align: 'right', render: (_, row) => (
+                  row.status === 'pending' && (
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <Button variant="danger" size="sm" onClick={() => resolveActionApproval(row.id, 'rejected', 'FAUZAN')}>Reject</Button>
+                      <Button variant="primary" size="sm" onClick={() => resolveActionApproval(row.id, 'approved', 'FAUZAN')}>Setujui</Button>
+                    </div>
+                  )
+                )}
+              ]}
+            />
+          </Panel>
+        ) : (
+          <Panel title="Daftar Koreksi QTY">
+            <KoreksiTable
+              items={filteredData}
+              onApprove={(item) => handleAction(item, 'approve')}
+              onReject={(item) => handleAction(item, 'reject')}
+            />
+          </Panel>
+        )}
       </div>
 
       <ModalApproveReject

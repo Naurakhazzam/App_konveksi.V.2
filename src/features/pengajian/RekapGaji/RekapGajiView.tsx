@@ -11,18 +11,28 @@ import { usePayrollStore } from '@/stores/usePayrollStore';
 import { useJurnalStore } from '@/stores/useJurnalStore';
 import RekapGajiTable from './RekapGajiTable';
 import ModalBayar from './ModalBayar';
+import AuthGateModal from '@/components/organisms/AuthGateModal/AuthGateModal';
+import { useKoreksiStore } from '@/stores/useKoreksiStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { formatRupiah, getPayrollCycleRange } from '@/lib/utils/formatters';
 import styles from './RekapGajiView.module.css';
+import { useToast } from '@/components/molecules/Toast';
 
 export default function RekapGajiView() {
   const { karyawan } = useMasterStore();
-  const { calculateUpah, prosesBayar, ledger, kasbon } = usePayrollStore();
-  const { addEntry, entries } = useJurnalStore();
+  const { calculateUpah, ledger, kasbon } = usePayrollStore();
+  const { entries } = useJurnalStore();
+  const { addActionApproval } = useKoreksiStore();
+  const { canEdit: checkEdit, currentUser } = useAuthStore();
+  const { info } = useToast();
   const router = useRouter();
 
   const [dateRange, setDateRange] = useState(getPayrollCycleRange());
-  
   const [selectedKaryawan, setSelectedKaryawan] = useState<any | null>(null);
+  const [authGate, setAuthGate] = useState<{ isOpen: boolean; type: 'pay' | 'recap'; payload?: any }>({
+    isOpen: false,
+    type: 'pay'
+  });
 
   const rekapData = useMemo(() => {
     return karyawan.map(k => {
@@ -73,21 +83,40 @@ export default function RekapGajiView() {
   }, [entries, dateRange]);
 
   const handleRekapJurnal = () => {
-    if (stats.totalBelum > 0) {
-      if (!confirm(`Terdapat ${formatRupiah(stats.totalBelum)} gaji belum dibayar. Tetap rekap total biaya (${formatRupiah(stats.totalUpah)}) ke Jurnal Umum?`)) return;
-    } else {
-      if (!confirm('Rekap seluruh upah periode ini ke Jurnal Umum?')) return;
-    }
-
-    addEntry({
-      id: `JRN-UPAH-${Date.now()}`,
-      kategoriTrxId: 'KTR-002',
-      jenis: 'direct_upah',
-      nominal: stats.totalUpah,
-      keterangan: `Upah periode ${dateRange.start} - ${dateRange.end}`,
-      tanggal: new Date().toISOString().split('T')[0],
+    setAuthGate({
+      isOpen: true,
+      type: 'recap',
+      payload: {
+        totalUpah: stats.totalUpah,
+        dateRange
+      }
     });
   };
+
+  const onAuthSuccess = () => {
+    setAuthGate(prev => ({ ...prev, isOpen: false }));
+
+    if (authGate.type === 'recap') {
+      addActionApproval({
+        type: 'recap_journal',
+        label: `Rekap Jurnal Gaji: ${authGate.payload.dateRange.start} s/d ${authGate.payload.dateRange.end}`,
+        payload: authGate.payload,
+        requestedBy: currentUser?.nama || 'Unknown'
+      });
+      info('Permintaan Dikirim', 'Rekapitulasi Jurnal Gaji telah diajukan untuk disetujui Owner.');
+    } else if (authGate.type === 'pay') {
+      const { r, id, entryIds, potong, hariKerja } = authGate.payload;
+      addActionApproval({
+        type: 'pay_salary',
+        label: `Bayar Gaji: ${r.nama}`,
+        payload: { karyawanId: id, entryIds, inputKasbon: potong, hariKerja },
+        requestedBy: currentUser?.nama || 'Unknown'
+      });
+      info('Permintaan Dikirim', `Pembayaran gaji untuk ${r.nama} telah diajukan untuk disetujui Owner.`);
+    }
+  };
+
+  const allowEdit = checkEdit('/dashboard/penggajian'); // Using current path context
 
   const handleResetToCycle = () => {
     setDateRange(getPayrollCycleRange());
@@ -114,7 +143,7 @@ export default function RekapGajiView() {
           <Button 
             variant="primary" 
             onClick={handleRekapJurnal}
-            disabled={isAlreadyRekap || stats.totalUpah === 0}
+            disabled={isAlreadyRekap || stats.totalUpah === 0 || !allowEdit}
           >
             {isAlreadyRekap ? '✓ Sudah Direkap ke Jurnal' : '📋 Rekap ke Jurnal Umum'}
           </Button>
@@ -124,7 +153,6 @@ export default function RekapGajiView() {
           <RekapGajiTable 
             data={rekapData} 
             onBayar={(r) => {
-              console.log('Bayar clicked for:', r.nama);
               setSelectedKaryawan(r);
             }}
             onViewSlip={(id) => {
@@ -139,11 +167,24 @@ export default function RekapGajiView() {
           rekap={selectedKaryawan}
           onClose={() => setSelectedKaryawan(null)}
           onConfirm={(id, entryIds, potong, hariKerja) => {
-            prosesBayar(id, entryIds, potong, hariKerja);
+            setAuthGate({
+              isOpen: true,
+              type: 'pay',
+              payload: { r: selectedKaryawan, id, entryIds, potong, hariKerja }
+            });
             setSelectedKaryawan(null);
           }}
         />
       )}
+
+      <AuthGateModal
+        isOpen={authGate.isOpen}
+        onClose={() => setAuthGate(prev => ({ ...prev, isOpen: false }))}
+        type="password"
+        onSuccess={onAuthSuccess}
+        title={authGate.type === 'pay' ? 'Otorisasi Pembayaran' : 'Otorisasi Rekap Jurnal'}
+        message={`Masukkan password Anda untuk melanjutkan ${authGate.type === 'pay' ? 'pembayaran gaji' : 'rekapitulasi jurnal'}.`}
+      />
     </PageWrapper>
   );
 }

@@ -7,6 +7,7 @@ import SidebarItem from './SidebarItem';
 import ThemeToggle from '../../atoms/ThemeToggle/ThemeToggle';
 import { NAV } from '../../../lib/constants/navigation';
 import { useAuthStore } from '@/stores/useAuthStore';
+import AuthGateModal from '../AuthGateModal/AuthGateModal';
 import styles from './Sidebar.module.css';
 
 export interface SidebarProps {
@@ -28,6 +29,10 @@ export default function Sidebar({ currentPath, isOpen, onClose }: SidebarProps) 
   } = useAuthStore();
   
   const isFauzan = currentUser?.id === 'USR-FAUZAN';
+  const [pinGate, setPinGate] = useState<{ isOpen: boolean; targetPath: string | null }>({
+    isOpen: false,
+    targetPath: null
+  });
   
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(() => {
     const initialState: Record<string, boolean> = {};
@@ -88,23 +93,48 @@ export default function Sidebar({ currentPath, isOpen, onClose }: SidebarProps) 
       <div className={styles.navArea}>
         {NAV.filter(item => canAccess(item.basePath)).map(item => {
           const isActive = currentPath.startsWith(item.basePath);
+          
+          const handleNavClick = (e: React.MouseEvent) => {
+            const protectedPaths = ['/koreksi-data', '/trash'];
+            if (protectedPaths.includes(item.basePath)) {
+              e.preventDefault();
+              setPinGate({ isOpen: true, targetPath: item.basePath });
+            }
+          };
+
           return (
-            <SidebarItem
-              key={item.label}
-              label={item.label}
-              icon={item.icon}
-              color={item.color}
-              basePath={item.basePath}
-              subs={item.subs}
-              isActive={isActive}
-              isExpanded={!!expandedItems[item.label]}
-              onToggle={() => toggleExpand(item.label)}
-              collapsed={collapsed}
-              currentPath={currentPath}
-            />
+            <div key={item.label} onClickCapture={handleNavClick}>
+              <SidebarItem
+                label={item.label}
+                icon={item.icon}
+                color={item.color}
+                basePath={item.basePath}
+                subs={item.subs}
+                isActive={isActive}
+                isExpanded={!!expandedItems[item.label]}
+                onToggle={() => toggleExpand(item.label)}
+                collapsed={collapsed}
+                currentPath={currentPath}
+              />
+            </div>
           );
         })}
       </div>
+
+      <AuthGateModal
+        isOpen={pinGate.isOpen}
+        onClose={() => setPinGate({ isOpen: false, targetPath: null })}
+        type="pin"
+        expectedValue="030503"
+        title="Akses Brankas Fauzan"
+        message="Masukkan PIN khusus Anda untuk membuka tab sensitif ini."
+        onSuccess={() => {
+          if (pinGate.targetPath) {
+            router.push(pinGate.targetPath);
+          }
+          setPinGate({ isOpen: false, targetPath: null });
+        }}
+      />
 
       <div className={styles.footer}>
         <ThemeToggle collapsed={collapsed} />

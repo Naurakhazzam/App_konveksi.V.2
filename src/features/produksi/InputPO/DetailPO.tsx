@@ -14,13 +14,17 @@ interface DetailPOProps {
 }
 
 import { useToast } from '@/components/molecules/Toast';
-import ModalAuth from '@/components/organisms/ModalAuth';
+import AuthGateModal from '@/components/organisms/AuthGateModal/AuthGateModal';
+import { useKoreksiStore } from '@/stores/useKoreksiStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 export default function DetailPO({ poId }: DetailPOProps) {
-  const { getPOById, removePO } = usePOStore();
-  const { getBundlesByPO, removeBundlesByPO } = useBundleStore();
+  const { getPOById } = usePOStore();
+  const { getBundlesByPO } = useBundleStore();
+  const { addActionApproval } = useKoreksiStore();
+  const { canEdit: checkEdit, currentUser } = useAuthStore();
   const { klien, model, warna, sizes } = useMasterStore();
-  const { success, error, warning } = useToast();
+  const { success, error, info } = useToast();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   
   const po = getPOById(poId);
@@ -42,10 +46,19 @@ export default function DetailPO({ poId }: DetailPOProps) {
 
   const onAuthSuccess = () => {
     setIsAuthOpen(false);
-    removePO(poId);
-    removeBundlesByPO(poId);
-    success('PO Dihapus', `Purchase Order ${po.nomorPO} telah berhasil dihapus.`);
+    
+    // Alur Baru: Kirim ke Koreksi Data (The Vault)
+    addActionApproval({
+      type: 'delete_po',
+      label: `Hapus Purchase Order: ${po.nomorPO}`,
+      payload: { id: poId },
+      requestedBy: currentUser?.nama || 'Unknown'
+    });
+
+    info('Permintaan Dikirim', `Permintaan penghapusan PO ${po.nomorPO} telah dikirim ke antrean Koreksi Data untuk disetujui Owner.`);
   };
+
+  const allowEdit = checkEdit('/produksi');
 
   const clientName = klien.find(k => k.id === po.klienId)?.nama || po.klienId;
 
@@ -97,8 +110,14 @@ export default function DetailPO({ poId }: DetailPOProps) {
             <p>Klien: {clientName} | Tanggal: {po.tanggalInput}</p>
           </div>
           <div>
-            <Button variant="danger" size="sm" onClick={handleDelete} className={styles.deleteBtn}>
-              🗑️ Hapus PO
+            <Button 
+              variant="danger" 
+              size="sm" 
+              onClick={handleDelete} 
+              className={styles.deleteBtn}
+              disabled={!allowEdit}
+            >
+              Hapus PO
             </Button>
           </div>
         </div>
@@ -108,12 +127,13 @@ export default function DetailPO({ poId }: DetailPOProps) {
         <DataTable columns={columns} data={itemSummary} keyField="id" />
       </Panel>
 
-      <ModalAuth 
-        open={isAuthOpen} 
-        onClose={() => setIsAuthOpen(false)} 
+      <AuthGateModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        type="password"
         onSuccess={onAuthSuccess}
-        title={`Hapus PO ${po.nomorPO}`}
-        description="Menghapus PO akan menghapus semua data bundle dan riwayat terkait. Masukkan PIN Owner untuk mengonfirmasi."
+        title="Otorisasi Penghapusan"
+        message={`Masukkan password Anda untuk mengajukan penghapusan PO ${po.nomorPO}.`}
       />
     </div>
   );

@@ -15,13 +15,29 @@ interface KoreksiState {
   getActiveRejectByTahap: (tahap: string) => KoreksiQTY[];
   getPendingCount: () => number;
   
+  // NEW: Action Approvals (The Vault)
+  pendingActions: ActionApproval[];
+  addActionApproval: (action: Omit<ActionApproval, 'id' | 'status' | 'requestedAt'>) => void;
+  resolveActionApproval: (id: string, decision: 'approved' | 'rejected', approvedBy?: string) => void;
+  
   // NEW: Atomic Actions
   resolveKoreksiLebih: (id: string, action: 'approve' | 'reject', approvedBy?: string) => void;
   removeKoreksiByPO: (poId: string) => void;
 }
 
+export interface ActionApproval {
+  id: string;
+  type: 'delete_po' | 'pay_salary' | 'recap_journal' | 'edit_karyawan';
+  label: string;          // e.g. "Hapus PO-001" or "Bayar Gaji Budi"
+  payload: any;           // Data yang dibutuhkan untuk eksekusi
+  requestedBy: string;
+  requestedAt: string;
+  status: 'pending' | 'approved' | 'rejected';
+}
+
 export const useKoreksiStore = create<KoreksiState>((set, get) => ({
   koreksiList: [],
+  pendingActions: [],
 
   addKoreksi: (data) =>
     set((state) => ({ koreksiList: [...state.koreksiList, data] })),
@@ -124,5 +140,57 @@ export const useKoreksiStore = create<KoreksiState>((set, get) => ({
 
   removeKoreksiByPO: (poId) => set((state) => ({
     koreksiList: state.koreksiList.filter(k => k.poId !== poId)
-  }))
+  })),
+
+  addActionApproval: (action) => set((state) => ({
+    pendingActions: [
+      {
+        ...action,
+        id: `ACT-${Date.now()}`,
+        status: 'pending',
+        requestedAt: new Date().toISOString()
+      },
+      ...state.pendingActions
+    ]
+  })),
+
+  resolveActionApproval: (id, decision, approvedBy) => {
+    const action = get().pendingActions.find(a => a.id === id);
+    if (!action || action.status !== 'pending') return;
+
+    // 1. Eksekusi Aksi jika disetujui (The Engine)
+    if (decision === 'approved') {
+      const { type, payload } = action;
+      
+      if (type === 'delete_po') {
+        const { usePOStore } = require('./usePOStore');
+        const { useTrashStore } = require('./useTrashStore');
+        const po = usePOStore.getState().getPOById(payload.id);
+        if (po) {
+          useTrashStore.getState().addToTrash({
+            id: po.id,
+            type: 'po',
+            label: po.nomorPO,
+            data: po,
+            trashedBy: approvedBy || 'SYSTEM'
+          });
+          usePOStore.getState().removePO(payload.id);
+        }
+      }
+
+      if (type === 'pay_salary') {
+        const { usePayrollStore } = require('./usePayrollStore');
+        usePayrollStore.getState().prosesBayar(payload.karyawanId, payload.entryIds, payload.inputKasbon, payload.hariKerja);
+      }
+
+      // Add other types as needed
+    }
+
+    // 2. Update status antrean
+    set((state) => ({
+      pendingActions: state.pendingActions.map(a => 
+        a.id === id ? { ...a, status: decision === 'approved' ? 'approved' as const : 'rejected' as const } : a
+      )
+    }));
+  }
 }));
