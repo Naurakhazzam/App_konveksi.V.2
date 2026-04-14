@@ -29,8 +29,11 @@ interface AuthState {
   canEdit: (path: string) => boolean;
   hasRole: (roleId: string) => boolean;
 
-  isPreviewMode: boolean;
-  togglePreviewMode: () => void;
+  _hasHydrated: boolean;
+  setHasHydrated: (val: boolean) => void;
+  
+  previewRole: string | null;
+  setPreviewRole: (role: string | null) => void;
 
   validateOwnerCode: (code: string) => boolean;
   switchRole: (roles: string[]) => void;
@@ -82,11 +85,13 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       currentUser: null,
       isAuthenticated: false,
-      isPreviewMode: false,
+      _hasHydrated: false,
+      previewRole: null,
       roleDefinitions: defaultRoles,
       users: [],
 
-      togglePreviewMode: () => set((state) => ({ isPreviewMode: !state.isPreviewMode })),
+      setHasHydrated: (val) => set({ _hasHydrated: val }),
+      setPreviewRole: (role) => set({ previewRole: role }),
 
       // Load semua users dari Supabase
       loadUsers: async () => {
@@ -201,13 +206,16 @@ export const useAuthStore = create<AuthState>()(
       removeRole: (id) => set((state) => ({ roleDefinitions: state.roleDefinitions.filter(r => r.id !== id) })),
 
       canAccess: (path) => {
-        if (get().isPreviewMode) return true;
         const user = get().currentUser;
         if (!user) return false;
-        if (user.roles.includes('godadmin') || user.roles.includes('owner')) return true;
-        if (user.roles.includes('visitor_owner')) return true;
-        if (user.roles.includes('supervisor_admin')) return true;
-        if (user.roles.includes('supervisor_produksi')) {
+        
+        // Simulasikan role jika sedang dalam mode preview
+        const rolesToUse = get().previewRole ? [get().previewRole!] : user.roles;
+        
+        if (rolesToUse.includes('godadmin') || rolesToUse.includes('owner')) return true;
+        if (rolesToUse.includes('visitor_owner')) return true;
+        if (rolesToUse.includes('supervisor_admin')) return true;
+        if (rolesToUse.includes('supervisor_produksi')) {
           const hiddenPaths = ['/keuangan', '/master-data', '/koreksi-data', '/audit-log'];
           if (hiddenPaths.some(hp => path.startsWith(hp))) return false;
           return true;
@@ -216,16 +224,19 @@ export const useAuthStore = create<AuthState>()(
       },
 
       canEdit: (path) => {
-        if (get().isPreviewMode) return true;
         const user = get().currentUser;
         if (!user) return false;
-        if (user.roles.includes('godadmin') || user.roles.includes('owner')) return true;
-        if (user.roles.includes('visitor_owner')) return false;
-        if (user.roles.includes('supervisor_admin')) {
+
+        // Simulasikan role jika sedang dalam mode preview
+        const rolesToUse = get().previewRole ? [get().previewRole!] : user.roles;
+
+        if (rolesToUse.includes('godadmin') || rolesToUse.includes('owner')) return true;
+        if (rolesToUse.includes('visitor_owner')) return false;
+        if (rolesToUse.includes('supervisor_admin')) {
           const editAllowed = ['/produksi/input-po', '/retur/penerimaan'];
           return editAllowed.some(ea => path.startsWith(ea));
         }
-        if (user.roles.includes('supervisor_produksi')) {
+        if (rolesToUse.includes('supervisor_produksi')) {
           if (path.startsWith('/dashboard/produksi')) return false;
           return true;
         }
@@ -274,9 +285,12 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         currentUser: state.currentUser,
         isAuthenticated: state.isAuthenticated,
-        isPreviewMode: state.isPreviewMode,
+        previewRole: state.previewRole,
         roleDefinitions: state.roleDefinitions,
       }),
+      onRehydrateStorage: (state) => {
+        return () => state?.setHasHydrated(true);
+      }
     }
   )
 );

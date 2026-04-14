@@ -117,6 +117,45 @@
   transition: all 0.3s ease;
 }
 
+.previewSection {
+  margin-bottom: 12px;
+  padding: 8px;
+  background: rgba(255, 157, 0, 0.08);
+  border: 1px solid rgba(255, 157, 0, 0.2);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.previewLabel {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: #ff9d00;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 800;
+}
+
+.roleSelector {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 11px;
+  padding: 6px;
+  cursor: pointer;
+  outline: none;
+  font-family: var(--font-body);
+  transition: all 0.2s;
+}
+
+.roleSelector:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 157, 0, 0.4);
+}
+
 .statusPreview {
   background: rgba(255, 157, 0, 0.15) !important;
   border-color: rgba(255, 157, 0, 0.4) !important;
@@ -127,13 +166,6 @@
 .statusPreview .statusDot {
   background: #ff9d00;
   box-shadow: 0 0 10px #ff9d00;
-}
-
-.previewLabel {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 800;
 }
 
 @keyframes glowPulse {

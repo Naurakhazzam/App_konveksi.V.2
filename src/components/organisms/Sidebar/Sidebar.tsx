@@ -18,7 +18,16 @@ export interface SidebarProps {
 export default function Sidebar({ currentPath, isOpen, onClose }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
-  const { logout, canAccess, currentUser, isPreviewMode, togglePreviewMode } = useAuthStore();
+  const { 
+    logout, 
+    canAccess, 
+    currentUser, 
+    previewRole, 
+    setPreviewRole, 
+    roleDefinitions 
+  } = useAuthStore();
+  
+  const isFauzan = currentUser?.id === 'USR-FAUZAN';
   
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(() => {
     const initialState: Record<string, boolean> = {};
@@ -56,17 +65,21 @@ export default function Sidebar({ currentPath, isOpen, onClose }: SidebarProps) 
       
       {!collapsed && (
         <div className={styles.systemInfo}>
-          <div className={`${styles.systemStatus} ${isPreviewMode ? styles.statusPreview : ''}`} onClick={togglePreviewMode} style={{ cursor: 'pointer' }}>
-            <span className={styles.statusDot} />
-            {isPreviewMode ? (
-              <div className={styles.previewLabel}>
-                <Eye size={12} />
-                <span>GOD MODE ACTIVE</span>
-              </div>
-            ) : (
-              <span>SERVER: OPERATIONAL</span>
-            )}
-          </div>
+          {isFauzan && (
+            <div className={styles.previewSection}>
+              <label className={styles.previewLabel}>Simulasi Role:</label>
+              <select 
+                className={styles.roleSelector}
+                value={previewRole || ''} 
+                onChange={(e) => setPreviewRole(e.target.value || null)}
+              >
+                <option value="">Normal (Admin)</option>
+                {roleDefinitions.map(role => (
+                  <option key={role.id} value={role.id}>{role.label}</option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
       )}
 

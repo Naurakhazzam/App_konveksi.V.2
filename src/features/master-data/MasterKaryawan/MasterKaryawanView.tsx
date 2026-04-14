@@ -61,6 +61,18 @@ export default function MasterKaryawanView() {
     }
   };
 
+  const handleDelete = async (item: Karyawan) => {
+    if (window.confirm(`Apakah Anda yakin ingin menghapus karyawan "${item.nama}"? Tindakan ini tidak dapat dibatalkan.`)) {
+      try {
+        await removeKaryawan(item.id);
+        alert('Karyawan berhasil dihapus.');
+      } catch (err: any) {
+        console.error('Delete Error:', err);
+        alert(`Gagal menghapus: ${err.message || 'Mungkin data ini masih terhubung dengan transaksi PO/Gaji. Silakan nonaktifkan saja jika tidak bisa dihapus.'}`);
+      }
+    }
+  };
+
   const columns: Column<Karyawan>[] = [
     { key: 'id', header: 'ID', render: (val) => <span style={{ fontFamily: 'var(--font-mono)' }}>{val}</span> },
     { key: 'nama', header: 'Nama', render: (val) => <span style={{ fontWeight: 600 }}>{val}</span> },
@@ -75,6 +87,7 @@ export default function MasterKaryawanView() {
           {row.aktif ? 'Nonaktifkan' : 'Aktifkan'}
         </Button>
         <Button variant="ghost" size="sm" onClick={() => { setEditingItem(row); setModalOpen(true); }}>Edit</Button>
+        <Button variant="ghost" size="sm" style={{ color: 'var(--color-danger)' }} onClick={() => handleDelete(row)}>Hapus</Button>
       </div>
     )}
   ];

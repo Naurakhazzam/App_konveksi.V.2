@@ -7,13 +7,16 @@ import { useMasterStore } from '@/stores/useMasterStore';
 import DashboardLayout from '../../components/templates/DashboardLayout';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, canAccess, loadUsers } = useAuthStore();
+  const { isAuthenticated, canAccess, loadUsers, _hasHydrated } = useAuthStore();
   const { initializeMasterData } = useMasterStore();
   const router = useRouter();
   const pathname = usePathname();
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    // Tunggu sampai data localStorage (Persist) selesai dimuat
+    if (!_hasHydrated) return;
+
     // 1. Check Login
     if (!isAuthenticated) {
       router.replace('/login');
@@ -31,9 +34,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
 
     setIsReady(true);
-  }, [isAuthenticated, router, pathname]);
+  }, [isAuthenticated, _hasHydrated, router, pathname]);
 
-  if (!isReady) return null;
+  if (!isReady || !_hasHydrated) return null;
 
   return <DashboardLayout>{children}</DashboardLayout>;
 }
