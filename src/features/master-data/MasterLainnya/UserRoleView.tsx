@@ -108,8 +108,18 @@ export default function UserRoleView() {
         }) : null}
       </div>
     )},
+    { key: 'isPending', header: 'Status', render: (val: boolean) => (
+      <Badge variant={val ? 'warning' : 'success'}>
+        {val ? 'Menunggu Approval' : 'Aktif'}
+      </Badge>
+    )},
     { key: 'action', header: '', align: 'right', render: (_, row) => (
       <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+        {row.isPending && (
+          <Button variant="primary" size="sm" onClick={() => updateUser(row.id, { isPending: false })}>
+            Setujui Akun
+          </Button>
+        )}
         <Button variant="ghost" size="sm" onClick={() => openUserModal(row)}>Edit</Button>
         {row.roles.includes('owner') ? null : (
            <Button variant="danger" size="sm" onClick={() => removeUser(row.id)}>Hapus</Button>
@@ -185,8 +195,8 @@ export default function UserRoleView() {
                 <TextInput value={nama} onChange={setNama} required />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <Label>PIN (Opsional, untuk Owner)</Label>
-                <TextInput value={pin} onChange={setPin} placeholder="Contoh: 030503" />
+                <Label>PIN Keamanan <span style={{ color: 'var(--color-danger)' }}>*</span></Label>
+                <TextInput value={pin} onChange={setPin} placeholder="Contoh: 123456" required maxLength={6} />
                 </div>
 
                 <div style={{ marginTop: '8px' }}>

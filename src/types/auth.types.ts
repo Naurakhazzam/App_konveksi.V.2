@@ -19,7 +19,8 @@ export interface User {
   username: string;
   nama: string;
   roles: string[]; // Sekarang mereferensikan ID dari RoleDefinition
-  pin?: string;
+  pin: string;
+  isPending: boolean;
 }
 
 export interface Session {
