@@ -89,7 +89,6 @@ export const useMasterStore = create<MasterState>((set, get) => ({
   model: initialModels,
   sizes: initialSizes,
   warna: initialWarna,
-  karyawan: dummyKaryawan,
   klien: initialClients,
   jenisReject: dummyJenisReject,
   alasanReject: dummyAlasanReject,
@@ -99,13 +98,28 @@ export const useMasterStore = create<MasterState>((set, get) => ({
   hppKomponen: initialHPPKomponen,
   produkHPPItems: initialProdukHPPItems,
   jabatan: [
-    { id: 'JAB-001', nama: 'Leader' },
-    { id: 'JAB-002', nama: 'Supervisor' },
-    { id: 'JAB-003', nama: 'Staff / Admin' },
-    { id: 'JAB-004', nama: 'Operator' },
-    { id: 'JAB-005', nama: 'Helper' },
+    { id: 'JAB-001', nama: 'Supervisor_Produksi' },
+    { id: 'JAB-002', nama: 'Supervisor_Finising' },
+    { id: 'JAB-003', nama: 'Operator Cutting' },
+    { id: 'JAB-004', nama: 'Operator Jahit' },
   ],
-  
+  karyawan: [
+    { id: 'EMP-001', nama: 'Rangga Cepta Nugraha', gajiPokok: 500000, aktif: true, jabatan: 'Supervisor_Produksi', tahapList: [] },
+    { id: 'EMP-002', nama: 'Hengky', gajiPokok: 0, aktif: true, jabatan: 'Supervisor_Finising', tahapList: ['lkancing', 'bbenang', 'qc', 'steam', 'packing'] },
+    { id: 'EMP-003', nama: 'Abqi', gajiPokok: 0, aktif: true, jabatan: 'Operator Cutting', tahapList: ['cutting'] },
+    { id: 'EMP-004', nama: 'Epul', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
+    { id: 'EMP-005', nama: 'Ujang Dian', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
+    { id: 'EMP-006', nama: 'Aldi', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
+    { id: 'EMP-007', nama: 'Angga', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
+    { id: 'EMP-008', nama: 'John', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
+    { id: 'EMP-009', nama: 'Ucil', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
+    { id: 'EMP-010', nama: 'Idan', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
+    { id: 'EMP-011', nama: 'Wawan', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
+    { id: 'EMP-012', nama: 'Sani', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
+    { id: 'EMP-013', nama: 'Anas', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
+    { id: 'EMP-014', nama: 'Iwan', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
+    { id: 'EMP-015', nama: 'Umar', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
+  ],
   importProdukBulk: (data) => set((state) => {
     // Helper to merge arrays and avoid duplicates by ID
     const merge = <T extends { id: string }>(original: T[], incoming: T[]): T[] => {

@@ -12,6 +12,8 @@ import { usePOStore } from '@/stores/usePOStore';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { useBundleStore } from '@/stores/useBundleStore';
 import BarcodeVisual from '../InputPO/BarcodeVisual';
+import TextInput from '@/components/atoms/Input/TextInput';
+import Select from '@/components/atoms/Select/Select';
 import { POItem } from '@/types';
 import styles from './CuttingRoomView.module.css';
 
@@ -30,6 +32,8 @@ export default function CuttingRoomView() {
   const [isMounted, setIsMounted] = useState(false);
   const [previewMode, setPreviewMode] = useState<'spk' | 'barcode' | null>(null);
   const [printMode, setPrintMode] = useState<'spk' | 'barcode' | null>(null);
+  const [searchPO, setSearchPO] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
 
   useEffect(() => {
     setIsMounted(true);
@@ -53,8 +57,14 @@ export default function CuttingRoomView() {
         }
       });
     });
-    return items;
-  }, [poList, model, warna, sizes, selectedIds]);
+
+    // Apply Filters
+    return items.filter(item => {
+      const matchPO = item.nomorPO.toLowerCase().includes(searchPO.toLowerCase());
+      const matchStatus = filterStatus === 'all' || item.statusCutting === filterStatus;
+      return matchPO && matchStatus;
+    });
+  }, [poList, model, warna, sizes, selectedIds, searchPO, filterStatus]);
 
   const toggleSelect = (id: string) => {
     setSelectedIds(prev => 
@@ -245,6 +255,29 @@ export default function CuttingRoomView() {
       }
     >
       <div className={styles.container}>
+        <div className={styles.filterBar}>
+          <div className={styles.filterGroup}>
+            <label>Cari Nomor PO</label>
+            <TextInput 
+              placeholder="Contoh: PO-0001..." 
+              value={searchPO} 
+              onChange={setSearchPO} 
+            />
+          </div>
+          <div className={styles.filterGroup}>
+            <label>Filter Status</label>
+            <Select 
+              value={filterStatus} 
+              onChange={setFilterStatus}
+              options={[
+                { value: 'all', label: 'Semua Status' },
+                { value: 'waiting', label: 'Menunggu' },
+                { value: 'started', label: 'Sedang Dipotong' },
+              ]}
+            />
+          </div>
+        </div>
+
         <Panel title="Antrian Cutting">
           <DataTable 
             columns={columns} 

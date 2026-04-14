@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Menu, User, LogOut } from 'lucide-react';
+import { Menu, User, LogOut, Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import SidebarItem from './SidebarItem';
 import ThemeToggle from '../../atoms/ThemeToggle/ThemeToggle';
@@ -18,7 +18,7 @@ export interface SidebarProps {
 export default function Sidebar({ currentPath, isOpen, onClose }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
-  const { logout, canAccess, currentUser } = useAuthStore();
+  const { logout, canAccess, currentUser, isPreviewMode, togglePreviewMode } = useAuthStore();
   
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(() => {
     const initialState: Record<string, boolean> = {};
@@ -56,9 +56,16 @@ export default function Sidebar({ currentPath, isOpen, onClose }: SidebarProps) 
       
       {!collapsed && (
         <div className={styles.systemInfo}>
-          <div className={styles.systemStatus}>
+          <div className={`${styles.systemStatus} ${isPreviewMode ? styles.statusPreview : ''}`} onClick={togglePreviewMode} style={{ cursor: 'pointer' }}>
             <span className={styles.statusDot} />
-            SERVER: OPERATIONAL
+            {isPreviewMode ? (
+              <div className={styles.previewLabel}>
+                <Eye size={12} />
+                <span>GOD MODE ACTIVE</span>
+              </div>
+            ) : (
+              <span>SERVER: OPERATIONAL</span>
+            )}
           </div>
         </div>
       )}

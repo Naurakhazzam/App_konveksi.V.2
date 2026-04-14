@@ -25,6 +25,9 @@ interface AuthState {
   canEdit: (path: string) => boolean;
   hasRole: (roleId: string) => boolean;
   
+  isPreviewMode: boolean;
+  togglePreviewMode: () => void;
+  
   validateOwnerCode: (code: string) => boolean;
   switchRole: (roles: string[]) => void;
 }
@@ -57,8 +60,11 @@ const dummyUsers: User[] = [
 export const useAuthStore = create<AuthState>((set, get) => ({
   currentUser: dummyOwner,
   isAuthenticated: true,
+  isPreviewMode: false,
   roleDefinitions: defaultRoles,
   users: dummyUsers,
+
+  togglePreviewMode: () => set((state) => ({ isPreviewMode: !state.isPreviewMode })),
 
   addUser: (item) => set((state) => ({ users: [...state.users, item] })),
   updateUser: (id, data) => set((state) => ({ users: state.users.map(i => i.id === id ? { ...i, ...data } : i) })),
@@ -69,6 +75,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   removeRole: (id) => set((state) => ({ roleDefinitions: state.roleDefinitions.filter(r => r.id !== id) })),
 
   canAccess: (path) => {
+    // Preview Mode bypass
+    if (get().isPreviewMode) return true;
+
     const user = get().currentUser;
     if (!user) return false;
     
@@ -84,6 +93,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   canEdit: (path) => {
+    // Preview Mode bypass
+    if (get().isPreviewMode) return true;
+
     const user = get().currentUser;
     if (!user) return false;
     
