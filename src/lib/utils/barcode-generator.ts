@@ -25,5 +25,5 @@ export function generateBarcode(params: {
   const y = params.tanggal.getFullYear().toString().substring(2);
   const dateStr = `${d}-${m}-${y}`;
 
-  return `PO${nopo}-${mdl}-${wrn}-${sz}-${urutglobal}-BDL${nourut}-${dateStr}`;
+  return `PO${nopo}-${urutglobal}-BDL${nourut}`;
 }

@@ -1,0 +1,29 @@
+.beamWrapper {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.beam {
+  position: absolute;
+  width: var(--beam-size, 40%);
+  height: var(--beam-thickness, 2px);
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--beam-color, #3b82f6),
+    transparent
+  );
+  filter: blur(1px);
+  animation: moveBeam var(--beam-speed, 4s) linear infinite;
+  offset-path: rect(0% 100% 100% 0% round 0px);
+}
+
+@keyframes moveBeam {
+  100% {
+    offset-distance: 100%;
+  }
+}

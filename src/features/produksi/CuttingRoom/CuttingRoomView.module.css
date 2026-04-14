@@ -24,52 +24,143 @@
 }
 
 /* Printable Area Styles */
+@media screen {
+  .printableArea {
+    display: none !important;
+  }
+}
+
 .printableArea {
-  display: none;
   background: white;
   color: black;
   padding: 40px;
+  font-family: Arial, sans-serif;
 }
 
+/* Structural Styles for the SPK Print (Applied both on screen preview & actual print) */
+.printHeader {
+  text-align: left;
+  margin-bottom: 30px;
+  border-bottom: 3px solid black;
+  padding-bottom: 10px;
+}
+
+.brandTitle {
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #333;
+}
+
+.docTitle {
+  font-size: 24px;
+  font-weight: 900;
+  margin: 5px 0;
+  text-transform: uppercase;
+}
+
+.printMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.printTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 40px;
+}
+
+.printTable th, .printTable td {
+  border: 1px solid #000;
+  padding: 12px 10px;
+  text-align: left;
+  font-size: 14px;
+  color: black !important;
+}
+
+.printTable th {
+  background: #000 !important;
+  color: #fff !important;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.printTable tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+.bold { font-weight: bold; }
+.center { text-align: center; }
+
+.validationGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.signBox {
+  text-align: center;
+}
+
+.signBox p {
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.signSpace {
+  height: 80px;
+  border-bottom: 1px solid #000;
+  margin-bottom: 10px;
+}
+
+.printFooter {
+  margin-top: 60px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+  font-size: 11px;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Specific Print Overrides */
 @media print {
-  body * {
-    visibility: hidden;
+  @page {
+    size: A4 landscape; /* Force layout as requested */
+    margin: 1cm;
   }
-  #print-area, #print-area * {
-    visibility: visible;
-  }
+
   #print-area {
-    display: block;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    left: 0 !important;
+    top: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
-  .printHeader {
-    text-align: center;
-    margin-bottom: 30px;
+
+  .printableArea {
+    background: white !important;
+    color: black !important;
   }
-  .printHeader h1 {
-    font-size: 24px;
-    margin-bottom: 5px;
+
+  /* Hide the normal dashboard UI elements explicitly */
+  :global(.Sidebar), :global(nav), :global(header) {
+    display: none !important;
   }
-  .printTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 30px;
+
+  /* Hide the Panel containing the data table and the Action buttons */
+  .container > *:not(#print-area) {
+    display: none !important;
   }
-  .printTable th, .printTable td {
-    border: 1px solid #333;
-    padding: 10px;
-    text-align: left;
-    font-size: 13px;
-  }
-  .printTable th {
-    background: #f5f5f5;
-  }
-  .printFooter {
-    margin-top: 50px;
-    font-size: 12px;
-    font-style: italic;
+
+  body, html, :global(#__next) {
+    background: white !important;
+    height: auto !important;
+    overflow: visible !important;
   }
 }

@@ -276,9 +276,41 @@ select option {
   color: var(--color-text);
 }
 
+/* Pastikan elemen cetak yang disembunyikan CSS Dasbor dapat dipaksa muncul khusus saat dimuat ke dalam Modal Preview */
+[class*="previewWrapper"] [class*="printableArea"] {
+  display: block !important;
+}
+
 @media print {
   .no-print { display: none !important; }
-  body { background: white !important; color: black !important; }
-  aside, nav, [class*="Sidebar"], [class*="RoleSwitcher"] { display: none !important; }
-  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; text-shadow: none !important; box-shadow: none !important; }
+  
+  /* Isolate the portal-based print-area from the rest of the Next.js app */
+  body > *:not(#print-area):not(script):not(style) {
+    display: none !important;
+  }
+
+
+  body, html { 
+    background: white !important; 
+    color: black !important; 
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #print-area {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  * { 
+    -webkit-print-color-adjust: exact !important; 
+    print-color-adjust: exact !important; 
+    text-shadow: none !important; 
+    box-shadow: none !important; 
+  }
 }
+

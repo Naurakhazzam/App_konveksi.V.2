@@ -1,13 +1,13 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
 
 .headerInfo {
   background: var(--color-bg-secondary);
-  padding: 20px;
-  border-radius: 12px;
+  padding: 16px;
+  border-radius: 8px;
   border: 1px solid var(--color-border);
 }
 
@@ -17,53 +17,181 @@
   gap: 12px;
 }
 
-.metaItem {
-  display: flex;
-  gap: 8px;
-  font-size: 14px;
-}
-
 .metaItem span {
-  color: var(--color-text-secondary);
-  width: 80px;
+  font-size: 13px;
+  color: var(--color-text-sub);
+  margin-right: 8px;
 }
 
 .catatan {
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid var(--color-border);
-  font-size: 14px;
+  border-top: 1px dashed var(--color-border);
 }
 
 .catatan span {
-  color: var(--color-text-secondary);
-  display: block;
-  margin-bottom: 4px;
+  font-size: 13px;
+  color: var(--color-text-sub);
+}
+
+.catatan p {
+  margin-top: 4px;
+  font-size: 14px;
 }
 
 .tableTitle {
-  font-weight: 600;
-  color: var(--color-text-primary);
   font-size: 16px;
+  font-weight: 700;
+  margin-top: 12px;
 }
 
 .footerPrint {
   display: flex;
-  align-items: center;
+  gap: 12px;
+}
+
+/* Print Only Styles (Initialized as hidden) */
+.printHeader, .printFooterBlock {
+  display: none;
 }
 
 @media print {
-  .headerInfo {
-    background: #f9f9f9 !important;
-    border: 1px solid #ddd !important;
-    color: black !important;
+  body * {
+    visibility: hidden;
+  }
+  
+  .container, .container * {
+    visibility: visible;
   }
 
-  .metaItem strong, .tableTitle {
-    color: black !important;
+  /* Make container fill the page */
+  .container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: white;
+    color: black;
+    padding: 0;
   }
 
-  .footerPrint {
+  /* Hide UI elements during print */
+  .headerInfo, .tableTitle, .footerPrint {
     display: none !important;
+  }
+
+  /* Show Print Layout */
+  .printHeader {
+    display: block;
+    margin-bottom: 30px;
+  }
+
+  .brandRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 2px solid black;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+  .name {
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 3px;
+  }
+
+  .tagline {
+    font-size: 11px;
+    opacity: 0.7;
+  }
+
+  .docInfo {
+    text-align: right;
+  }
+
+  .docType {
+    font-size: 24px;
+    font-weight: 900;
+  }
+
+  .logisticGrid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 40px;
+    margin-bottom: 30px;
+  }
+
+  .receiverBox {
+    margin-top: 8px;
+    padding: 15px;
+    border: 1px solid black;
+    min-height: 100px;
+  }
+
+  .label {
+    font-size: 10px;
+    font-weight: bold;
+  }
+
+  .clientName {
+    font-size: 18px;
+    font-weight: 800;
+    margin: 5px 0;
+  }
+
+  .clientAddr {
+    font-size: 12px;
+  }
+
+  .metaRow {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 4px;
+  }
+
+  /* Ensure Table is professional for print */
+  .printTableWrapper table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .printTableWrapper th, .printTableWrapper td {
+    border: 1px solid black !important;
+    padding: 10px !important;
+    color: black !important;
+    background: white !important;
+  }
+
+  .printFooterBlock {
+    display: block;
+    margin-top: 50px;
+  }
+
+  .signGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .signItem {
+    text-align: center;
+  }
+
+  .signBox {
+    height: 80px;
+    border-bottom: 1px solid black;
+    margin-bottom: 10px;
+  }
+
+  .disclaimer {
+    margin-top: 40px;
+    font-size: 10px;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+    color: #444;
   }
 }

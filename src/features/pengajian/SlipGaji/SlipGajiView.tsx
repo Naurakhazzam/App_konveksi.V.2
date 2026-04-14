@@ -33,6 +33,11 @@ function SlipGajiContent() {
   });
   
   const [selectedKaryawanId, setSelectedKaryawanId] = useState('');
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // 1. Dapatkan daftar karyawan yang SUDAH DIBAYAR (Lunas) di periode ini
   const paidEmployees = useMemo(() => {
@@ -144,77 +149,91 @@ function SlipGajiContent() {
           {slipData && infoKaryawan ? (
             <div className={styles.slipWrapper}>
               <div className={styles.slipCard} id="print-area">
+                <div className={styles.slipWatermark}>STITCHLYX</div>
                 <div className={styles.slipHeader}>
                   <div className={styles.companyInfo}>
-                    <h3>STITCHLYX.SYNCORE</h3>
-                    <p>Garment Manufacturing Precision</p>
+                    <div className={styles.brand}>STITCHLYX.SYNCORE</div>
+                    <div className={styles.branch}>Pusat Produksi Garmen</div>
                   </div>
-                  <div className={styles.slipTitle}>
-                    <h2>SLIP GAJI</h2>
-                    <p>Periode: {formatDate(dateRange.start)} - {formatDate(dateRange.end)}</p>
-                  </div>
-                </div>
-
-                <div className={styles.employeeInfo}>
-                  <div className={styles.infoCol}>
-                    <span>ID Karyawan:</span> <strong>{infoKaryawan.id}</strong>
-                  </div>
-                  <div className={styles.infoCol}>
-                    <span>Nama:</span> <strong>{infoKaryawan.nama}</strong>
-                  </div>
-                  <div className={styles.infoCol}>
-                    <span>Bagian/Role:</span> <strong>{infoKaryawan.jabatan}</strong>
+                  <div className={styles.docInfo}>
+                    <div className={styles.docType}>SLIP GAJI KARYAWAN</div>
+                    <div className={styles.docDate}>Periode: {formatDate(dateRange.start)} - {formatDate(dateRange.end)}</div>
                   </div>
                 </div>
 
-                <div className={styles.divider} />
-
-                <div className={styles.details}>
-                  <h4>Rincian Penghasilan</h4>
-                  <div className={styles.itemRow}>
-                    <span>Upah Produksi (Kotor)</span>
-                    <span>{formatRupiah(slipData.upah)}</span>
+                <div className={styles.employeeGrid}>
+                  <div className={styles.infoGroup}>
+                    <span className={styles.infoLabel}>NAMA KARYAWAN</span>
+                    <span className={styles.infoValue}>{infoKaryawan.nama}</span>
                   </div>
-                  {slipData.rework > 0 && (
-                    <div className={styles.itemRow}>
-                      <span>Bonus Rework</span>
-                      <span>{formatRupiah(slipData.rework)}</span>
-                    </div>
-                  )}
-                  
-                  <h4 className={styles.mt20}>Rincian Potongan</h4>
-                  {slipData.potongan !== 0 && (
-                    <div className={styles.itemRow}>
-                      <span>Potongan Reject</span>
-                      <span className={styles.red}>-{formatRupiah(Math.abs(slipData.potongan))}</span>
-                    </div>
-                  )}
-                  {slipData.kasbonSisa > 0 && (
-                    <div className={styles.itemRow}>
-                      <span>Sisa Kasbon (Aktif)</span>
-                      <span className={styles.orange}>{formatRupiah(slipData.kasbonSisa)}</span>
-                    </div>
-                  )}
+                  <div className={styles.infoGroup}>
+                    <span className={styles.infoLabel}>ID / JABATAN</span>
+                    <span className={styles.infoValue}>{infoKaryawan.id} — {infoKaryawan.jabatan}</span>
+                  </div>
                 </div>
 
-                <div className={styles.totalSection}>
-                  <div className={styles.totalRow}>
-                    <strong>TAKE HOME PAY</strong>
-                    <strong className={styles.grandTotal}>{formatRupiah(slipData.upahBersih)}</strong>
+                <div className={styles.billingGrid}>
+                  {/* Earnings */}
+                  <div className={styles.billingCol}>
+                    <div className={styles.colHeader}>RINCIAN PENGHASILAN (+)</div>
+                    <div className={styles.billingList}>
+                      <div className={styles.billItem}>
+                        <span>Upah Produksi</span>
+                        <span>{formatRupiah(slipData.upah)}</span>
+                      </div>
+                      {slipData.rework > 0 && (
+                        <div className={styles.billItem}>
+                          <span>Bonus Rework</span>
+                          <span>{formatRupiah(slipData.rework)}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
+
+                  {/* Deductions */}
+                  <div className={styles.billingCol}>
+                    <div className={styles.colHeader}>RINCIAN POTONGAN (-)</div>
+                    <div className={styles.billingList}>
+                      {slipData.potongan !== 0 ? (
+                        <div className={styles.billItem}>
+                          <span>Reject Tahap</span>
+                          <span className={styles.red}>({formatRupiah(Math.abs(slipData.potongan))})</span>
+                        </div>
+                      ) : (
+                        <div className={styles.billItem}><span className={styles.muted}>Tidak ada potongan reject</span></div>
+                      )}
+                      {slipData.kasbonSisa > 0 && (
+                        <div className={styles.billItem}>
+                          <span>Pinjaman (Kasbon)</span>
+                          <span className={styles.orange}>({formatRupiah(slipData.kasbonSisa)})</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.summaryBox}>
+                  <div className={styles.summaryLabel}>TOTAL PENDAPATAN BERSIH (TAKE HOME PAY)</div>
+                  <div className={styles.summaryValue}>{formatRupiah(slipData.upahBersih)}</div>
+                  <div className={styles.terbilang}># {slipData.upahBersih.toLocaleString('id-ID')} Rupiah #</div>
                 </div>
 
                 <div className={styles.slipFooter}>
-                  <div className={styles.sign}>
-                    <p>Penerima,</p>
-                    <div className={styles.signSpace} />
-                    <p>( {infoKaryawan.nama} )</p>
-                  </div>
-                  <div className={styles.sign}>
-                    <p>Hormat Kami,</p>
-                    <div className={styles.signSpace} />
-                    <p>( Bagian Keuangan )</p>
-                  </div>
+                   <div className={styles.signArea}>
+                      <div className={styles.signBox}>
+                        <p>Diterima Oleh,</p>
+                        <div className={styles.signLine} />
+                        <p>{infoKaryawan.nama}</p>
+                      </div>
+                      <div className={styles.signBox}>
+                        <p>Kasir / Admin,</p>
+                        <div className={styles.signLine} />
+                        <p>BAG. KEUANGAN</p>
+                      </div>
+                   </div>
+                   <div className={styles.printNote}>
+                      Dicetak pada {isMounted ? new Date().toLocaleString('id-ID') : ''} • Dokumen sah tanpa tanda tangan jika diproses sistem.
+                   </div>
                 </div>
               </div>
               

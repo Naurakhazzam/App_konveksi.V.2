@@ -6,6 +6,8 @@ import Sidebar from '../../organisms/Sidebar';
 import RoleSwitcher from '../../molecules/RoleSwitcher';
 import MobileHeader from '../../molecules/MobileHeader/MobileHeader';
 import { useSidebar } from '@/lib/hooks/useSidebar';
+import { useSettingsStore } from '@/stores/useSettingsStore';
+import { BorderBeam } from '../../atoms/BorderBeam/BorderBeam';
 import styles from './DashboardLayout.module.css';
 
 export interface DashboardLayoutProps {
@@ -15,6 +17,12 @@ export interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
   const { isOpen, toggleSidebar, closeSidebar } = useSidebar();
+  const { beam, theme } = useSettingsStore();
+
+  // Initialize theme on mount
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   // Helper to get title from pathname
   const getPageTitle = (path: string) => {
@@ -25,7 +33,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   return (
-    <div className={styles.layout}>
+    <div className={styles.layout} data-theme={theme}>
+      <BorderBeam 
+        active={beam.enabled}
+        color={beam.color1}
+        speed={beam.duration}
+        thickness={beam.size}
+      />
       {/* Mobile Overlay Backdrop */}
       {isOpen && (
         <div 
