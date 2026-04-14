@@ -10,7 +10,7 @@ import { Label } from '@/components/atoms/Typography';
 import DataTable, { Column } from '@/components/organisms/DataTable';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { usePayrollStore } from '@/stores/usePayrollStore';
-import { formatRupiah, formatDate } from '@/lib/utils/formatters';
+import { formatRupiah, formatDate, getPayrollCycleRange } from '@/lib/utils/formatters';
 import styles from './SlipGajiView.module.css';
 
 interface PaidEmployeeRekap {
@@ -27,10 +27,7 @@ function SlipGajiContent() {
   const searchParams = useSearchParams();
   const idFromUrl = searchParams.get('id');
 
-  const [dateRange, setDateRange] = useState({ 
-    start: '2026-04-01', 
-    end: '2026-04-07' 
-  });
+  const [dateRange, setDateRange] = useState(getPayrollCycleRange());
   
   const [selectedKaryawanId, setSelectedKaryawanId] = useState('');
   const [isMounted, setIsMounted] = useState(false);

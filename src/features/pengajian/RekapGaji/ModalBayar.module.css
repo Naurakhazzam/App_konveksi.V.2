@@ -34,6 +34,22 @@
   color: var(--color-orange);
 }
 
+.calculation {
+  border-top: 1px dashed var(--color-border);
+  padding-top: 8px;
+  font-style: italic;
+}
+
+.red {
+  color: var(--color-danger);
+}
+
+.inputGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
 .inputSection {
   display: flex;
   flex-direction: column;

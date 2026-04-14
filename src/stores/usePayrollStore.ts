@@ -15,7 +15,8 @@ interface PayrollState {
     kasbonSisa: number;
     entries: GajiLedgerEntry[];
   };
-  prosesBayar: (karyawanId: string, entryIds: string[], inputKasbon: number) => void;
+  prosesBayar: (karyawanId: string, entryIds: string[], inputKasbon: number, hariKerja?: number) => void;
+ pocketGajiPokokAtTime?: number; // Internal helper state if needed
   setSlipPrinted: (entryIds: string[]) => void;
   addKasbon: (kasbon: KasbonEntry) => void;
   getSisaKasbon: (karyawanId: string) => number;
@@ -78,7 +79,7 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
       .reduce((acc, curr) => acc + (curr.status === 'belum_lunas' ? curr.jumlah : 0), 0);
   },
 
-  prosesBayar: (karyawanId, entryIds, inputKasbon) => {
+  prosesBayar: (karyawanId, entryIds, inputKasbon, hariKerja) => {
     const tanggalBayar = new Date().toISOString();
     const upahData = get().calculateUpah(karyawanId); // Get totals for logging
 
@@ -102,6 +103,20 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
       }
 
       return { ledger: newLedger, kasbon: newKasbon };
+    });
+
+    // 3. LOGGING: Include days worked metadata
+    const { addLog } = useLogStore.getState();
+    addLog({
+      user: { id: 'admin', nama: 'Administrator', role: 'admin' },
+      modul: 'penggajian',
+      aksi: 'PEMBAYARAN_GAJI',
+      target: karyawanId,
+      metadata: { 
+        hariKerja: hariKerja || 6,
+        potongKasbon: inputKasbon,
+        details: `Pembayaran gaji untuk karyawan ${karyawanId}. Hari Kerja: ${hariKerja || 6}/6. Potong kasbon: ${inputKasbon}.`
+      }
     });
 
     // 3. LOGIKA BARU: Sambungkan ke Jurnal Umum

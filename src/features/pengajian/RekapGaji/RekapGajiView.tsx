@@ -11,7 +11,7 @@ import { usePayrollStore } from '@/stores/usePayrollStore';
 import { useJurnalStore } from '@/stores/useJurnalStore';
 import RekapGajiTable from './RekapGajiTable';
 import ModalBayar from './ModalBayar';
-import { formatRupiah } from '@/lib/utils/formatters';
+import { formatRupiah, getPayrollCycleRange } from '@/lib/utils/formatters';
 import styles from './RekapGajiView.module.css';
 
 export default function RekapGajiView() {
@@ -20,10 +20,7 @@ export default function RekapGajiView() {
   const { addEntry, entries } = useJurnalStore();
   const router = useRouter();
 
-  const [dateRange, setDateRange] = useState({ 
-    start: '2026-04-01', 
-    end: '2026-04-07' 
-  });
+  const [dateRange, setDateRange] = useState(getPayrollCycleRange());
   
   const [selectedKaryawan, setSelectedKaryawan] = useState<any | null>(null);
 
@@ -37,6 +34,7 @@ export default function RekapGajiView() {
         potongan: calc.potongan,
         rework: calc.rework,
         upahBersih: calc.upahBersih,
+        gajiPokok: calc.gajiPokok || 0, // NEW field
         sisaKasbon: calc.kasbonSisa,
         entryIds: calc.entries.map(e => e.id),
         isLunas: calc.entries.length > 0 && calc.entries.every(e => e.status === 'lunas')
@@ -91,6 +89,10 @@ export default function RekapGajiView() {
     });
   };
 
+  const handleResetToCycle = () => {
+    setDateRange(getPayrollCycleRange());
+  };
+
   return (
     <PageWrapper 
       title="Rekap Gaji" 
@@ -104,6 +106,9 @@ export default function RekapGajiView() {
             <input type="date" value={dateRange.start} onChange={e => setDateRange(prev => ({ ...prev, start: e.target.value }))} />
             <span>sd</span>
             <input type="date" value={dateRange.end} onChange={e => setDateRange(prev => ({ ...prev, end: e.target.value }))} />
+            <Button variant="ghost" size="sm" onClick={handleResetToCycle} title="Reset ke siklus Sab-Jum pekan ini">
+              🔄 Pekan Ini
+            </Button>
           </div>
 
           <Button 
@@ -133,8 +138,8 @@ export default function RekapGajiView() {
         <ModalBayar 
           rekap={selectedKaryawan}
           onClose={() => setSelectedKaryawan(null)}
-          onConfirm={(id, entryIds, potong) => {
-            prosesBayar(id, entryIds, potong);
+          onConfirm={(id, entryIds, potong, hariKerja) => {
+            prosesBayar(id, entryIds, potong, hariKerja);
             setSelectedKaryawan(null);
           }}
         />
