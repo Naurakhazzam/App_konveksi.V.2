@@ -54,15 +54,8 @@ export const NAV = [
     label: 'Master Data',
     icon: 'Database',
     color: 'blue',
-    subs: ['Master Detail', 'Produk & HPP', 'Komponen HPP', 'Karyawan', 'Jabatan', 'Klien', 'Jenis Reject', 'Alasan Reject', 'Kategori Transaksi', 'Satuan (UOM)'],
+    subs: ['Master Detail', 'Produk & HPP', 'Komponen HPP', 'Karyawan', 'Jabatan', 'Klien', 'Jenis Reject', 'Alasan Reject', 'Kategori Transaksi', 'Satuan (UOM)', 'User & Role Management'],
     basePath: '/master-data',
-  },
-  {
-    label: 'Pendaftaran User & Role',
-    icon: 'UserPlus',
-    color: 'blue',
-    subs: [],
-    basePath: '/master-data/pendaftaran',
   },
   {
     label: 'Koreksi Data',
@@ -154,7 +147,7 @@ export function getSubPath(basePath: string, subLabel: string): string {
       'Alasan Reject': '/master-data/alasan-reject',
       'Kategori Transaksi': '/master-data/kategori-transaksi',
       'Satuan (UOM)': '/master-data/satuan',
-      'Pendaftaran': '/master-data/pendaftaran',
+      'User & Role Management': '/master-data/pendaftaran',
     },
   };
   return mapping[basePath]?.[subLabel] || basePath;

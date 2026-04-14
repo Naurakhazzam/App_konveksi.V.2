@@ -1,5 +1,5 @@
-import PendaftaranView from "@/features/master-data/Pendaftaran/PendaftaranView";
+import UserRoleView from "@/features/master-data/MasterLainnya/UserRoleView";
 
 export default function PendaftaranPage() {
-  return <PendaftaranView />;
+  return <UserRoleView />;
 }

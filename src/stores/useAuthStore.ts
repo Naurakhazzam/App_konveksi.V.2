@@ -238,18 +238,25 @@ export const useAuthStore = create<AuthState>()(
         const user = get().currentUser;
         if (!user) return false;
         
-        // 1. GHOST MODE: Fauzan (Godadmin) selalu punya akses penuh
-        if (user.roles.includes('godadmin') || user.id === 'USR-FAUZAN') return true;
+        const isFauzan = user.id === 'USR-FAUZAN' || user.roles.includes('godadmin');
+        const previewRole = get().previewRole;
 
-        // 2. Simulasikan role jika sedang dalam mode preview
-        const rolesToUse = get().previewRole ? [get().previewRole!] : user.roles;
+        // 1. PINTU DARURAT: Sub-tab User & Role HARUS selalu bisa dibuka oleh Fauzan
+        if (isFauzan && (path === '/master-data/pendaftaran' || path.includes('/pendaftaran'))) return true;
+
+        // 2. Jika Fauzan sedang TIDAK simulasi, beri akses penuh
+        if (isFauzan && !previewRole) return true;
+
+        // 3. Cek simulasi atau role asli
+        const rolesToUse = previewRole ? [previewRole] : user.roles;
         
         if (rolesToUse.includes('owner')) return true;
         if (rolesToUse.includes('visitor_owner')) return true;
         if (rolesToUse.includes('supervisor_admin')) return true;
         if (rolesToUse.includes('supervisor_produksi')) {
           const hiddenPaths = ['/keuangan', '/master-data', '/koreksi-data', '/audit-log'];
-          if (hiddenPaths.some(hp => path.startsWith(hp))) return false;
+          // Kecuali jika ini adalah path pendaftaran (sudah dihandle di atas, tapi ini untuk safety)
+          if (hiddenPaths.some(hp => path.startsWith(hp)) && !path.includes('/pendaftaran')) return false;
           return true;
         }
         return false;
