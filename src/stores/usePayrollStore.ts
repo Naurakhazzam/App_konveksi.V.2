@@ -10,6 +10,7 @@ interface PayrollState {
     upah: number;
     potongan: number;
     rework: number;
+    gajiPokok: number;
     upahBersih: number;
     kasbonSisa: number;
     entries: GajiLedgerEntry[];
@@ -24,6 +25,7 @@ interface PayrollState {
 import { useLogStore } from './useLogStore';
 import { useAuthStore } from './useAuthStore';
 import { useJurnalStore } from './useJurnalStore';
+import { useMasterStore } from './useMasterStore';
 
 export const usePayrollStore = create<PayrollState>((set, get) => ({
   ledger: [],
@@ -53,13 +55,18 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
       if (e.tipe === 'rework') rework += e.total;
     });
 
+    // BARU: Tambahkan Gaji Pokok
+    const karyawanObj = useMasterStore.getState().karyawan.find(k => k.id === karyawanId);
+    const gajiPokok = karyawanObj?.gajiPokok || 0;
+
     const kasbonSisa = get().getSisaKasbon(karyawanId);
     
     return {
       upah,
       potongan,
       rework,
-      upahBersih: upah - potongan + rework,
+      gajiPokok, // Return fixed salary component
+      upahBersih: upah - potongan + rework + gajiPokok,
       kasbonSisa,
       entries
     };

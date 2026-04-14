@@ -8,6 +8,7 @@ import TextInput from '@/components/atoms/Input/TextInput';
 import Select from '@/components/atoms/Select/Select';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { Karyawan } from '@/types';
+import { formatRupiah } from '@/lib/utils/formatters';
 import FormKaryawan from './FormKaryawan';
 import styles from './MasterKaryawanView.module.css';
 
@@ -54,7 +55,8 @@ export default function MasterKaryawanView() {
         nama: data.nama!,
         jabatan: data.jabatan!,
         aktif: data.aktif !== undefined ? data.aktif : true,
-        tahapList: data.tahapList || []
+        tahapList: data.tahapList || [],
+        gajiPokok: data.gajiPokok || 0
       });
     }
   };
@@ -63,6 +65,7 @@ export default function MasterKaryawanView() {
     { key: 'id', header: 'ID', render: (val) => <span style={{ fontFamily: 'var(--font-mono)' }}>{val}</span> },
     { key: 'nama', header: 'Nama', render: (val) => <span style={{ fontWeight: 600 }}>{val}</span> },
     { key: 'jabatan', header: 'Jabatan' },
+    { key: 'gajiPokok', header: 'Gaji Pokok', render: (v) => <span className={styles.money}>{formatRupiah(v)}</span> },
     { key: 'status', header: 'Status', render: (_, row) => (
       <Badge variant={row.aktif ? 'success' : 'neutral'}>{row.aktif ? 'Aktif' : 'Nonaktif'}</Badge>
     )},

@@ -6,6 +6,7 @@ import Select from '@/components/atoms/Select/Select';
 import Button from '@/components/atoms/Button';
 import { Karyawan } from '@/types';
 import { TAHAP_ORDER, TAHAP_LABEL, TahapKey } from '@/lib/utils/production-helpers';
+import { useMasterStore } from '@/stores/useMasterStore';
 
 export interface FormKaryawanProps {
   open: boolean;
@@ -19,6 +20,9 @@ export default function FormKaryawan({ open, onClose, initialValues, onSubmit }:
   const [jabatan, setJabatan] = useState('');
   const [aktif, setAktif] = useState(true);
   const [tahapList, setTahapList] = useState<string[]>([]);
+  const [gajiPokok, setGajiPokok] = useState<number>(0);
+  
+  const { jabatan: globalJabatanOptions } = useMasterStore();
 
   useEffect(() => {
     if (open) {
@@ -27,18 +31,20 @@ export default function FormKaryawan({ open, onClose, initialValues, onSubmit }:
         setJabatan(initialValues.jabatan);
         setAktif(initialValues.aktif);
         setTahapList(initialValues.tahapList || []);
+        setGajiPokok(initialValues.gajiPokok || 0);
       } else {
         setNama('');
         setJabatan('');
         setAktif(true);
         setTahapList([]);
+        setGajiPokok(0);
       }
     }
   }, [open, initialValues]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ nama, jabatan, aktif, tahapList });
+    onSubmit({ nama, jabatan, aktif, tahapList, gajiPokok });
     onClose();
   };
 
@@ -48,14 +54,10 @@ export default function FormKaryawan({ open, onClose, initialValues, onSubmit }:
     );
   };
 
-  const jabatanOptions = [
-    { value: 'Operator Cutting', label: 'Operator Cutting' },
-    { value: 'Operator Jahit', label: 'Operator Jahit' },
-    { value: 'Operator QC', label: 'Operator QC' },
-    { value: 'Operator Packing', label: 'Operator Packing' },
-    { value: 'Operator Steam', label: 'Operator Steam' },
-    { value: 'Lainnya', label: 'Lainnya' },
-  ];
+  const jabatanOptions = globalJabatanOptions.map(j => ({ value: j.nama, label: j.nama }));
+  if (jabatanOptions.length === 0 || !jabatanOptions.find(o => o.value === 'Lainnya')) {
+    jabatanOptions.push({ value: 'Lainnya', label: 'Lainnya' });
+  }
 
   if (!open) return null;
 
@@ -74,7 +76,17 @@ export default function FormKaryawan({ open, onClose, initialValues, onSubmit }:
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <Label>Jabatan <span style={{ color: 'var(--color-danger)' }}>*</span></Label>
-            <Select value={jabatan} onChange={setJabatan} options={jabatanOptions} />
+            <Select value={jabatan} onChange={setJabatan} options={jabatanOptions} placeholder="Pilih Jabatan..." />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Label>Gaji Pokok / Tunjangan Tetap <span style={{ color: 'var(--color-text-sub)', fontSize: '11px' }}>(Opsional)</span></Label>
+            <TextInput 
+              type="number" 
+              value={gajiPokok.toString()} 
+              onChange={(v) => setGajiPokok(Number(v))} 
+              placeholder="Contoh: 1000000"
+            />
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>

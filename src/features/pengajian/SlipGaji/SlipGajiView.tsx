@@ -178,9 +178,15 @@ function SlipGajiContent() {
                     <div className={styles.colHeader}>RINCIAN PENGHASILAN (+)</div>
                     <div className={styles.billingList}>
                       <div className={styles.billItem}>
-                        <span>Upah Produksi</span>
+                        <span>Upah Produksi (Borongan)</span>
                         <span>{formatRupiah(slipData.upah)}</span>
                       </div>
+                      {slipData.gajiPokok > 0 && (
+                        <div className={styles.billItem}>
+                          <span>Gaji Tetap / Jabatan</span>
+                          <span>{formatRupiah(slipData.gajiPokok)}</span>
+                        </div>
+                      )}
                       {slipData.rework > 0 && (
                         <div className={styles.billItem}>
                           <span>Bonus Rework</span>

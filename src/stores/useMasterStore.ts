@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import {
-  Kategori, Model, Size, Warna, Karyawan, Klien, JenisReject, KategoriTrx, Satuan, Produk, HPPKomponen, ProdukHPPItem, AlasanReject
+  Kategori, Model, Size, Warna, Karyawan, Klien, JenisReject, KategoriTrx, Satuan, Produk, HPPKomponen, ProdukHPPItem, AlasanReject, Jabatan
 } from '../types';
 import { 
   initialClients, initialKategori, initialModels, initialWarna, initialSizes, initialHPPKomponen, initialProduk, initialProdukHPPItems 
@@ -23,6 +23,7 @@ interface MasterState {
   produk: Produk[];
   hppKomponen: HPPKomponen[];
   produkHPPItems: ProdukHPPItem[];
+  jabatan: Jabatan[];
   importProdukBulk: (data: {
     kategori: Kategori[],
     klien: Klien[],
@@ -48,6 +49,9 @@ interface MasterState {
   addKaryawan: (item: Karyawan) => void;
   updateKaryawan: (id: string, data: Partial<Karyawan>) => void;
   removeKaryawan: (id: string) => void;
+  addJabatan: (item: Jabatan) => void;
+  updateJabatan: (id: string, data: Partial<Jabatan>) => void;
+  removeJabatan: (id: string) => void;
   addKlien: (item: Klien) => void;
   updateKlien: (id: string, data: Partial<Klien>) => void;
   removeKlien: (id: string) => void;
@@ -94,6 +98,13 @@ export const useMasterStore = create<MasterState>((set, get) => ({
   produk: initialProduk,
   hppKomponen: initialHPPKomponen,
   produkHPPItems: initialProdukHPPItems,
+  jabatan: [
+    { id: 'JAB-001', nama: 'Leader' },
+    { id: 'JAB-002', nama: 'Supervisor' },
+    { id: 'JAB-003', nama: 'Staff / Admin' },
+    { id: 'JAB-004', nama: 'Operator' },
+    { id: 'JAB-005', nama: 'Helper' },
+  ],
   
   importProdukBulk: (data) => set((state) => {
     // Helper to merge arrays and avoid duplicates by ID
@@ -135,6 +146,10 @@ export const useMasterStore = create<MasterState>((set, get) => ({
   addKaryawan: (item) => set((state) => ({ karyawan: [...state.karyawan, item] })),
   updateKaryawan: (id, data) => set((state) => ({ karyawan: state.karyawan.map(i => i.id === id ? { ...i, ...data } : i) })),
   removeKaryawan: (id) => set((state) => ({ karyawan: state.karyawan.filter(i => i.id !== id) })),
+
+  addJabatan: (item) => set((state) => ({ jabatan: [...state.jabatan, item] })),
+  updateJabatan: (id, data) => set((state) => ({ jabatan: state.jabatan.map(i => i.id === id ? { ...i, ...data } : i) })),
+  removeJabatan: (id) => set((state) => ({ jabatan: state.jabatan.filter(i => i.id !== id) })),
 
   addKlien: (item) => set((state) => ({ klien: [...state.klien, item] })),
   updateKlien: (id, data) => set((state) => ({ klien: state.klien.map(i => i.id === id ? { ...i, ...data } : i) })),

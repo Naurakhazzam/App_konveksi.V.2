@@ -1,9 +1,9 @@
 import { Karyawan, PurchaseOrder, Bundle, StatusTahap } from '../types';
 
 export const fixedEmployees: Karyawan[] = [
-  { id: 'emp-abqi', nama: 'Abqi', jabatan: 'Cutting', aktif: true, tahapList: ['cutting'] },
-  { id: 'emp-aldi', nama: 'Aldi', jabatan: 'Jahit', aktif: true, tahapList: ['jahit'] },
-  { id: 'emp-hengky', nama: 'Hengky', jabatan: 'Finishing (LK, BB, QC, Steam, Packing)', aktif: true, tahapList: ['lkancing', 'bbenang', 'qc', 'steam', 'packing'] },
+  { id: 'emp-abqi', nama: 'Abqi', jabatan: 'Cutting', aktif: true, tahapList: ['cutting'], gajiPokok: 0 },
+  { id: 'emp-aldi', nama: 'Aldi', jabatan: 'Jahit', aktif: true, tahapList: ['jahit'], gajiPokok: 0 },
+  { id: 'emp-hengky', nama: 'Hengky', jabatan: 'Finishing (LK, BB, QC, Steam, Packing)', aktif: true, tahapList: ['lkancing', 'bbenang', 'qc', 'steam', 'packing'], gajiPokok: 0 },
 ];
 
 const defaultStatus: StatusTahap = {

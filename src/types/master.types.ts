@@ -21,12 +21,18 @@ export interface Warna {
   kodeHex: string;
 }
 
+export interface Jabatan {
+  id: string;
+  nama: string;
+}
+
 export interface Karyawan {
   id: string;
   nama: string;
-  jabatan: string;
+  jabatan: string; // Linked by ID or Name (keeping as name for compatibility, but dynamic)
   aktif: boolean;
   tahapList: string[];
+  gajiPokok: number; // New: Fixed salary component
 }
 
 export interface Klien {
