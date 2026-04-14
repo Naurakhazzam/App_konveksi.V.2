@@ -6,7 +6,7 @@ export interface GajiLedgerEntry {
   tanggal: string;
   sumberId: string; 
   keterangan: string;
-  status: 'belum_lunas' | 'lunas';
+  status: 'belum_lunas' | 'lunas' | 'cancelled' | 'escrow';
   tanggalBayar?: string;
   isPrinted?: boolean;
 }

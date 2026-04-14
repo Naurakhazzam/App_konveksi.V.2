@@ -13,8 +13,10 @@ export interface BeamSettings {
 interface SettingsState {
   theme: 'dark' | 'light';
   beam: BeamSettings;
+  ownerPin: string;
   setTheme: (theme: 'dark' | 'light') => void;
   updateBeam: (updates: Partial<BeamSettings>) => void;
+  setOwnerPin: (pin: string) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -29,6 +31,7 @@ export const useSettingsStore = create<SettingsState>()(
         color2: '#d4a017',
         blur: 0,
       },
+      ownerPin: '0000',
       setTheme: (theme) => {
         set({ theme });
         document.documentElement.setAttribute('data-theme', theme);
@@ -36,6 +39,7 @@ export const useSettingsStore = create<SettingsState>()(
       updateBeam: (updates) => set((state) => ({ 
         beam: { ...state.beam, ...updates } 
       })),
+      setOwnerPin: (pin) => set({ ownerPin: pin }),
     }),
     {
       name: 'stitchlyx-settings',

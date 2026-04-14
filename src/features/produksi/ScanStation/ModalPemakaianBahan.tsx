@@ -7,12 +7,14 @@ import { Label, Heading } from '@/components/atoms/Typography';
 import NumberInput from '@/components/atoms/Input/NumberInput';
 import styles from './ModalPemakaianBahan.module.css';
 
+import { useInventoryStore } from '@/stores/useInventoryStore';
+
 interface ModalPemakaianBahanProps {
   open: boolean;
   onClose: () => void;
   artikelNama: string;
   poNomor: string;
-  onConfirm: (meter: number, gram: number) => void;
+  onConfirm: (meter: number, gram: number, inventoryItemId: string) => void;
 }
 
 export default function ModalPemakaianBahan({ 
@@ -22,15 +24,20 @@ export default function ModalPemakaianBahan({
   poNomor, 
   onConfirm 
 }: ModalPemakaianBahanProps) {
+  const { items } = useInventoryStore();
   const [meter, setMeter] = useState<number | ''>('');
   const [gram, setGram] = useState<number | ''>('');
+  const [selectedItem, setSelectedItem] = useState('');
 
-  // At least one field must be filled
-  const isValid = (meter !== '' && Number(meter) > 0) || (gram !== '' && Number(gram) > 0);
+  // Filter only fabric items from inventory
+  const kainItems = items.filter(i => i.jenisBahan === 'kain');
+
+  // At least one field (meter/gram) AND a material must be selected
+  const isValid = ((meter !== '' && Number(meter) > 0) || (gram !== '' && Number(gram) > 0)) && !!selectedItem;
 
   const handleConfirm = () => {
     if (isValid) {
-      onConfirm(Number(meter || 0), Number(gram || 0));
+      onConfirm(Number(meter || 0), Number(gram || 0), selectedItem);
     }
   };
 
@@ -49,6 +56,22 @@ export default function ModalPemakaianBahan({
           </div>
 
           <div className={styles.form}>
+            <div className={styles.field}>
+              <Label>Pilih Bahan Baku <span className={styles.req}>*</span></Label>
+              <select 
+                className={styles.select} 
+                value={selectedItem} 
+                onChange={(e) => setSelectedItem(e.target.value)}
+              >
+                <option value="">-- Pilih kain dari gudang --</option>
+                {kainItems.map(item => (
+                  <option key={item.id} value={item.id}>
+                    {item.nama} (Stok: {item.stokAktual} {item.satuanId})
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className={styles.field}>
               <Label>Pemakaian Kain (Meter / pcs) <span className={styles.req}>*</span></Label>
               <NumberInput 

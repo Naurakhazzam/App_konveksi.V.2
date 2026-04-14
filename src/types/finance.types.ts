@@ -19,4 +19,6 @@ export interface JurnalEntry {
   poId?: string;         // Legacy support/Single PO link
   keterangan: string;
   detailUpah?: DetailUpah[]; // Khusus untuk direct_upah (hasil rekap gaji)
+  qty?: number;              // Untuk direct_bahan (pembelian)
+  inventoryItemId?: string;  // Untuk direct_bahan (pembelian)
 }

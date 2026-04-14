@@ -44,6 +44,13 @@ export const NAV = [
     basePath: '/keuangan',
   },
   {
+    label: 'RETURAN KONSUMEN',
+    icon: 'CornerUpLeft',
+    color: 'red',
+    subs: ['Penerimaan Retur', 'Station Perbaikan', 'Pengiriman Retur', 'Monitoring Perbaikan'],
+    basePath: '/retur',
+  },
+  {
     label: 'Master Data',
     icon: 'Database',
     color: 'blue',
@@ -122,6 +129,12 @@ export function getSubPath(basePath: string, subLabel: string): string {
       'Laporan Per Bulan': '/keuangan/laporan-bulan',
       'Laporan Gaji': '/keuangan/laporan-gaji',
       'Laporan Koreksi QTY': '/keuangan/laporan-reject',
+    },
+    '/retur': {
+      'Penerimaan Retur': '/retur/penerimaan',
+      'Station Perbaikan': '/retur/perbaikan',
+      'Pengiriman Retur': '/retur/pengiriman',
+      'Monitoring Perbaikan': '/retur/monitoring',
     },
     '/master-data': {
       'Master Detail': '/master-data/detail',

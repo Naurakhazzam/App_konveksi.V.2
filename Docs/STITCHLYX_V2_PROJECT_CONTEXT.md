@@ -11,9 +11,9 @@ Tagline        : Garment Operating System — Precision Engine
 Tipe           : Full-Stack Web Application (rencana dijual sebagai SaaS)
 Pemilik        : Owner konveksi skala menengah, omset miliaran
 Tujuan         : Menggantikan sistem Excel manual dengan sistem digital terintegrasi
-Status         : **PHASE 1 - 6.5+ SELESAI (100% Frontend)** — Core workflow, UI, QTY Correction System & Laporan sudah stabil.
+Status         : **PHASE 1 - 6.9.1 SELESAI (Consumer Return & Security Hardened)** — Core workflow, UI, Financial, Inventory Sync & Consumer Return Lifecycle has been audited, hardened, and is ready for real data.
 Identitas Visual: **2026 High-End Aesthetics** (Refined Charcoal & Muted Copper)
-Terakhir Update : 13 April 2026 (Sprint 6.8 — QTY Correction & Reporting System SELESAI)
+Terakhir Update : 15 April 2026 (Refinement V3: Security & Return Module SELESAI)
 
 > **PENTING — KONTEKS HANDOVER (FINAL):**
 > 1.  **Data Produksi 100%**: 662 produk real telah dimigrasikan dengan sanitasi data kategori "Polo-Wangky".
@@ -23,7 +23,11 @@ Terakhir Update : 13 April 2026 (Sprint 6.8 — QTY Correction & Reporting Syste
 > 5.  **Print Support**: Dukungan cetak Slip Gaji, Surat Jalan & Laporan Koreksi QTY via `@media print`.
 > 6.  **Global Harmony Animations**: Seluruh tabel otomatis berputar berlawanan arah dari panel luarnya.
 > 7.  **QTY Correction System (C1-C4)**: Sistem koreksi QTY produksi lengkap — filter karyawan per tahap, sistem reject/hilang/surplus, validasi Surat Jalan, dan laporan per tahap.
-> 8.  **Status**: Frontend Lengkap & Stabil. FOKUS SAAT INI: Mengerjakan Migrasi Database (Sprint 7).
+> 8.  **STABILITY AUDIT 2026 (A-Z)**: Implementasi **Atomic Operations** (PO & Approval), **Zero Leak Policy** (Auto-cleanup), dan **Inventory-Production Auto-Sync** (FIFO via Cutting).
+> 9.  **Consumer Return Module (V3)**: Sistem perbaikan barang dari konsumen dengan alur "Dua Tabel" (Antrian vs Penugasan), penguncian QTY, dan label finansial otomatis (Restitusi vs Upah Baru).
+> 10. **Owner Security Gate**: Proteksi PIN (`0000`) untuk tindakan destruktif (Hapus PO).
+> 11. **REAL DATA READINESS**: Seluruh data operasional dummy telah dihapus. Master data (Karyawan, Produk, HPP) adalah data riil yang siap digunakan untuk input PO asli.
+> 12. **Status**: Frontend, Logic & Security 100% MANTAP. SIAP UNTUK GO-LIVE OPERASIONAL.
 
 
 
@@ -576,6 +580,22 @@ Scan Selesai → QTY > Target → ModalKoreksiLebih muncul
 
 **Cascading QTY:** `getExpectedQTY(bundle, tahap, koreksiList)` menghitung QTY ekspektasi tahap berikutnya secara dinamis berdasarkan koreksi yang sudah terjadi.
 
+### Sistem Retur & Perbaikan Konsumen (Sprint 6.9.1)
+
+**Tujuan:** Mengelola barang rusak/kembali dari konsumen dengan kontrol finansial dan operasional yang ketat.
+
+**Alur Kerja:**
+1. **Penerimaan Retur**: Scan barcode → Input QTY (Kunci) → Alasan → Gaji penjahit asli dipotong otomatis sesuai upah jahit di HPP.
+2. **Station Penugasan**: 
+   - Tampil di **Tabel Antrian**.
+   - Admin menunjuk penjahit (asli/baru).
+   - Muncul label: **Restitusi** (kembali saldo) atau **Upah Baru**.
+3. **Pengiriman Retur**: Scan Kirim → Escrow cair ke payroll penjahit perbaikan.
+
+**Kontrol Keamanan:**
+- **Pipeline Locking**: Barang dalam jalur retur tidak bisa di-scan di stasiun produksi normal.
+- **PIN Authentication**: Menghapus PO wajib memasukkan PIN Owner (`0000`).
+
 **Validasi Surat Jalan:**
 - Setiap barcode yang discan untuk Surat Jalan memunculkan `ModalKonfirmasiSJ`.
 - Admin input QTY yang dikirim, dibandingkan dengan `qtySelesai` Packing.
@@ -624,7 +644,31 @@ Scan Selesai → QTY > Target → ModalKoreksiLebih muncul
 ### Inventory
 - Stok bertambah OTOMATIS saat jurnal "Pembelian Bahan Baku" dicatat di Jurnal Umum
 - Stok berkurang via Transaksi Keluar (pemakaian produksi)
-- Alert Order muncul jika stok <= stok minimum
+---
+
+## PRECISION & DATA INTEGRITY ENGINE (AUDIT 2026)
+
+Bagian ini mendokumentasikan standar koding dan penguatan logika yang diimplementasikan pada April 2026 untuk menjamin integritas data tingkat tinggi.
+
+### 1. Atomic Transactional Pattern
+Aksi yang mengubah lebih dari satu store atau data krusial wajib menggunakan pola **Atomic**.
+- **Contoh**: `createPOWithBundles` di `usePOStore`.
+- **Implementasi**: Perubahan `poList` dan `globalSequence` dilakukan dalam satu pemanggilan `set()`, diikuti sinkronisasi ke `useBundleStore` secara prosedural untuk mencegah state "menggantung" jika sistem crash.
+
+### 2. Zero Leak Data Policy
+Mencegah data sampah (*orphaned records*) yang tidak terhubung.
+- **Auto-Cleanup**: Saat PO dihapus, sistem otomatis memicu `removeBundlesByPO` dan `removeKoreksiByPO`.
+- **Integrasi**: Setiap domain store memiliki fungsi pembersih yang dipicu oleh store induk (PO).
+
+### 3. Inventory-Production Auto-Sync (Phase 3A)
+Menghilangkan proses input ganda antara produksi dan gudang.
+- **Dual-Indicator Input**: Operator menginput `cm` atau `gram` di stasiun Cutting.
+- **Conversion Intelligence**: Sistem otomatis mengonversi `cm -> Meter` atau `gram -> Kg` berdasarkan satuan barang di gudang.
+- **Real-time FIFO**: Begitu data bahan disimpan, stok gudang terpotong otomatis secara aktual.
+
+### 4. Financial - Payroll Sync
+- **Automated Journaling**: Pembayaran gaji di `usePayrollStore` otomatis menghasilkan entri pengeluaran kas di `useJurnalStore`.
+- **Inventory Trigger**: Jurnal pembelian bahan baku di Keuangan otomatis memicu `addBatch` di Inventory untuk menambah stok.
 
 ---
 

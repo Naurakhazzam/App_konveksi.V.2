@@ -61,6 +61,19 @@ export function validateCanTerima(bundle: Bundle, tahap: TahapKey): ValidationRe
     }
   }
 
+  // LOGIKA BARU: Cek apakah bundle sedang dalam alur RETURAN
+  // Import dinamis untuk menghindari circular dependency jika perlu, 
+  // atau gunankan konstanta dari store.
+  const { useReturnStore } = require('@/stores/useReturnStore');
+  const isRetur = useReturnStore.getState().isBarcodeInReturn(bundle.barcode);
+  
+  if (isRetur) {
+    return { 
+      canTerima: false, 
+      blockReason: 'Gagal: Unit ini sedang dalam jalur RETUR/PERBAIKAN. Selesaikan di menu Returan dahulu.' 
+    };
+  }
+
   // Tahap pertama (cutting) langsung bisa
   if (!prevTahap) {
     const current = bundle.statusTahap[tahap];

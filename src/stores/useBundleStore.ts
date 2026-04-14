@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { Bundle, StatusTahap } from '../types';
-import { fixedBundles } from '../data/fixed-testing-data';
 
 export interface RejectRecord {
   id: string;

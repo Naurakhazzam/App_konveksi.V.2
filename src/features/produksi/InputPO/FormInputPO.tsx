@@ -99,8 +99,9 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
       skuInternal: `LYX-${Date.now().toString().slice(-4)}${idx}`
     }));
 
-    // Save PO
-    addPO({
+    // Save PO and Bundles ATOMICALLY (Preventative Action)
+    const { createPOWithBundles, globalSequence } = usePOStore.getState();
+    const po: any = {
       id: poId,
       klienId,
       nomorPO,
@@ -109,12 +110,10 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
       catatan,
       status: 'aktif',
       items: finalItems
-    });
+    };
 
-    // Generate Bundles
     let totalBundlesCount = finalItems.reduce((acc, curr) => acc + curr.jumlahBundle, 0);
-    const startSeq = incrementGlobalSequence(totalBundlesCount);
-    let currentGlobalSeq = startSeq;
+    let currentGlobalSeq = globalSequence;
 
     const newBundles: Bundle[] = [];
     const defaultStatus: StatusTahap = { status: null, qtyTerima: 0, qtySelesai: 0, waktuTerima: null, waktuSelesai: null, karyawan: null, koreksiStatus: null, koreksiAlasan: null };
@@ -164,7 +163,8 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
       }
     });
 
-    addBundles(newBundles);
+    createPOWithBundles(po, newBundles);
+    
     success('PO Berhasil Simpan', `Purchase Order ${nomorPO} telah dibuat dengan ${totalBundlesCount} bundle tiket.`);
     onSuccess(poId);
   };

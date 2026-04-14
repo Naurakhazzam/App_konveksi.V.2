@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { PurchaseOrder, PemakaianBahan } from '@/types';
 import { useLogStore } from './useLogStore';
 import { useAuthStore } from './useAuthStore';
-import { fixedPOs } from '../data/fixed-testing-data';
+import { useBundleStore } from './useBundleStore';
 
 interface POState {
   poList: PurchaseOrder[];
@@ -19,6 +19,8 @@ interface POState {
   addPemakaianBahan: (data: PemakaianBahan) => void;
   getPemakaianBahan: (poId: string, modelId: string, warnaId: string, sizeId: string) => PemakaianBahan | undefined;
   updateItemCuttingStatus: (itemId: string, status: 'waiting' | 'started' | 'finished') => void;
+  // NEW: Atomic PO & Bundle Creation
+  createPOWithBundles: (po: PurchaseOrder, bundles: any[]) => void;
 }
 
 export const usePOStore = create<POState>((set, get) => ({
@@ -65,6 +67,11 @@ export const usePOStore = create<POState>((set, get) => ({
       poList: state.poList.filter((p: PurchaseOrder) => p.id !== id)
     }));
 
+    // Cleanup associated bundles and corrections
+    const { useKoreksiStore } = require('./useKoreksiStore');
+    useBundleStore.getState().removeBundlesByPO(id);
+    useKoreksiStore.getState().removeKoreksiByPO(id);
+
     // Log Activity
     const user = useAuthStore.getState().currentUser;
     if (user && po) {
@@ -90,12 +97,76 @@ export const usePOStore = create<POState>((set, get) => ({
   incrementGlobalSequence: (count: number) => {
     const current = get().globalSequence;
     set({ globalSequence: current + count });
-    return current + 1;
+    return current;
   },
   stuckThresholdHours: 24,
   setStuckThreshold: (hours: number) => set({ stuckThresholdHours: hours }),
   pemakaianBahan: [],
-  addPemakaianBahan: (data: PemakaianBahan) => set((state: POState) => ({ pemakaianBahan: [...state.pemakaianBahan, data] })),
+  addPemakaianBahan: (data: PemakaianBahan) => {
+    // 1. Update internal PO store
+    set((state: POState) => ({ pemakaianBahan: [...state.pemakaianBahan, data] }));
+
+    // 2. LOGIKA BARU: Potong Stok Inventori (FIFO)
+    if (data.inventoryItemId) {
+      const { useInventoryStore } = require('./useInventoryStore');
+      const invStore = useInventoryStore.getState();
+      const inventoryItem = invStore.items.find((i: any) => i.id === data.inventoryItemId);
+      
+      if (inventoryItem) {
+        // Cari total QTY untuk artikel ini dari PO
+        const currentPO = get().poList.find(p => p.id === data.po);
+        const poItem = currentPO?.items.find(it => 
+          it.modelId === data.modelId && 
+          it.warnaId === data.warnaId && 
+          it.sizeId === data.sizeId
+        );
+
+        if (poItem) {
+          const totalQty = poItem.qty;
+          let qtyToConsume = 0;
+          let unitLabel = '';
+
+          // Logika dual-indicator: Cek satuan di gudang
+          // Jika m/yard -> gunakan cm input
+          // Jika kg/g/pcs -> gunakan gram input
+          const satuan = inventoryItem.satuanId.toLowerCase();
+          
+          if (satuan === 'm' || satuan === 'uom-001' || satuan === 'yard') {
+            // Konversi cm ke Meter
+            const meterTotal = (data.pemakaianKainMeter / 100) * totalQty;
+            qtyToConsume = invStore.convertToMeter(meterTotal, 'm');
+            unitLabel = 'Meter';
+          } else if (satuan === 'kg' || satuan === 'uom-002') {
+            // Konversi gram ke Kg
+            qtyToConsume = (data.pemakaianBeratGram / 1000) * totalQty;
+            unitLabel = 'Kg';
+          } else {
+            // Satuan lain (pcs/lsn) -> gunakan gram input sebagai raw qty jika tidak ada meter
+            qtyToConsume = (data.pemakaianKainMeter || data.pemakaianBeratGram) * totalQty;
+            unitLabel = satuan;
+          }
+
+          if (qtyToConsume > 0) {
+            invStore.consumeFIFO(data.inventoryItemId, qtyToConsume);
+            
+            // Log Activity
+            useLogStore.getState().addLog({
+              user: { id: 'SYSTEM', nama: 'System', role: 'System' },
+              modul: 'inventory',
+              aksi: 'Auto-Potong Stok (Cutting)',
+              target: inventoryItem.nama,
+              metadata: { 
+                po: data.po, 
+                qtyDipotong: qtyToConsume, 
+                unit: unitLabel,
+                artikel: data.artikelNama
+              }
+            });
+          }
+        }
+      }
+    }
+  },
   getPemakaianBahan: (poId: string, modelId: string, warnaId: string, sizeId: string) => 
     get().pemakaianBahan.find((p: PemakaianBahan) => p.po === poId && p.modelId === modelId && p.warnaId === warnaId && p.sizeId === sizeId),
   updateItemCuttingStatus: (itemId: string, status: 'waiting' | 'started' | 'finished') => set((state) => ({
@@ -103,5 +174,28 @@ export const usePOStore = create<POState>((set, get) => ({
       ...po,
       items: po.items.map(item => item.id === itemId ? { ...item, statusCutting: status } : item)
     }))
-  }))
+  })),
+
+  createPOWithBundles: (po, bundles) => {
+    // 1. Update PO list and sequence in ONE set call
+    set((state) => ({
+      poList: [...state.poList, po],
+      globalSequence: state.globalSequence + bundles.length
+    }));
+
+    // 2. Update bundle store
+    useBundleStore.getState().addBundles(bundles);
+
+    // 3. Log Activity
+    const user = useAuthStore.getState().currentUser;
+    if (user) {
+      useLogStore.getState().addLog({
+        user: { id: user.id, nama: user.nama, role: user.roles[0] || 'User' },
+        modul: 'produksi',
+        aksi: 'Buat PO Baru (Atomic)',
+        target: po.nomorPO,
+        metadata: { items: po.items.length, bundles: bundles.length }
+      });
+    }
+  }
 }));

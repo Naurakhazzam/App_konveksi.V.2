@@ -14,12 +14,14 @@ interface DetailPOProps {
 }
 
 import { useToast } from '@/components/molecules/Toast';
+import ModalAuth from '@/components/organisms/ModalAuth';
 
 export default function DetailPO({ poId }: DetailPOProps) {
   const { getPOById, removePO } = usePOStore();
   const { getBundlesByPO, removeBundlesByPO } = useBundleStore();
   const { klien, model, warna, sizes } = useMasterStore();
   const { success, error, warning } = useToast();
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   
   const po = getPOById(poId);
   const bundles = getBundlesByPO(poId);
@@ -35,13 +37,14 @@ export default function DetailPO({ poId }: DetailPOProps) {
       error('Gagal Menghapus', 'PO ini sudah memulai proses produksi. Data yang sudah berjalan tidak dapat dihapus.');
       return;
     }
+    setIsAuthOpen(true);
+  };
 
-    if (confirm(`Apakah Anda yakin ingin menghapus PO ${po.nomorPO}? Tindakan ini akan menghapus semua data bundle terkait.`)) {
-      removePO(poId);
-      // We assume removeBundlesByPO exists or we'll add it
-      removeBundlesByPO(poId);
-      success('PO Dihapus', `Purchase Order ${po.nomorPO} telah berhasil dihapus.`);
-    }
+  const onAuthSuccess = () => {
+    setIsAuthOpen(false);
+    removePO(poId);
+    removeBundlesByPO(poId);
+    success('PO Dihapus', `Purchase Order ${po.nomorPO} telah berhasil dihapus.`);
   };
 
   const clientName = klien.find(k => k.id === po.klienId)?.nama || po.klienId;
@@ -104,6 +107,14 @@ export default function DetailPO({ poId }: DetailPOProps) {
       <Panel title="Daftar Artikel">
         <DataTable columns={columns} data={itemSummary} keyField="id" />
       </Panel>
+
+      <ModalAuth 
+        open={isAuthOpen} 
+        onClose={() => setIsAuthOpen(false)} 
+        onSuccess={onAuthSuccess}
+        title={`Hapus PO ${po.nomorPO}`}
+        description="Menghapus PO akan menghapus semua data bundle dan riwayat terkait. Masukkan PIN Owner untuk mengonfirmasi."
+      />
     </div>
   );
 }

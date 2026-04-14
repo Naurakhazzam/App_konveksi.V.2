@@ -23,6 +23,7 @@ interface InventoryState {
   };
   generateInvoiceNo: () => string;
   getHargaRataRata: (itemId: string) => number;
+  convertToMeter: (val: number, fromUnit: string) => number;
 }
 
 export const useInventoryStore = create<InventoryState>((set, get) => ({
@@ -127,5 +128,12 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
     const totalValue = activeBatches.reduce((acc, b) => acc + ((b.qty - b.qtyTerpakai) * b.hargaSatuan), 0);
     
     return totalQty > 0 ? totalValue / totalQty : 0;
+  },
+
+  convertToMeter: (val, fromUnit) => {
+    const unit = fromUnit.toLowerCase();
+    if (unit === 'yard' || unit === 'yd') return val * 0.9144;
+    if (unit === 'cm') return val / 100;
+    return val; // Default assume meters
   }
 }));

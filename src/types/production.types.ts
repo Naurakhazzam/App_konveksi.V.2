@@ -5,7 +5,8 @@ export interface PemakaianBahan {
   warnaId: string;
   sizeId: string;
   artikelNama: string;
-  pemakaianKainMeter: number;   // meter per pcs
+  inventoryItemId?: string;     // NEW: Link to warehouse
+  pemakaianKainMeter: number;   // meter per pcs (from cm input)
   pemakaianBeratGram: number;   // gram per pcs
   inputOleh: string;
   waktuInput: string;
@@ -68,4 +69,29 @@ export interface KoreksiQTY {
 
   waktuLapor: string;                   // ISO datetime
   waktuSelesai?: string;                // ISO datetime ketika reject sudah diperbaiki
+}
+
+// ─── RETUR KONSUMEN (PARALLEL TRACK) ──────────────────────────────────────────
+
+export type ReturnStatus = 'diterima' | 'proses_perbaikan' | 'siap_kirim' | 'selesai';
+
+export interface ReturnItem {
+  id: string;
+  barcode: string;
+  poId: string;
+  klienId: string;
+  artikelNama: string;
+  originalSize: string;
+  currentSize: string;                  // Could be different if downsized
+  karyawanOriginal: string;             // Person who made the mistake
+  karyawanPerbaikan: string | null;     // Person assigned to fix
+  alasanRejectId: string;
+  jenisReject: 'bisa_diperbaiki' | 'tidak_bisa';
+  status: ReturnStatus;
+  nominalPotongan: number;              // Same as original wage (punishment)
+  qtyBundle: number;                    // NEW: Locked QTY at receipt
+  waktuDiterima: string;
+  waktuPerbaikan?: string;
+  waktuDikirim?: string;
+  isSelfRepair: boolean;                // If true, refund deduction on ship
 }

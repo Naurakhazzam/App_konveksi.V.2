@@ -18,7 +18,7 @@ export interface SidebarProps {
 export default function Sidebar({ currentPath, isOpen, onClose }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
-  const { logout } = useAuthStore();
+  const { logout, canAccess, currentUser } = useAuthStore();
   
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(() => {
     const initialState: Record<string, boolean> = {};
@@ -64,7 +64,7 @@ export default function Sidebar({ currentPath, isOpen, onClose }: SidebarProps) 
       )}
 
       <div className={styles.navArea}>
-        {NAV.map(item => {
+        {NAV.filter(item => canAccess(item.basePath)).map(item => {
           const isActive = currentPath.startsWith(item.basePath);
           return (
             <SidebarItem
@@ -93,8 +93,8 @@ export default function Sidebar({ currentPath, isOpen, onClose }: SidebarProps) 
           </div>
           {!collapsed && (
             <div className={styles.userInfo}>
-              <div className={styles.userName}>Administrator</div>
-              <div className={styles.userRole}>root@syncore</div>
+              <div className={styles.userName}>{currentUser?.nama || 'Guest'}</div>
+              <div className={styles.userRole}>{currentUser?.roles?.join(', ') || 'Unassigned'}</div>
             </div>
           )}
         </div>

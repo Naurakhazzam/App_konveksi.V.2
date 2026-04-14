@@ -152,7 +152,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     if (onComplete) onComplete();
   };
 
-  const handleBahanConfirm = (meter: number, gram: number) => {
+  const handleBahanConfirm = (meter: number, gram: number, inventoryItemId: string) => {
     addPemakaianBahan({
       po: bundle.po,
       skuKlien: bundle.skuKlien,
@@ -160,6 +160,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       warnaId: bundle.warna,
       sizeId: bundle.size,
       artikelNama: `${modelName} - ${warnaName} - ${sizeName}`,
+      inventoryItemId,
       pemakaianKainMeter: meter,
       pemakaianBeratGram: gram,
       inputOleh: 'ADMIN',
@@ -290,12 +291,11 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         id: `PAY-${Date.now()}-${bundle.barcode}-${tahap}`,
         karyawanId: operatorId,
         tanggal: now,
-        deskripsi: `Upah ${TAHAP_LABEL[tahap]} - PO: ${bundle.po} (${bundle.barcode})`,
-        qty: qtySelesai,
-        tarif: upahPerPcs,
+        keterangan: `Upah ${TAHAP_LABEL[tahap]} - PO: ${bundle.po} (${bundle.barcode})`,
+        sumberId: bundle.barcode,
         total: totalUpah,
         tipe: 'selesai',
-        status: 'belum_bayar'
+        status: 'belum_lunas'
       });
     }
 
@@ -349,13 +349,11 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         id: `DED-${Date.now()}-${koreksiId}`,
         karyawanId: karyawanBertanggungJawab,
         tanggal: now,
-        deskripsi: `POTONGAN ${result.jenisKoreksi.toUpperCase()} (${TAHAP_LABEL[tahap]}) - ${bundle.barcode}`,
-        qty: qtyKurang,
-        tarif: - (nominal / qtyKurang),
+        keterangan: `POTONGAN ${result.jenisKoreksi.toUpperCase()} (${TAHAP_LABEL[tahap]}) - ${bundle.barcode}`,
+        sumberId: bundle.barcode,
         total: -nominal,
         tipe: 'reject_potong',
-        status: 'belum_bayar',
-        metadata: { koreksiId }
+        status: 'belum_lunas'
       });
     }
 
@@ -418,12 +416,11 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         id: `RWK-${Date.now()}-${bundle.barcode}`,
         karyawanId: operatorId,
         tanggal: now,
-        deskripsi: `Upah Perbaikan (Rework) ${TAHAP_LABEL[tahap]} - ${bundle.barcode}`,
-        qty: totalQtyPerbaikan,
-        tarif: upahPerPcs,
+        keterangan: `Upah Perbaikan (Rework) ${TAHAP_LABEL[tahap]} - ${bundle.barcode}`,
+        sumberId: bundle.barcode,
         total: upahPerPcs * totalQtyPerbaikan,
         tipe: 'rework',
-        status: 'belum_bayar'
+        status: 'belum_lunas'
       });
     }
 

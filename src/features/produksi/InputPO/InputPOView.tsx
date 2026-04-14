@@ -10,12 +10,14 @@ import FormInputPO from './FormInputPO';
 import DetailPO from './DetailPO';
 import ModalImportPO from './ModalImportPO';
 import { generatePOMassTemplate } from '@/lib/utils/po-import';
+import { useAuthStore } from '@/stores/useAuthStore';
 import styles from './InputPOView.module.css';
 
 type Mode = 'list' | 'form' | 'detail';
 
 export default function InputPOView() {
   const { poList } = usePOStore();
+  const { canEdit: checkEdit } = useAuthStore();
   const [mode, setMode] = useState<Mode>('list');
   const [activePOId, setActivePOId] = useState<string | null>(null);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -37,17 +39,20 @@ export default function InputPOView() {
     setMode('detail');
   };
 
+  const allowEdit = checkEdit('/produksi');
+
   const mainAction = (
     <div style={{ display: 'flex', gap: '8px' }}>
-      <Button variant="ghost" onClick={generatePOMassTemplate}>
-        📥 Download Template
-      </Button>
-      <Button variant="secondary" onClick={() => setIsImportModalOpen(true)}>
-        📤 Upload PO (CSV)
-      </Button>
-      <Button variant="primary" onClick={handleCreate}>
-        + Buat PO Baru
-      </Button>
+      {allowEdit && (
+        <>
+          <Button variant="secondary" onClick={() => setIsImportModalOpen(true)}>
+            📤 Upload PO (CSV)
+          </Button>
+          <Button variant="primary" onClick={handleCreate}>
+            + Buat PO Baru
+          </Button>
+        </>
+      )}
     </div>
   );
 

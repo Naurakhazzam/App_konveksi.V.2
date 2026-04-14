@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { GajiLedgerEntry, KasbonEntry } from '../types';
-import { dummyGajiLedger, dummyKasbon } from '../data/dummy-payroll';
 
 interface PayrollState {
   ledger: GajiLedgerEntry[];
@@ -19,6 +18,7 @@ interface PayrollState {
   setSlipPrinted: (entryIds: string[]) => void;
   addKasbon: (kasbon: KasbonEntry) => void;
   getSisaKasbon: (karyawanId: string) => number;
+  activateEscrowByBarcode: (barcode: string) => void;
 }
 
 import { useLogStore } from './useLogStore';
@@ -32,7 +32,7 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
   addLedgerEntry: (entry) => set((state) => ({ ledger: [...state.ledger, entry] })),
   
   calculateUpah: (karyawanId, startDate, endDate) => {
-    let entries = get().ledger.filter(l => l.karyawanId === karyawanId);
+    let entries = get().ledger.filter(l => l.karyawanId === karyawanId && l.status !== 'escrow');
     
     if (startDate && endDate) {
       const start = new Date(startDate).getTime();
@@ -104,12 +104,11 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
     if (totalBersihPay > 0) {
       addEntry({
         id: `JUR-PAY-${Date.now()}`,
+        kategoriTrxId: 'KTR-002', // Upah Karyawan (diambil dari context MD)
         tanggal: tanggalBayar,
-        deskripsi: `Pembayaran Gaji Karyawan: ${karyawanId}`,
+        keterangan: `Pembayaran Gaji Karyawan: ${karyawanId}`,
         nominal: totalBersihPay,
-        jenis: 'direct_upah',
-        kategori: 'keluar',
-        metadata: { karyawanId, entryCount: entryIds.length }
+        jenis: 'direct_upah'
       });
     }
 
@@ -152,5 +151,15 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
         metadata: { nominal: kasbon.jumlah }
       });
     }
+  },
+
+  activateEscrowByBarcode: (barcode) => {
+    set(state => ({
+      ledger: state.ledger.map(l => 
+        (l.sumberId === barcode && l.status === 'escrow')
+          ? { ...l, status: 'belum_lunas' as const }
+          : l
+      )
+    }));
   }
 }));

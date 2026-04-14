@@ -24,7 +24,7 @@ const ALASAN_LEBIH_LABEL: Record<string, string> = {
 };
 
 export default function ApprovalQTYView() {
-  const { koreksiList, approveKoreksiLebih, rejectKoreksiLebih } = useKoreksiStore();
+  const { koreksiList, resolveKoreksiLebih } = useKoreksiStore();
   const { karyawan } = useMasterStore();
   const { bundles, updateStatusTahap } = useBundleStore();
   const { success, error: toastError } = useToast();
@@ -127,15 +127,7 @@ export default function ApprovalQTYView() {
             variant="primary"
             size="sm"
             onClick={() => {
-              const bundle = getBundle(row.barcode);
-              if (bundle) {
-                const currentQty = bundle.statusTahap[row.tahapDitemukan as TahapKey].qtySelesai || 0;
-                updateStatusTahap(bundle.barcode, row.tahapDitemukan, {
-                  qtySelesai: currentQty + row.qtyKoreksi,
-                  koreksiStatus: 'approved',
-                });
-              }
-              approveKoreksiLebih(row.id, 'OWNER');
+              resolveKoreksiLebih(row.id, 'approve', 'OWNER');
               success('Disetujui', `QTY Lebih untuk bundle ${row.barcode} telah disetujui.`);
             }}
           >
@@ -145,10 +137,7 @@ export default function ApprovalQTYView() {
             variant="danger"
             size="sm"
             onClick={() => {
-              updateStatusTahap(row.barcode, row.tahapDitemukan, {
-                koreksiStatus: 'rejected',
-              });
-              rejectKoreksiLebih(row.id);
+              resolveKoreksiLebih(row.id, 'reject');
               toastError('Ditolak', `Permintaan QTY Lebih untuk bundle ${row.barcode} berhasil ditolak.`);
             }}
           >

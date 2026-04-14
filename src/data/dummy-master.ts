@@ -27,16 +27,7 @@ export const dummyWarna: Warna[] = [
   { id: 'WRN-004', nama: 'Maroon', kodeHex: '#800000' },
 ];
 
-export const dummyKaryawan: Karyawan[] = [
-  { id: 'KRY-001', nama: 'Ahmad Fauzi', jabatan: 'Operator Cutting', aktif: true, tahapList: ['cutting'] },
-  { id: 'KRY-002', nama: 'Budi Santoso', jabatan: 'Operator Jahit', aktif: true, tahapList: ['jahit'] },
-  { id: 'KRY-003', nama: 'Dewi Lestari', jabatan: 'Operator Jahit', aktif: true, tahapList: ['jahit', 'qc'] },
-  { id: 'KRY-004', nama: 'Eko Prasetyo', jabatan: 'Operator Cutting', aktif: true, tahapList: ['cutting'] },
-  { id: 'KRY-005', nama: 'Fitri Handayani', jabatan: 'Operator QC', aktif: true, tahapList: ['qc', 'packing'] },
-  { id: 'KRY-006', nama: 'Gunawan', jabatan: 'Operator Packing', aktif: true, tahapList: ['packing'] },
-  { id: 'KRY-007', nama: 'Hendra Wijaya', jabatan: 'Operator Steam', aktif: true, tahapList: ['steam', 'bbenang'] },
-  { id: 'KRY-008', nama: 'Indah Permata', jabatan: 'Operator Jahit', aktif: true, tahapList: ['jahit', 'lkancing'] },
-];
+export const dummyKaryawan: Karyawan[] = [];
 
 export const dummyKlien: Klien[] = [
   { id: 'KLN-001', nama: 'PT Elysian Fashion', kontak: 'Diana', alamat: 'Jl. Gatot Subroto 45, Jakarta' },
