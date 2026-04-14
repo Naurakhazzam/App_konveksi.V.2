@@ -1,4 +1,4 @@
-# Target: Setup Infrastruktur Database (Supabase + Prisma)
+# [SELESAI] Target: Setup Infrastruktur Database (Supabase)
 Tugas utama pada sprint ini adalah memindahkan definisi data struktural dari tipe dummy menjadi skema database real menggunakan PostgreSQL via Supabase dan Prisma ORM.
 
 ## Tugas
@@ -18,7 +18,7 @@ Tugas utama pada sprint ini adalah memindahkan definisi data struktural dari tip
    - Buat utility connection untuk Prisma client (`src/lib/db.ts`) agar tidak terjadi connetion limit di development.
 
 ## Kriteria Selesai (Definition of Done)
-- Prisma Client berhasil digenerate.
-- Struktur tabel PostgreSQL sudah terbuat di database.
-- Script seeding berhasil mengisi data referensi (Master Data) ke database.
-- Tidak ada komponen UI yang mengalami *breaking change* atau dirusak (masih pakai dummy tidak apa, asalkan DB-nya ready).
+- [x] Prisma Client / Supabase SDK berhasil digenerate.
+- [x] Struktur tabel PostgreSQL sudah terbuat di database.
+- [x] Script seeding berhasil mengisi data referensi (Master Data) ke database.
+- [x] Koneksi Cloud Jaringan Stabil (Test Koneksi Online).

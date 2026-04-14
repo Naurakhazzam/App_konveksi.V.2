@@ -879,6 +879,52 @@ Alur setelah tombol BAYAR dikonfirmasi:
 
 ---
 
+## STATUS PHASE V2
+
+```
+PHASE 1 – Foundation ✅. SELESAI
+  [x] Setup Next.js 15 + TypeScript
+  [x] Design System (CSS Variables)
+  [x] Atomic Components (atoms, molecules, organisms)
+  [x] Sidebar Navigation + Routing
+  [x] Zustand Stores
+  [x] Dummy Data
+
+PHASE 2 – Core Features ✅. SELESAI
+  [x] Auth (login, role, middleware) – dummy dulu
+  [x] Master Data (semua 8 sub-halaman)
+  [x] Input PO + Barcode Generation
+  [x] 7 Scan Stations + Logika Sinkron
+  [x] Monitoring
+  [x] Koreksi Data
+  [x] Pengiriman
+  [x] Penggajian + REKAP ke Jurnal
+  [x] Inventory
+  [x] Keuangan + Jurnal Umum
+  [x] Laporan (Per PO, Per Bulan, Gaji, Reject)
+  [x] Dashboard (Produksi, Keuangan, Penggajian)
+  [x] Audit Log
+  [x] Consumer Return Module (V3)
+  [x] Owner Security Gate (PIN Auth)
+  [x] Stability Audit (Atomic Ops + Zero Leak + FIFO Sync)
+
+PHASE 3 – Database & Auth ✅. SELESAI
+  [x] Supabase Cloud Setup (Singapore Region)
+  [x] Migrasi dummy → database (Sync Karyawan & Master)
+  [x] Security Redirection (Auto-redirect to Login)
+  [x] Auth URL Guard (Proteksi URL dashboard)
+  [x] Visitor Mode Access (View-only with Password)
+  [x] Ghost Mode for Godadmin Profile
+
+PHASE 4 – Production Ready 🕒. BELUM
+  [ ] PDF Export (Surat Jalan, Slip Gaji, Label Barcode)
+  [ ] E2E Testing
+  [ ] Performance Optimization
+  [ ] Deployment ke VPS (Production URL)
+```
+
+---
+
 ### D. Jurnal Umum — Field Tambahan
 
 ```ts
@@ -906,7 +952,7 @@ Aturan form input jurnal:
 
 ---
 
-### E. Laporan — Kalkulasi Real
+## E. Laporan — Kalkulasi Real
 
 **Sumber data realisasi per PO:**
 

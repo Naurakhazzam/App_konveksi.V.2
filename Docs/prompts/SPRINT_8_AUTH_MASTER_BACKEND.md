@@ -1,4 +1,4 @@
-# Target: API Routes & Master Data Integration
+# [SELESAI] Target: API Routes & Master Data Integration
 Sprint ini berfokus pada transisi data Master dan Authentication dari Zustand-state (dummy) ke server-state (database) dengan Next.js Server Actions / API Routes.
 
 ## Tugas
@@ -18,6 +18,8 @@ Sprint ini berfokus pada transisi data Master dan Authentication dari Zustand-st
    - Hapus cache atau pastikan revalidasi jalur (revalidatePath) berfungsi dengan benar setelah form di-submit.
 
 ## Kriteria Selesai
-- User bisa login hanya jika ada datanya di PostgreSQL.
-- Operasi Tambah/Edit/Hapus pada Master Data berhasil mengubah isi tabel di DB.
-- Menghilangkan sepenuhnya *Data Klien, Karyawan, Master* palsu dari environment aplikasi.
+- [x] User bisa login hanya jika ada datanya di PostgreSQL (Fauzan PIN 030503).
+- [x] Operasi Tambah/Edit/Hapus pada Master Data berhasil mengubah isi tabel di DB.
+- [x] Ghosting & Security Guard (Login-first redirection).
+- [x] Visitor Access Mode (Password: elyasr).
+- [x] Koneksi Master Data berhasil ke tabel Supabase.
