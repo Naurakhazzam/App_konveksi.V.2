@@ -18,8 +18,8 @@ export default function LoginPage() {
   const { login, loginAsVisitor } = useAuthStore();
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async (e?: React.FormEvent | React.KeyboardEvent) => {
+    if (e) e.preventDefault();
     const result = await login(username, password);
     if (result.success) {
       router.push('/dashboard/produksi');
@@ -28,8 +28,15 @@ export default function LoginPage() {
     }
   };
 
-  const handleVisitorLogin = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleKeyDown = (e: React.KeyboardEvent, action: 'login' | 'visitor') => {
+    if (e.key === 'Enter') {
+      if (action === 'login') handleLogin(e);
+      else handleVisitorLogin(e);
+    }
+  };
+
+  const handleVisitorLogin = (e?: React.FormEvent | React.KeyboardEvent) => {
+    if (e) e.preventDefault();
     const result = loginAsVisitor(visitorPass);
     if (result.success) {
       router.push('/dashboard/produksi');
@@ -55,6 +62,7 @@ export default function LoginPage() {
                 onChange={(val) => setUsername(val)}
                 placeholder="Enter username"
                 required
+                autoFocus
               />
             </div>
             <div className={styles.field}>
@@ -63,6 +71,7 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e, 'login')}
                 placeholder="Enter password or PIN"
                 required
                 className={styles.pwdInput}
@@ -104,6 +113,7 @@ export default function LoginPage() {
                 type="password"
                 value={visitorPass}
                 onChange={(e) => setVisitorPass(e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e, 'visitor')}
                 placeholder="Masukkan password tamu..."
                 autoFocus
                 required
