@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { supabase } from '../lib/supabase';
 import {
   Kategori, Model, Size, Warna, Karyawan, Klien, JenisReject, KategoriTrx, Satuan, Produk, HPPKomponen, ProdukHPPItem, AlasanReject, Jabatan
 } from '../types';
@@ -24,6 +25,11 @@ interface MasterState {
   hppKomponen: HPPKomponen[];
   produkHPPItems: ProdukHPPItem[];
   jabatan: Jabatan[];
+  
+  // Supabase Actions
+  isLoading: boolean;
+  initializeMasterData: () => Promise<void>;
+  
   importProdukBulk: (data: {
     kategori: Kategori[],
     klien: Klien[],
@@ -34,48 +40,64 @@ interface MasterState {
     produk: Produk[],
     produkHPPItems: ProdukHPPItem[]
   }) => void;
+  
+  // Actions
   addKategori: (item: Kategori) => void;
   updateKategori: (id: string, data: Partial<Kategori>) => void;
   removeKategori: (id: string) => void;
+
   addModel: (item: Model) => void;
   updateModel: (id: string, data: Partial<Model>) => void;
   removeModel: (id: string) => void;
+
   addSize: (item: Size) => void;
   updateSize: (id: string, data: Partial<Size>) => void;
   removeSize: (id: string) => void;
+
   addWarna: (item: Warna) => void;
   updateWarna: (id: string, data: Partial<Warna>) => void;
   removeWarna: (id: string) => void;
-  addKaryawan: (item: Karyawan) => void;
-  updateKaryawan: (id: string, data: Partial<Karyawan>) => void;
-  removeKaryawan: (id: string) => void;
+
+  addKaryawan: (item: Karyawan) => Promise<void>;
+  updateKaryawan: (id: string, data: Partial<Karyawan>) => Promise<void>;
+  removeKaryawan: (id: string) => Promise<void>;
+
   addJabatan: (item: Jabatan) => void;
   updateJabatan: (id: string, data: Partial<Jabatan>) => void;
   removeJabatan: (id: string) => void;
+
   addKlien: (item: Klien) => void;
   updateKlien: (id: string, data: Partial<Klien>) => void;
   removeKlien: (id: string) => void;
+
   addJenisReject: (item: JenisReject) => void;
   updateJenisReject: (id: string, data: Partial<JenisReject>) => void;
   removeJenisReject: (id: string) => void;
+
   addAlasanReject: (item: AlasanReject) => void;
   updateAlasanReject: (id: string, data: Partial<AlasanReject>) => void;
   removeAlasanReject: (id: string) => void;
+
   addKategoriTrx: (item: KategoriTrx) => void;
   updateKategoriTrx: (id: string, data: Partial<KategoriTrx>) => void;
   removeKategoriTrx: (id: string) => void;
+
   addSatuan: (item: Satuan) => void;
   updateSatuan: (id: string, data: Partial<Satuan>) => void;
   removeSatuan: (id: string) => void;
+
   addProduk: (item: Produk) => void;
   updateProduk: (id: string, data: Partial<Produk>) => void;
   removeProduk: (id: string) => void;
+
   addHPPKomponen: (item: HPPKomponen) => void;
   updateHPPKomponen: (id: string, data: Partial<HPPKomponen>) => void;
   removeHPPKomponen: (id: string) => void;
+
   addProdukHPPItem: (item: ProdukHPPItem) => void;
   updateProdukHPPItem: (id: string, data: Partial<ProdukHPPItem>) => void;
   removeProdukHPPItem: (id: string) => void;
+
   getHPPItemsByProduk: (produkId: string) => ProdukHPPItem[];
   getTotalHPP: (produkId: string) => number;
   getTotalHPPByKategori: (produkId: string, kategori: string) => number;
@@ -103,25 +125,44 @@ export const useMasterStore = create<MasterState>((set, get) => ({
     { id: 'JAB-003', nama: 'Operator Cutting' },
     { id: 'JAB-004', nama: 'Operator Jahit' },
   ],
-  karyawan: [
-    { id: 'EMP-001', nama: 'Rangga Cepta Nugraha', gajiPokok: 500000, aktif: true, jabatan: 'Supervisor_Produksi', tahapList: [] },
-    { id: 'EMP-002', nama: 'Hengky', gajiPokok: 0, aktif: true, jabatan: 'Supervisor_Finising', tahapList: ['lkancing', 'bbenang', 'qc', 'steam', 'packing'] },
-    { id: 'EMP-003', nama: 'Abqi', gajiPokok: 0, aktif: true, jabatan: 'Operator Cutting', tahapList: ['cutting'] },
-    { id: 'EMP-004', nama: 'Epul', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
-    { id: 'EMP-005', nama: 'Ujang Dian', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
-    { id: 'EMP-006', nama: 'Aldi', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
-    { id: 'EMP-007', nama: 'Angga', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
-    { id: 'EMP-008', nama: 'John', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
-    { id: 'EMP-009', nama: 'Ucil', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
-    { id: 'EMP-010', nama: 'Idan', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
-    { id: 'EMP-011', nama: 'Wawan', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
-    { id: 'EMP-012', nama: 'Sani', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
-    { id: 'EMP-013', nama: 'Anas', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
-    { id: 'EMP-014', nama: 'Iwan', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
-    { id: 'EMP-015', nama: 'Umar', gajiPokok: 0, aktif: true, jabatan: 'Operator Jahit', tahapList: ['jahit'] },
-  ],
+  karyawan: [], // Start empty for Supabase fetch
+  isLoading: false,
+
+  initializeMasterData: async () => {
+    set({ isLoading: true });
+    try {
+      const { data, error } = await supabase
+        .from('karyawan')
+        .select('*')
+        .order('id', { ascending: true });
+
+      if (error) {
+        // Jika tabel belum ada atau error koneksi, gunakan dummy sebagai fallback
+        console.warn('[Supabase] Gagal mengambil data karyawan, menggunakan dummy:', error.message);
+        set({ karyawan: dummyKaryawan });
+      } else if (data && data.length > 0) {
+        // Mapping data dari Supabase (snake_case ke camelCase jika perlu)
+        const mapped = data.map(k => ({
+          id: k.id,
+          nama: k.nama,
+          jabatan: k.jabatan,
+          tahapList: k.tahap_list || [],
+          gajiPokok: k.gaji_pokok || 0,
+          aktif: k.aktif !== undefined ? k.aktif : true
+        }));
+        set({ karyawan: mapped });
+      } else {
+        // Tabel kosong
+        set({ karyawan: [] });
+      }
+    } catch (err) {
+      console.error('[Supabase] Critical Error:', err);
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
   importProdukBulk: (data) => set((state) => {
-    // Helper to merge arrays and avoid duplicates by ID
     const merge = <T extends { id: string }>(original: T[], incoming: T[]): T[] => {
       const map = new Map();
       original.forEach(item => map.set(item.id, item));
@@ -145,6 +186,61 @@ export const useMasterStore = create<MasterState>((set, get) => ({
   updateKategori: (id, data) => set((state) => ({ kategori: state.kategori.map(i => i.id === id ? { ...i, ...data } : i) })),
   removeKategori: (id) => set((state) => ({ kategori: state.kategori.filter(i => i.id !== id) })),
 
+  addKaryawan: async (item) => {
+    // 1. Update Cloud
+    const { error } = await supabase.from('karyawan').insert([{
+      id: item.id,
+      nama: item.nama,
+      jabatan: item.jabatan,
+      tahap_list: item.tahapList,
+      gaji_pokok: item.gajiPokok,
+      aktif: item.aktif
+    }]);
+
+    if (!error) {
+      // 2. Update Local State
+      set((state) => ({ karyawan: [...state.karyawan, item] }));
+    } else {
+      console.error('[Supabase] Add Gagal:', error.message);
+      throw error;
+    }
+  },
+
+  updateKaryawan: async (id, data) => {
+    // 1. Update Cloud (Snake case mapping)
+    const updateData: any = {};
+    if (data.nama) updateData.nama = data.nama;
+    if (data.jabatan) updateData.jabatan = data.jabatan;
+    if (data.tahapList) updateData.tahap_list = data.tahapList;
+    if (data.gajiPokok !== undefined) updateData.gaji_pokok = data.gajiPokok;
+    if (data.aktif !== undefined) updateData.aktif = data.aktif;
+
+    const { error } = await supabase.from('karyawan').update(updateData).eq('id', id);
+
+    if (!error) {
+      // 2. Update Local State
+      set((state) => ({ 
+        karyawan: state.karyawan.map(i => i.id === id ? { ...i, ...data } : i) 
+      }));
+    } else {
+      console.error('[Supabase] Update Gagal:', error.message);
+      throw error;
+    }
+  },
+
+  removeKaryawan: async (id) => {
+    const { error } = await supabase.from('karyawan').delete().eq('id', id);
+    if (!error) {
+      set((state) => ({ karyawan: state.karyawan.filter(i => i.id !== id) }));
+    } else {
+      console.error('[Supabase] Delete Gagal:', error.message);
+      throw error;
+    }
+  },
+
+  // ... (Sisa fungsi CRUD Client-side yang lain tetap menggunakan logic set lokal untuk sekarang)
+  // Master lainnya akan dimigrasikan bertahap di fase berikutnya.
+  
   addModel: (item) => set((state) => ({ model: [...state.model, item] })),
   updateModel: (id, data) => set((state) => ({ model: state.model.map(i => i.id === id ? { ...i, ...data } : i) })),
   removeModel: (id) => set((state) => ({ model: state.model.filter(i => i.id !== id) })),
@@ -156,10 +252,6 @@ export const useMasterStore = create<MasterState>((set, get) => ({
   addWarna: (item) => set((state) => ({ warna: [...state.warna, item] })),
   updateWarna: (id, data) => set((state) => ({ warna: state.warna.map(i => i.id === id ? { ...i, ...data } : i) })),
   removeWarna: (id) => set((state) => ({ warna: state.warna.filter(i => i.id !== id) })),
-
-  addKaryawan: (item) => set((state) => ({ karyawan: [...state.karyawan, item] })),
-  updateKaryawan: (id, data) => set((state) => ({ karyawan: state.karyawan.map(i => i.id === id ? { ...i, ...data } : i) })),
-  removeKaryawan: (id) => set((state) => ({ karyawan: state.karyawan.filter(i => i.id !== id) })),
 
   addJabatan: (item) => set((state) => ({ jabatan: [...state.jabatan, item] })),
   updateJabatan: (id, data) => set((state) => ({ jabatan: state.jabatan.map(i => i.id === id ? { ...i, ...data } : i) })),
