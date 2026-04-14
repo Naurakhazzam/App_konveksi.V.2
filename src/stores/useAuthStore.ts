@@ -59,24 +59,53 @@ const allPaths = [
 ];
 
 const defaultRoles: RoleDefinition[] = [
-  { id: 'godadmin', label: 'Godadmin', permissions: [] },
-  { id: 'owner', label: 'Owner', permissions: allPaths.map(path => ({ path, access: true, level: 'edit' })) },
-  { id: 'visitor_owner', label: 'Visitor Owner', permissions: allPaths.map(path => ({ path, access: true, level: 'view' })) },
-  { id: 'supervisor_admin', label: 'Supervisor Admin', permissions: allPaths.map(path => ({
-    path,
-    access: true,
-    level: (path === '/produksi/input-po' || path === '/retur/penerimaan' || path === '/settings') ? 'edit' : 'view'
-  })) },
-  { id: 'supervisor_produksi', label: 'Supervisor Produksi', permissions: allPaths
-    .filter(path => {
-      const hidden = ['/keuangan', '/master-data', '/koreksi-data', '/audit-log'];
-      return !hidden.some(h => path.startsWith(h));
-    })
-    .map(path => ({
+  { id: 'godadmin', label: 'Godadmin', permissions: [] }, // Hidden Master
+  
+  // 1. OWNER: Full Akses & Full Edit
+  { 
+    id: 'owner', 
+    label: 'Owner', 
+    permissions: allPaths.map(path => ({ path, access: true, level: 'edit' })) 
+  },
+
+  // 2. VISITOR OWNER: Bisa Lihat Semua, Tidak Bisa Edit Apapun
+  { 
+    id: 'visitor_owner', 
+    label: 'Visitor Owner', 
+    permissions: allPaths.map(path => ({ path, access: true, level: 'view' })) 
+  },
+
+  // 3. SUPERVISOR ADMIN: Lihat Semua, Edit Terbatas (Input PO & Retur)
+  { 
+    id: 'supervisor_admin', 
+    label: 'Supervisor Admin', 
+    permissions: allPaths.map(path => ({
       path,
       access: true,
-      level: (path.startsWith('/dashboard') && path !== '/settings') ? 'view' : 'edit'
-    }))
+      level: (path === '/produksi/input-po' || path === '/retur/penerimaan') ? 'edit' : 'view'
+    })) 
+  },
+
+  // 4. SUPERVISOR PRODUKSI: Hanya Grup Industri, Tidak Ada Keuangan/Master
+  { 
+    id: 'supervisor_produksi', 
+    label: 'Supervisor Produksi', 
+    permissions: allPaths.map(path => {
+      const isIndustrial = path.startsWith('/produksi') || 
+                           path.startsWith('/pengiriman') || 
+                           path.startsWith('/penggajian') || 
+                           path.startsWith('/inventory') || 
+                           path.startsWith('/retur') ||
+                           path === '/dashboard' ||
+                           path === '/dashboard/produksi' ||
+                           path === '/panduan';
+                           
+      return {
+        path,
+        access: isIndustrial,
+        level: isIndustrial ? 'edit' : 'view'
+      };
+    })
   },
 ];
 

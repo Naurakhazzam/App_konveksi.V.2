@@ -95,7 +95,14 @@ export default function UserRoleView() {
       <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
         {Array.isArray(val) ? val.map(r => {
             const def = roleDefinitions.find(rd => rd.id === r);
-            return <Badge key={r} variant={r === 'owner' ? 'success' : 'info'}>{def?.label || r}</Badge>;
+            const variantMap: Record<string, any> = {
+              'owner': 'success',
+              'visitor_owner': 'purple',
+              'supervisor_admin': 'info',
+              'supervisor_produksi': 'warning',
+              'godadmin': 'neutral'
+            };
+            return <Badge key={r} variant={variantMap[r] || 'info'}>{def?.label || r}</Badge>;
         }) : null}
       </div>
     )},
