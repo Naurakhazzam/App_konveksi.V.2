@@ -2,10 +2,12 @@ import React, { useState, useMemo } from 'react';
 import PageWrapper from '@/components/templates/PageWrapper';
 import Panel from '@/components/molecules/Panel';
 import KpiCard from '@/components/molecules/KpiCard';
-import { useKoreksiStore } from '@/stores/useKoreksiStore';
+import { useKoreksiStore, ActionApproval } from '@/stores/useKoreksiStore';
 import { KoreksiQTY } from '@/types';
 import KoreksiTable from './KoreksiTable';
 import ModalApproveReject from './ModalApproveReject';
+import DataTable from '@/components/organisms/DataTable';
+import Button from '@/components/atoms/Button';
 import styles from './KoreksiView.module.css';
 
 export default function KoreksiView() {
@@ -37,7 +39,7 @@ export default function KoreksiView() {
   const kpiRow = (
     <div style={{ display: 'flex', gap: '16px', width: '100%' }}>
       <KpiCard label="Tunggu Approval QTY" value={kpis.menunggu} accent="yellow" icon="Clock" />
-      <KpiCard label="Tunggu Approval Aksi" value={kpis.pendingAksi} accent="orange" icon="Shield" />
+      <KpiCard label="Tunggu Approval Aksi" value={kpis.pendingAksi} accent="purple" icon="Shield" />
       <KpiCard label="Disetujui" value={kpis.approved} accent="green" icon="CheckCircle" />
       <KpiCard label="Total Histori" value={kpis.total} accent="blue" icon="ShieldCheck" />
     </div>
@@ -88,15 +90,15 @@ export default function KoreksiView() {
               keyField="id"
               data={pendingActions}
               columns={[
-                { key: 'requestedAt', header: 'Waktu Aktvitas', render: (v) => new Date(v).toLocaleString('id-ID') },
-                { key: 'label', header: 'Aksi yang Diajukan', render: (v) => <strong>{v}</strong> },
+                { key: 'requestedAt', header: 'Waktu Aktvitas', render: (v: string) => new Date(v).toLocaleString('id-ID') },
+                { key: 'label', header: 'Aksi yang Diajukan', render: (v: string) => <strong>{v}</strong> },
                 { key: 'requestedBy', header: 'Oleh' },
-                { key: 'status', header: 'Status', render: (v) => (
+                { key: 'status', header: 'Status', render: (v: string) => (
                   <span style={{ color: v === 'pending' ? 'var(--color-yellow)' : v === 'approved' ? 'var(--color-green)' : 'var(--color-red)' }}>
                     {v.toUpperCase()}
                   </span>
                 )},
-                { key: 'action', header: '', align: 'right', render: (_, row) => (
+                { key: 'action', header: '', align: 'right', render: (_: any, row: ActionApproval) => (
                   row.status === 'pending' && (
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <Button variant="danger" size="sm" onClick={() => resolveActionApproval(row.id, 'rejected', 'FAUZAN')}>Reject</Button>

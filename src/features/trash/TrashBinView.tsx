@@ -5,7 +5,7 @@ import PageWrapper from '@/components/templates/PageWrapper';
 import Panel from '@/components/molecules/Panel';
 import DataTable from '@/components/organisms/DataTable';
 import Button from '@/components/atoms/Button';
-import { useTrashStore } from '@/stores/useTrashStore';
+import { useTrashStore, TrashItem } from '@/stores/useTrashStore';
 import { usePOStore } from '@/stores/usePOStore';
 import { useToast } from '@/components/molecules/Toast';
 import { RefreshCcw, Trash2, AlertTriangle } from 'lucide-react';
@@ -72,11 +72,11 @@ export default function TrashBinView() {
               keyField="id"
               data={trashedItems}
               columns={[
-                { key: 'trashedAt', header: 'Waktu Hapus', render: (v) => new Date(v).toLocaleString('id-ID') },
-                { key: 'type', header: 'Jenis', render: (v) => v.toUpperCase() },
-                { key: 'label', header: 'Nama Data', render: (v) => <strong>{v}</strong> },
+                { key: 'trashedAt', header: 'Waktu Hapus', render: (v: string) => new Date(v).toLocaleString('id-ID') },
+                { key: 'type', header: 'Jenis', render: (v: string) => v.toUpperCase() },
+                { key: 'label', header: 'Nama Data', render: (v: string) => <strong>{v}</strong> },
                 { key: 'trashedBy', header: 'Dihapus Oleh' },
-                { key: 'action', header: '', align: 'right', render: (_, row) => (
+                { key: 'action', header: '', align: 'right', render: (_: any, row: TrashItem) => (
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <Button 
                       variant="ghost" 
