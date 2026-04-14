@@ -8,6 +8,8 @@ import { usePOStore } from '@/stores/usePOStore';
 import { PurchaseOrder } from '@/types';
 import FormInputPO from './FormInputPO';
 import DetailPO from './DetailPO';
+import ModalImportPO from './ModalImportPO';
+import { generatePOMassTemplate } from '@/lib/utils/po-import';
 import styles from './InputPOView.module.css';
 
 type Mode = 'list' | 'form' | 'detail';
@@ -16,6 +18,7 @@ export default function InputPOView() {
   const { poList } = usePOStore();
   const [mode, setMode] = useState<Mode>('list');
   const [activePOId, setActivePOId] = useState<string | null>(null);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const handleCreate = () => setMode('form');
   
@@ -33,6 +36,20 @@ export default function InputPOView() {
     setActivePOId(id);
     setMode('detail');
   };
+
+  const mainAction = (
+    <div style={{ display: 'flex', gap: '8px' }}>
+      <Button variant="ghost" onClick={generatePOMassTemplate}>
+        📥 Download Template
+      </Button>
+      <Button variant="secondary" onClick={() => setIsImportModalOpen(true)}>
+        📤 Upload PO (CSV)
+      </Button>
+      <Button variant="primary" onClick={handleCreate}>
+        + Buat PO Baru
+      </Button>
+    </div>
+  );
 
   const columns: Column<PurchaseOrder>[] = [
     { key: 'nomorPO', header: 'No. PO', render: (val, row) => (
@@ -75,13 +92,17 @@ export default function InputPOView() {
     <PageWrapper 
       title="Daftar Purchase Order" 
       subtitle="Manajemen dan monitor entri PO"
-      action={<Button variant="primary" onClick={handleCreate}>+ Buat PO Baru</Button>}
+      action={mainAction}
     >
       <div className={styles.container}>
         <Panel title="Semua PO" sequenceIndex={0}>
           <DataTable columns={columns} data={poList} keyField="id" sequenceIndex={1} reverse={true} />
         </Panel>
       </div>
+
+      {isImportModalOpen && (
+        <ModalImportPO onClose={() => setIsImportModalOpen(false)} />
+      )}
     </PageWrapper>
   );
 }
