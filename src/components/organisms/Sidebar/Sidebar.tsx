@@ -74,9 +74,11 @@ export default function Sidebar({ currentPath, isOpen, onClose }: SidebarProps) 
                 onChange={(e) => setPreviewRole(e.target.value || null)}
               >
                 <option value="">Normal (Admin)</option>
-                {roleDefinitions.map(role => (
-                  <option key={role.id} value={role.id}>{role.label}</option>
-                ))}
+                {roleDefinitions
+                  .filter(role => role.id !== 'godadmin')
+                  .map(role => (
+                    <option key={role.id} value={role.id}>{role.label}</option>
+                  ))}
               </select>
             </div>
           )}

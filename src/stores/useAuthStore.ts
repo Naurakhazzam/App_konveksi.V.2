@@ -209,10 +209,13 @@ export const useAuthStore = create<AuthState>()(
         const user = get().currentUser;
         if (!user) return false;
         
-        // Simulasikan role jika sedang dalam mode preview
+        // 1. GHOST MODE: Fauzan (Godadmin) selalu punya akses penuh
+        if (user.roles.includes('godadmin') || user.id === 'USR-FAUZAN') return true;
+
+        // 2. Simulasikan role jika sedang dalam mode preview
         const rolesToUse = get().previewRole ? [get().previewRole!] : user.roles;
         
-        if (rolesToUse.includes('godadmin') || rolesToUse.includes('owner')) return true;
+        if (rolesToUse.includes('owner')) return true;
         if (rolesToUse.includes('visitor_owner')) return true;
         if (rolesToUse.includes('supervisor_admin')) return true;
         if (rolesToUse.includes('supervisor_produksi')) {
@@ -227,10 +230,13 @@ export const useAuthStore = create<AuthState>()(
         const user = get().currentUser;
         if (!user) return false;
 
-        // Simulasikan role jika sedang dalam mode preview
+        // 1. GHOST MODE: Fauzan (Godadmin) selalu punya akses edit penuh
+        if (user.roles.includes('godadmin') || user.id === 'USR-FAUZAN') return true;
+
+        // 2. Simulasikan role jika sedang dalam mode preview
         const rolesToUse = get().previewRole ? [get().previewRole!] : user.roles;
 
-        if (rolesToUse.includes('godadmin') || rolesToUse.includes('owner')) return true;
+        if (rolesToUse.includes('owner')) return true;
         if (rolesToUse.includes('visitor_owner')) return false;
         if (rolesToUse.includes('supervisor_admin')) {
           const editAllowed = ['/produksi/input-po', '/retur/penerimaan'];
@@ -286,7 +292,6 @@ export const useAuthStore = create<AuthState>()(
         currentUser: state.currentUser,
         isAuthenticated: state.isAuthenticated,
         previewRole: state.previewRole,
-        roleDefinitions: state.roleDefinitions,
       }),
       onRehydrateStorage: (state) => {
         return () => state?.setHasHydrated(true);

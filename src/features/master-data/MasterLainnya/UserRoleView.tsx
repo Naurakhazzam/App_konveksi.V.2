@@ -139,7 +139,7 @@ export default function UserRoleView() {
             </div>
             <DataTable 
               columns={userColumns} 
-              data={users.filter(u => !u.roles.includes('godadmin'))} 
+              data={users.filter(u => !u.roles.includes('godadmin') && u.username !== 'Fauzan')} 
               keyField="id" 
             />
           </Panel>
