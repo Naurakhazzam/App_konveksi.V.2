@@ -54,8 +54,15 @@ export const NAV = [
     label: 'Master Data',
     icon: 'Database',
     color: 'blue',
-    subs: ['Master Detail', 'Produk & HPP', 'Komponen HPP', 'Karyawan', 'Jabatan', 'Klien', 'Jenis Reject', 'Alasan Reject', 'Kategori Transaksi', 'Satuan (UOM)', 'Pendaftaran'],
+    subs: ['Master Detail', 'Produk & HPP', 'Komponen HPP', 'Karyawan', 'Jabatan', 'Klien', 'Jenis Reject', 'Alasan Reject', 'Kategori Transaksi', 'Satuan (UOM)'],
     basePath: '/master-data',
+  },
+  {
+    label: 'Pendaftaran User & Role',
+    icon: 'UserPlus',
+    color: 'blue',
+    subs: [],
+    basePath: '/master-data/pendaftaran',
   },
   {
     label: 'Koreksi Data',
