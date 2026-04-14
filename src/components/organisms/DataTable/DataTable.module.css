@@ -131,3 +131,83 @@
   align-items: center;
   gap: 12px;
 }
+
+/* Pagination Styles */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-card2);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.paginationInfo {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--color-text-sub);
+  letter-spacing: 0.02em;
+}
+
+.paginationControls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pageNumbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 4px;
+}
+
+.pageBtn, .pageNumber {
+  height: 28px;
+  min-width: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0 4px;
+}
+
+.pageBtn:hover:not(:disabled), .pageNumber:hover:not(.activePage) {
+  background: var(--color-cyan-dim);
+  border-color: var(--color-cyan-glow);
+  color: var(--color-cyan-glow);
+  transform: translateY(-1px);
+}
+
+.pageBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+.pageNumber.activePage {
+  background: var(--color-cyan-glow);
+  color: var(--color-bg);
+  border-color: var(--color-cyan-glow);
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+}
+
+@media (max-width: 600px) {
+  .pagination {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

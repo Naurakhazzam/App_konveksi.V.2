@@ -3,6 +3,7 @@ import { PurchaseOrder, PemakaianBahan } from '@/types';
 import { useLogStore } from './useLogStore';
 import { useAuthStore } from './useAuthStore';
 import { useBundleStore } from './useBundleStore';
+import { initialRealPOs, initialGlobalSequence } from '../data/real-po-data';
 
 interface POState {
   poList: PurchaseOrder[];
@@ -24,8 +25,8 @@ interface POState {
 }
 
 export const usePOStore = create<POState>((set, get) => ({
-  poList: [],
-  globalSequence: 1,
+  poList: initialRealPOs,
+  globalSequence: initialGlobalSequence,
 
   addPO: (po: PurchaseOrder) => {
     set((state: POState) => ({ poList: [...state.poList, po] }));

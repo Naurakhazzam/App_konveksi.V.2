@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Bundle, StatusTahap } from '../types';
+import { initialRealBundles } from '../data/real-po-data';
 
 export interface RejectRecord {
   id: string;
@@ -36,7 +37,7 @@ const defaultStatus: StatusTahap = {
 };
 
 export const useBundleStore = create<BundleState>((set, get) => ({
-  bundles: [],
+  bundles: initialRealBundles,
   rejectRecords: [],
   addBundle: (bundle) => set((state) => ({ bundles: [...state.bundles, bundle] })),
   updateStatusTahap: (barcode, tahap, updates) => set((state) => ({
