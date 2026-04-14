@@ -1,6 +1,5 @@
-"use client";
-
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { ShieldCheck, X, Key, Lock } from 'lucide-react';
 import Button from '../../atoms/Button';
 import styles from './AuthGateModal.module.css';
@@ -53,9 +52,9 @@ export default function AuthGateModal({
     onSuccess();
   };
 
-  return (
-    <div className={styles.backdrop}>
-      <div className={styles.modal}>
+  const modalContent = (
+    <div className={styles.backdrop} onClick={onClose}>
+      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
           <div className={`${styles.iconContainer} ${type === 'pin' ? styles.pinIcon : styles.passIcon}`}>
             {type === 'pin' ? <Lock size={20} /> : <Key size={20} />}
@@ -72,13 +71,14 @@ export default function AuthGateModal({
         <form onSubmit={handleSubmit} className={styles.body}>
           <div className={styles.inputWrapper}>
             <input
-              type={type === 'pin' ? 'password' : 'password'}
+              type="password"
               value={value}
               onChange={(e) => setValue(e.target.value)}
               placeholder={type === 'pin' ? '••••••' : 'Password Anda'}
               autoFocus
               className={error ? styles.inputError : ''}
               maxLength={type === 'pin' ? 6 : undefined}
+              autoComplete="off"
             />
             {error && <span className={styles.errorText}>{error}</span>}
           </div>
@@ -93,4 +93,9 @@ export default function AuthGateModal({
       </div>
     </div>
   );
+
+  // Gunakan Portal agar modal merender di luar hierarki DOM sidebar yang sempit
+  return typeof document !== 'undefined' 
+    ? createPortal(modalContent, document.body) 
+    : null;
 }
