@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '@/components/organisms/Modal';
 import Button from '@/components/atoms/Button';

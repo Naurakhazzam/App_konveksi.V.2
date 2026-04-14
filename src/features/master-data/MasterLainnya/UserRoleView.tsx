@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import PageWrapper from '@/components/templates/PageWrapper';
 import Panel from '@/components/molecules/Panel';
