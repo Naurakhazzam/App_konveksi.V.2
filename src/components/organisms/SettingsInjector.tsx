@@ -2,11 +2,16 @@
 
 import { useEffect } from 'react';
 import { useSettingsStore } from '@/stores/useSettingsStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 export default function SettingsInjector() {
   const { theme, beam } = useSettingsStore();
+  const { revalidateSession } = useAuthStore();
 
   useEffect(() => {
+    // 0. Revalidate Auth Session
+    revalidateSession();
+
     // 1. Apple Theme
     document.documentElement.setAttribute('data-theme', theme);
 
@@ -19,7 +24,7 @@ export default function SettingsInjector() {
     root.style.setProperty('--beam-glow', `blur(${beam.blur}px)`);
     root.style.setProperty('--beam-display', beam.enabled ? 'block' : 'none');
     
-  }, [theme, beam]);
+  }, [theme, beam, revalidateSession]);
 
   return null; // This is a logic-only component
 }

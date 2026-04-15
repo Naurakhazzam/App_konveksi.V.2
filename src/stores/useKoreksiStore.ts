@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { KoreksiQTY } from '@/types';
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from './useAuthStore';
 
 export interface ActionApproval {
   id: string;
@@ -118,28 +119,40 @@ export const useKoreksiStore = create<KoreksiState>((set, get) => ({
   // ── ADD KOREKSI ───────────────────────────────────────────────────────────
 
   addKoreksi: async (data) => {
-    set((state) => ({ koreksiList: [...state.koreksiList, data] }));
+    // Audit Trail: Pastikan pelapor adalah user yang sedang login jika tidak ditentukan
+    const currentUser = useAuthStore.getState().currentUser;
+    if (!currentUser) {
+      console.error('[useKoreksiStore] addKoreksi ditolak: Session user tidak ditemukan.');
+      return;
+    }
+
+    const finalData = { 
+      ...data, 
+      karyawanPelapor: data.karyawanPelapor || currentUser.nama 
+    };
+
+    set((state) => ({ koreksiList: [...state.koreksiList, finalData] }));
     try {
       const { error } = await supabase.from('koreksi').insert({
-        id: data.id,
-        barcode: data.barcode,
-        bundle_id: data.barcode,
-        po_id: data.poId,
-        tahap: data.tahapDitemukan,
-        tahap_ditemukan: data.tahapDitemukan,
-        tahap_bertanggung_jawab: data.tahapBertanggungJawab,
-        karyawan_id: data.karyawanBertanggungJawab,
-        karyawan_pelapor: data.karyawanPelapor,
-        jenis_koreksi: data.jenisKoreksi,
-        alasan_reject_id: data.alasanRejectId ?? null,
-        alasan: data.alasanLebihText ?? null,
-        alasan_lebih: data.alasanLebih ?? null,
-        alasan_lebih_text: data.alasanLebihText ?? null,
-        qty_selisih: data.qtyKoreksi,
-        nominal_potongan: data.nominalPotongan,
-        status_potongan: data.statusPotongan,
-        status_approval: toDbApproval(data.statusApproval) ?? null,
-        waktu_lapor: data.waktuLapor,
+        id: finalData.id,
+        barcode: finalData.barcode,
+        bundle_id: finalData.barcode,
+        po_id: finalData.poId,
+        tahap: finalData.tahapDitemukan,
+        tahap_ditemukan: finalData.tahapDitemukan,
+        tahap_bertanggung_jawab: finalData.tahapBertanggungJawab,
+        karyawan_id: finalData.karyawanBertanggungJawab,
+        karyawan_pelapor: finalData.karyawanPelapor,
+        jenis_koreksi: finalData.jenisKoreksi,
+        alasan_reject_id: finalData.alasanRejectId ?? null,
+        alasan: finalData.alasanLebihText ?? null,
+        alasan_lebih: finalData.alasanLebih ?? null,
+        alasan_lebih_text: finalData.alasanLebihText ?? null,
+        qty_selisih: finalData.qtyKoreksi,
+        nominal_potongan: finalData.nominalPotongan,
+        status_potongan: finalData.statusPotongan,
+        status_approval: toDbApproval(finalData.statusApproval) ?? null,
+        waktu_lapor: finalData.waktuLapor,
       });
       if (error) throw error;
     } catch (err) {
@@ -294,11 +307,19 @@ export const useKoreksiStore = create<KoreksiState>((set, get) => ({
   // ── ACTION APPROVAL ───────────────────────────────────────────────────────
 
   addActionApproval: async (action) => {
+    // Audit Trail
+    const currentUser = useAuthStore.getState().currentUser;
+    if (!currentUser) {
+      console.error('[useKoreksiStore] addActionApproval ditolak: Session user tidak ditemukan.');
+      return;
+    }
+
     const newAction: ActionApproval = {
       ...action,
       id: `ACT-${Date.now()}`,
       status: 'pending',
       requestedAt: new Date().toISOString(),
+      requestedBy: currentUser.nama, // Force current user name
     };
     set((state) => ({ pendingActions: [newAction, ...state.pendingActions] }));
     try {
@@ -318,8 +339,17 @@ export const useKoreksiStore = create<KoreksiState>((set, get) => ({
   },
 
   resolveActionApproval: async (id, decision, approvedBy) => {
+    // 1. Audit Trail: Siapa yang menyetujui/menolak?
+    const currentUser = useAuthStore.getState().currentUser;
+    if (!currentUser) {
+      console.error('[useKoreksiStore] resolveActionApproval ditolak: Session user tidak ditemukan.');
+      return;
+    }
+
     const action = get().pendingActions.find((a) => a.id === id);
     if (!action || action.status !== 'pending') return;
+
+    const resolverName = approvedBy || currentUser.nama;
 
     // 1. Update status lokal
     set((state) => ({
@@ -332,14 +362,14 @@ export const useKoreksiStore = create<KoreksiState>((set, get) => ({
     try {
       await supabase.from('action_approval').update({
         status: decision,
-        approved_by: approvedBy ?? null,
+        approved_by: resolverName,
         approved_at: new Date().toISOString(),
       }).eq('id', id);
     } catch (err) {
       console.error('[useKoreksiStore] resolveActionApproval DB error:', err);
     }
 
-    // 3. Eksekusi jika disetujui
+    // 3. Eksekusi jika disetujui — tetap menggunakan identitas resmi
     if (decision === 'approved') {
       const { type, payload } = action;
 
@@ -350,7 +380,7 @@ export const useKoreksiStore = create<KoreksiState>((set, get) => ({
         if (po) {
           await useTrashStore.getState().addToTrash({
             id: po.id, type: 'po', label: po.nomorPO,
-            data: po, trashedBy: approvedBy || 'SYSTEM',
+            data: po, trashedBy: resolverName,
           });
           await usePOStore.getState().removePO(payload.id);
         }

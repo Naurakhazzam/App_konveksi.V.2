@@ -167,6 +167,13 @@ export const usePOStore = create<POState>((set, get) => ({
   // ── ADD PO ────────────────────────────────────────────────────────────────
 
   addPO: async (po: PurchaseOrder) => {
+    // 1. Dapatkan user AKTIF saat ini (Audit Trail Jantung)
+    const currentUser = useAuthStore.getState().currentUser;
+    if (!currentUser) {
+      console.error('[usePOStore] addPO ditolak: Session user tidak ditemukan.');
+      return;
+    }
+
     // Optimistic update
     set((state) => ({ poList: [...state.poList, po] }));
 
@@ -183,17 +190,14 @@ export const usePOStore = create<POState>((set, get) => ({
         if (itemError) throw itemError;
       }
 
-      // Log Activity
-      const user = useAuthStore.getState().currentUser;
-      if (user) {
-        useLogStore.getState().addLog({
-          user: { id: user.id, nama: user.nama, role: user.roles[0] || 'User' },
-          modul: 'produksi',
-          aksi: 'Buat PO Baru',
-          target: po.nomorPO,
-          metadata: { items: po.items.length }
-        });
-      }
+      // Log Activity — Hanya jika BERHASIL simpan ke DB
+      useLogStore.getState().addLog({
+        user: { id: currentUser.id, nama: currentUser.nama, role: currentUser.roles[0] || 'User' },
+        modul: 'produksi',
+        aksi: 'Buat PO Baru',
+        target: po.nomorPO,
+        metadata: { items: po.items.length }
+      });
     } catch (err) {
       console.error('[usePOStore] addPO error:', err);
       // Rollback
@@ -321,23 +325,33 @@ export const usePOStore = create<POState>((set, get) => ({
   // ── PEMAKAIAN BAHAN ───────────────────────────────────────────────────────
 
   addPemakaianBahan: async (data: PemakaianBahan) => {
-    // 1. Optimistic update store lokal
-    set((state) => ({ pemakaianBahan: [...state.pemakaianBahan, data] }));
+    // 1. Dapatkan user AKTIF (Audit Trail Jantung)
+    const currentUser = useAuthStore.getState().currentUser;
+    if (!currentUser) {
+      console.error('[usePOStore] addPemakaianBahan ditolak: Session user tidak ditemukan.');
+      return;
+    }
 
-    // 2. Simpan ke Supabase
+    // Force audit trail dari user yang sedang login, bukan kiriman UI (Security Fix)
+    const finalData = { ...data, inputOleh: currentUser.nama };
+
+    // 2. Optimistic update store lokal
+    set((state) => ({ pemakaianBahan: [...state.pemakaianBahan, finalData] }));
+
+    // 3. Simpan ke Supabase
     try {
       const { error } = await supabase.from('pemakaian_bahan').insert({
-        po_id: data.po,
-        sku_klien: data.skuKlien,
-        model_id: data.modelId,
-        warna_id: data.warnaId,
-        size_id: data.sizeId,
-        artikel_nama: data.artikelNama,
-        inventory_item_id: data.inventoryItemId ?? null,
-        pemakaian_kain_meter: data.pemakaianKainMeter,
-        pemakaian_berat_gram: data.pemakaianBeratGram,
-        input_oleh: data.inputOleh,
-        waktu_input: data.waktuInput,
+        po_id: finalData.po,
+        sku_klien: finalData.skuKlien,
+        model_id: finalData.modelId,
+        warna_id: finalData.warnaId,
+        size_id: finalData.sizeId,
+        artikel_nama: finalData.artikelNama,
+        inventory_item_id: finalData.inventoryItemId ?? null,
+        pemakaian_kain_meter: finalData.pemakaianKainMeter,
+        pemakaian_berat_gram: finalData.pemakaianBeratGram,
+        input_oleh: finalData.inputOleh,
+        waktu_input: finalData.waktuInput,
       });
       if (error) throw error;
     } catch (err) {
@@ -426,7 +440,14 @@ export const usePOStore = create<POState>((set, get) => ({
   // ── CREATE PO + BUNDLES (ATOMIC) ──────────────────────────────────────────
 
   createPOWithBundles: async (po, bundles) => {
-    // 1. Optimistic update lokal
+    // 1. Dapatkan user AKTIF (Audit Trail Jantung)
+    const currentUser = useAuthStore.getState().currentUser;
+    if (!currentUser) {
+      console.error('[usePOStore] createPOWithBundles ditolak: Session user tidak ditemukan.');
+      return;
+    }
+
+    // 2. Optimistic update lokal
     set((state) => ({
       poList: [...state.poList, po],
       globalSequence: state.globalSequence + bundles.length,
@@ -434,13 +455,13 @@ export const usePOStore = create<POState>((set, get) => ({
     useBundleStore.getState().addBundles(bundles);
 
     try {
-      // 2. Insert PO ke Supabase
+      // 3. Insert PO ke Supabase
       const { error: poError } = await supabase
         .from('purchase_order')
         .insert(toPORow(po));
       if (poError) throw poError;
 
-      // 3. Insert PO Items
+      // 4. Insert PO Items
       if (po.items.length > 0) {
         const { error: itemError } = await supabase
           .from('po_item')
@@ -448,7 +469,7 @@ export const usePOStore = create<POState>((set, get) => ({
         if (itemError) throw itemError;
       }
 
-      // 4. Insert Bundles
+      // 5. Insert Bundles
       if (bundles.length > 0) {
         const bundleRows = bundles.map((b: any) => ({
           id: b.id,
@@ -468,17 +489,14 @@ export const usePOStore = create<POState>((set, get) => ({
         if (bundleError) throw bundleError;
       }
 
-      // 5. Log Activity
-      const user = useAuthStore.getState().currentUser;
-      if (user) {
-        useLogStore.getState().addLog({
-          user: { id: user.id, nama: user.nama, role: user.roles[0] || 'User' },
-          modul: 'produksi',
-          aksi: 'Buat PO Baru (Atomic)',
-          target: po.nomorPO,
-          metadata: { items: po.items.length, bundles: bundles.length }
-        });
-      }
+      // 6. Log Activity — Hanya jika SEMUA BERHASIL
+      useLogStore.getState().addLog({
+        user: { id: currentUser.id, nama: currentUser.nama, role: currentUser.roles[0] || 'User' },
+        modul: 'produksi',
+        aksi: 'Buat PO Baru (Atomic)',
+        target: po.nomorPO,
+        metadata: { items: po.items.length, bundles: bundles.length }
+      });
     } catch (err) {
       console.error('[usePOStore] createPOWithBundles error:', err);
       // Rollback lokal

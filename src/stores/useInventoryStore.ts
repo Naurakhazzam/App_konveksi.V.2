@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { InventoryItem, TransaksiMasuk, TransaksiKeluar, InventoryBatch } from '../types';
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from './useAuthStore';
 
 interface InventoryState {
   items: InventoryItem[];
@@ -116,6 +117,13 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   // ── ADD ITEM ──────────────────────────────────────────────────────────────
 
   addItem: async (item) => {
+    // Audit Trail
+    const currentUser = useAuthStore.getState().currentUser;
+    if (!currentUser) {
+      console.error('[useInventoryStore] addItem ditolak: Session user tidak ditemukan.');
+      return;
+    }
+
     set((state) => ({ items: [...state.items, item] }));
     try {
       const { error } = await supabase.from('inventory_item').insert({
@@ -160,6 +168,13 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   // ── ADD BATCH (Pembelian Bahan Masuk) ─────────────────────────────────────
 
   addBatch: async (batch) => {
+    // Audit Trail
+    const currentUser = useAuthStore.getState().currentUser;
+    if (!currentUser) {
+      console.error('[useInventoryStore] addBatch ditolak: Session user tidak ditemukan.');
+      return;
+    }
+
     // 1. Update lokal
     set((state) => ({ batches: [...state.batches, batch] }));
     await get().updateStock(batch.itemId, batch.qty);

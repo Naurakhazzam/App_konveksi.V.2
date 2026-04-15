@@ -92,7 +92,14 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
   // ── ADD LEDGER ENTRY ──────────────────────────────────────────────────────
 
   addLedgerEntry: async (entry) => {
-    // Validasi: karyawanId wajib ada dan valid di master karyawan
+    // 1. Audit Trail: Siapa yang membuat entri ini?
+    const currentUser = useAuthStore.getState().currentUser;
+    if (!currentUser) {
+      console.error('[usePayrollStore] addLedgerEntry ditolak: Session user tidak ditemukan.');
+      return;
+    }
+
+    // 2. Validasi: karyawanId wajib ada dan valid di master karyawan
     if (!entry.karyawanId || entry.karyawanId.trim() === '') {
       console.error('[usePayrollStore] addLedgerEntry dibatalkan: karyawanId kosong.', entry);
       return;
@@ -204,6 +211,13 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
   // ── PROSES BAYAR (Atomik) ─────────────────────────────────────────────────
 
   prosesBayar: async (karyawanId, entryIds, inputKasbon, hariKerja) => {
+    // 1. Audit Trail: Siapa yang melakukan transaksi keuangan ini?
+    const currentUser = useAuthStore.getState().currentUser;
+    if (!currentUser) {
+      console.error('[usePayrollStore] prosesBayar ditolak: Session user tidak ditemukan.');
+      return;
+    }
+
     const tanggalBayar = new Date().toISOString();
     const upahData = get().calculateUpah(karyawanId);
     const gajiPokokHarian = upahData.gajiPokok / 6;
@@ -303,22 +317,19 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
       });
     }
 
-    // 5. Log aktivitas
-    const user = useAuthStore.getState().currentUser;
-    if (user) {
-      useLogStore.getState().addLog({
-        user: { id: user.id, nama: user.nama, role: user.roles[0] || 'User' },
-        modul: 'penggajian',
-        aksi: 'Bayar Gaji',
-        target: karyawanId,
-        metadata: {
-          hariKerja: hariKerja || 6,
-          totalUpah: upahData.upahBersih,
-          potongKasbon: inputKasbon,
-          netto: totalBersihPay,
-        },
-      });
-    }
+    // 7. Log aktivitas — Sekarang menggunakan user dari session
+    useLogStore.getState().addLog({
+      user: { id: currentUser.id, nama: currentUser.nama, role: currentUser.roles[0] || 'User' },
+      modul: 'penggajian',
+      aksi: 'Bayar Gaji',
+      target: karyawanId,
+      metadata: {
+        hariKerja: hariKerja || 6,
+        totalUpah: upahData.upahBersih,
+        potongKasbon: inputKasbon,
+        netto: totalBersihPay,
+      },
+    });
   },
 
   // ── SET SLIP PRINTED ──────────────────────────────────────────────────────
@@ -343,6 +354,13 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
   // ── ADD KASBON ────────────────────────────────────────────────────────────
 
   addKasbon: async (kasbon) => {
+    // Audit Trail
+    const currentUser = useAuthStore.getState().currentUser;
+    if (!currentUser) {
+      console.error('[usePayrollStore] addKasbon ditolak: Session user tidak ditemukan.');
+      return;
+    }
+
     set((state) => ({ kasbon: [...state.kasbon, kasbon] }));
     try {
       const { error } = await supabase.from('kasbon').insert({
@@ -355,20 +373,18 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
         lunas: kasbon.status === 'lunas',
       });
       if (error) throw error;
-    } catch (err) {
-      console.error('[usePayrollStore] addKasbon error:', err);
-      set((state) => ({ kasbon: state.kasbon.filter((k) => k.id !== kasbon.id) }));
-    }
 
-    const user = useAuthStore.getState().currentUser;
-    if (user) {
+      // Log aktivitas hanya jika berhasil
       useLogStore.getState().addLog({
-        user: { id: user.id, nama: user.nama, role: user.roles[0] || 'User' },
+        user: { id: currentUser.id, nama: currentUser.nama, role: currentUser.roles[0] || 'User' },
         modul: 'penggajian',
         aksi: 'Tambah Kasbon',
         target: kasbon.karyawanId,
         metadata: { nominal: kasbon.jumlah },
       });
+    } catch (err) {
+      console.error('[usePayrollStore] addKasbon error:', err);
+      set((state) => ({ kasbon: state.kasbon.filter((k) => k.id !== kasbon.id) }));
     }
   },
 

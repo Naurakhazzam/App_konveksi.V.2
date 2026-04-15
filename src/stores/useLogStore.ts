@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { AuditEntry } from '../types/audit.types';
 import { supabase } from '@/lib/supabase';
+import { useAuthStore } from './useAuthStore';
 
 interface LogState {
   logs: AuditEntry[];
@@ -51,13 +52,19 @@ export const useLogStore = create<LogState>((set, get) => ({
   // ── ADD LOG (fire-and-forget — tidak memblokir UI) ────────────────────────
 
   addLog: (entry) => {
+    // Update state lokal langsung (tidak menunggu DB)
+    const currentUser = useAuthStore.getState().currentUser;
+    const finalUser = (entry.user.id === 'SYSTEM' || !entry.user.id) && currentUser
+      ? { id: currentUser.id, nama: currentUser.nama, role: currentUser.roles[0] || 'User' }
+      : entry.user;
+
     const newLog: AuditEntry = {
       ...entry,
+      user: finalUser,
       id: `LOG-${Date.now()}`,
       timestamp: new Date().toISOString(),
     };
 
-    // Update state lokal langsung (tidak menunggu DB)
     set((state) => ({
       logs: [newLog, ...state.logs].slice(0, 100),
     }));
@@ -65,13 +72,13 @@ export const useLogStore = create<LogState>((set, get) => ({
     // Simpan ke Supabase secara async tanpa blocking
     supabase.from('audit_log').insert({
       id: newLog.id,
-      user_id: entry.user.id,
+      user_id: finalUser.id,
       aksi: entry.aksi,
       target_tabel: entry.modul,
       target_id: entry.target,
       detail: {
-        user_nama: entry.user.nama,
-        user_role: entry.user.role,
+        user_nama: finalUser.nama,
+        user_role: finalUser.role,
         metadata: entry.metadata ?? null,
       },
     }).then(({ error }) => {

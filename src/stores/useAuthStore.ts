@@ -18,6 +18,7 @@ interface AuthState {
   removeUser: (id: string) => Promise<void>;
   approveUser: (id: string) => Promise<void>;
   loadUsers: () => Promise<void>;
+  revalidateSession: () => Promise<void>;
 
   // Role Management
   addRole: (role: RoleDefinition) => void;
@@ -153,6 +154,44 @@ export const useAuthStore = create<AuthState>()(
         const ownerPin = ownerUser?.owner_pin ?? '0000';
 
         set({ users: mapped, ownerPin });
+      },
+
+      // Re-fetch current user to ensure permissions are up to date
+      revalidateSession: async () => {
+        const current = get().currentUser;
+        if (!current) return;
+
+        try {
+          const { data, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', current.id)
+            .single();
+
+          if (error || !data) {
+            // User deleted or error -> logout
+            set({ currentUser: null, isAuthenticated: false });
+            return;
+          }
+
+          if (data.is_pending) {
+            set({ currentUser: null, isAuthenticated: false });
+            return;
+          }
+
+          const updatedUser: User = {
+            id: data.id,
+            username: data.username,
+            nama: data.nama,
+            roles: data.roles || [],
+            pin: data.pin,
+            isPending: data.is_pending || false,
+          };
+
+          set({ currentUser: updatedUser, isAuthenticated: true });
+        } catch (err) {
+          console.error('[AuthStore] revalidateSession error:', err);
+        }
       },
 
       // Login — cek dari Supabase
