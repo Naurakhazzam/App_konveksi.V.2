@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [isVisitorMode, setIsVisitorMode] = useState(false);
   const [visitorPass, setVisitorPass] = useState('');
-  
+
   const { login, loginAsVisitor } = useAuthStore();
   const router = useRouter();
 
@@ -48,16 +48,18 @@ export default function LoginPage() {
   return (
     <div className={styles.container}>
       <div className={styles.logoContainer}>
-        <Heading level={2} className={styles.logo}>STITCHLYX<span style={{ color: 'var(--color-cyan)' }}>.SYNCORE</span></Heading>
+        <Heading level={2} className={styles.logo}>
+          STITCHLYX<span style={{ color: 'var(--color-cyan)' }}>.SYNCORE</span>
+        </Heading>
         <Label color="sub">{isVisitorMode ? 'Guest Access Control' : 'Sign in to your account'}</Label>
       </div>
-      
+
       <Panel title={isVisitorMode ? '🔓 Akses Pengunjung' : 'Login'}>
         {!isVisitorMode ? (
           <form onSubmit={handleLogin} className={styles.form}>
             <div className={styles.field}>
               <Label>Username</Label>
-              <TextInput 
+              <TextInput
                 value={username}
                 onChange={(val) => setUsername(val)}
                 placeholder="Enter username"
@@ -67,7 +69,7 @@ export default function LoginPage() {
             </div>
             <div className={styles.field}>
               <Label>Password / PIN</Label>
-              <input 
+              <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -85,21 +87,29 @@ export default function LoginPage() {
               <span>ATAU</span>
             </div>
 
-            <Button 
-               type="button" 
-               variant="ghost" 
-               onClick={() => setIsVisitorMode(true)}
-               style={{ width: '100%', border: '1px dashed var(--color-border)' }}
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setIsVisitorMode(true)}
+              style={{ width: '100%', border: '1px dashed var(--color-border)' }}
             >
               👤 Masuk sebagai Pengunjung
             </Button>
 
             <div style={{ marginTop: '20px', textAlign: 'center' }}>
-              <span style={{ color: 'var(--color-text-secondary)', fontSize: '14px' }}>Belum punya akun? </span>
-              <button 
+              <span style={{ color: 'var(--color-text-secondary)', fontSize: '14px' }}>
+                Belum punya akun?{' '}
+              </span>
+              <button
                 type="button"
                 onClick={() => router.push('/register')}
-                style={{ background: 'none', border: 'none', color: 'var(--color-cyan)', cursor: 'pointer', fontWeight: 'bold' }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--color-cyan)',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                }}
               >
                 Daftar Sekarang
               </button>
@@ -109,7 +119,7 @@ export default function LoginPage() {
           <form onSubmit={handleVisitorLogin} className={styles.form}>
             <div className={styles.field}>
               <Label>Password Pengunjung</Label>
-              <input 
+              <input
                 type="password"
                 value={visitorPass}
                 onChange={(e) => setVisitorPass(e.target.value)}
@@ -121,15 +131,15 @@ export default function LoginPage() {
               />
             </div>
             <Button type="submit" variant="primary" style={{ width: '100%', marginTop: '12px' }}>
-              Buka Akses Tamu
+              Masuk sebagai Tamu
             </Button>
-            <Button 
-              type="button" 
-              variant="ghost" 
+            <Button
+              type="button"
+              variant="ghost"
               onClick={() => setIsVisitorMode(false)}
               style={{ width: '100%', marginTop: '8px' }}
             >
-              Kembali ke Login User
+              ← Kembali ke Login
             </Button>
           </form>
         )}

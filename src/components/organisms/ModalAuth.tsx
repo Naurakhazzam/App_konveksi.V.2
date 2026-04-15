@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Modal from '@/components/organisms/Modal/Modal';
 import Button from '@/components/atoms/Button';
 import { Label, Heading } from '@/components/atoms/Typography';
-import { useSettingsStore } from '@/stores/useSettingsStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 interface ModalAuthProps {
   open: boolean;
@@ -21,7 +21,7 @@ export default function ModalAuth({
   title = 'Otentikasi Diperlukan',
   description = 'Tindakan ini berisiko tinggi. Masukkan PIN Owner untuk melanjutkan.'
 }: ModalAuthProps) {
-  const { ownerPin } = useSettingsStore();
+  const { ownerPin } = useAuthStore();
   const [pin, setPin] = useState('');
   const [error, setError] = useState(false);
 

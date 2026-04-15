@@ -15,8 +15,8 @@ export default function TrashBinView() {
   const { addPO } = usePOStore();
   const { success, warning, info } = useToast();
 
-  const handleRestore = (id: string) => {
-    const item = restoreItem(id);
+  const handleRestore = async (id: string) => {
+    const item = await restoreItem(id);
     if (!item) return;
 
     if (item.type === 'po') {
@@ -26,16 +26,16 @@ export default function TrashBinView() {
     // Handle other types here
   };
 
-  const handlePurge = (id: string, label: string) => {
+  const handlePurge = async (id: string, label: string) => {
     if (confirm(`Hapus permanen ${label}? Data ini tidak akan bisa dikembalikan lagi.`)) {
-      purgeItem(id);
+      await purgeItem(id);
       warning('Data Dimusnahkan', `${label} telah dihapus permanen dari sistem.`);
     }
   };
 
-  const handleClearAll = () => {
+  const handleClearAll = async () => {
     if (confirm('Kosongkan seluruh tempat sampah? Semua data di sini akan hilang selamanya.')) {
-      clearTrash();
+      await clearTrash();
       info('Tempat Sampah Kosong', 'Seluruh data sampah telah dimusnahkan.');
     }
   };

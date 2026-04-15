@@ -45,13 +45,13 @@ export default function BuatSuratJalanView() {
     setLocalItems(prev => prev.filter(item => item.bundle.barcode !== barcode));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedKlien || localItems.length === 0) return;
 
     if (!confirm(`Buat Surat Jalan untuk ${localItems.length} bundel?`)) return;
 
     const sjId = `SJ-${Date.now()}`;
-    const nomorSJ = getNextNomorSJ();
+    const nomorSJ = await getNextNomorSJ();
     
     const sjItems: SuratJalanItem[] = localItems.map(it => ({
       id: `${sjId}-${it.bundle.barcode}`,

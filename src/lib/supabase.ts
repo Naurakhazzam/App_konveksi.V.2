@@ -9,17 +9,6 @@ if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_A
   );
 }
 
-/**
- * Supabase Client — singleton untuk seluruh aplikasi.
- * Gunakan ini untuk semua operasi database di client-side.
- *
- * Contoh penggunaan:
- *   import { supabase } from '@/lib/supabase';
- *   const { data, error } = await supabase.from('tabel').select('*');
- */
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-  },
+  auth: { persistSession: true, autoRefreshToken: true },
 });

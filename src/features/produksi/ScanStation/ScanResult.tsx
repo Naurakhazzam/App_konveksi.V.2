@@ -152,8 +152,8 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     if (onComplete) onComplete();
   };
 
-  const handleBahanConfirm = (meter: number, gram: number, inventoryItemId: string) => {
-    addPemakaianBahan({
+  const handleBahanConfirm = async (meter: number, gram: number, inventoryItemId: string) => {
+    await addPemakaianBahan({
       po: bundle.po,
       skuKlien: bundle.skuKlien,
       modelId: bundle.model,
@@ -251,14 +251,14 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     executeSelesai(qtySelesai, null, null);
   };
 
-  const executeSelesai = (
+  const executeSelesai = async (
     qtySelesai: number,
     koreksiStatus: 'pending' | null,
     koreksiAlasan: string | null
   ) => {
     const now = new Date().toISOString();
-    
-    // 1. Update Bundle Store
+
+    // 1. Update Bundle Store (optimistic)
     updateStatusTahap(bundle.barcode, tahap, {
       status: 'selesai',
       qtySelesai,
@@ -267,7 +267,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       koreksiAlasan,
     });
 
-    // 2. Add Scan Record
+    // 2. Add Scan Record (fire-and-forget — OK)
     addRecord({
       id: `SCAN-${Date.now()}`,
       barcode: bundle.barcode,
@@ -278,16 +278,13 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       waktu: now
     });
 
-    // 3. LOGIKA BARU: Sambungkan ke Payroll
-    // Hanya jika tahap ini membutuhkan karyawan dan ada karyawan terpilih
+    // 3. Catat Upah ke Payroll — WAJIB di-await (data gaji karyawan)
     const operatorId = currentStatus.karyawan || selectedKaryawan;
     if (operatorId && qtySelesai > 0) {
-      // Hitung upah per pcs untuk tahap ini
       const upahPerPcs = calcNominalPotongan('upah_tahap', tahap, 1);
       const totalUpah = upahPerPcs * qtySelesai;
 
-      const { addLedgerEntry } = usePayrollStore.getState();
-      addLedgerEntry({
+      await usePayrollStore.getState().addLedgerEntry({
         id: `PAY-${Date.now()}-${bundle.barcode}-${tahap}`,
         karyawanId: operatorId,
         tanggal: now,
@@ -302,7 +299,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     if (onComplete) onComplete();
   };
 
-  const handleKoreksiKurangConfirm = (result: KoreksiKurangResult) => {
+  const handleKoreksiKurangConfirm = async (result: KoreksiKurangResult) => {
     const qtyTarget = currentStatus.qtyTerima ?? qtyTerimaDefault;
     const qtyKurang = qtyTarget - pendingQtySelesai;
     const now = new Date().toISOString();
@@ -327,7 +324,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     const nominal = calcNominalPotongan(dampakPotongan, tahapBertanggungJawab, qtyKurang);
     const koreksiId = `KOR-${Date.now()}`;
 
-    addKoreksi({
+    await addKoreksi({
       id: koreksiId,
       barcode: bundle.barcode,
       poId: bundle.po,
@@ -343,9 +340,9 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       waktuLapor: now,
     });
 
-    // LOGIKA BARU: Tambah Potongan ke Payroll
+    // Tambah Potongan ke Payroll — WAJIB di-await
     if (karyawanBertanggungJawab && nominal > 0) {
-      usePayrollStore.getState().addLedgerEntry({
+      await usePayrollStore.getState().addLedgerEntry({
         id: `DED-${Date.now()}-${koreksiId}`,
         karyawanId: karyawanBertanggungJawab,
         tanggal: now,
@@ -357,7 +354,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       });
     }
 
-    executeSelesai(
+    await executeSelesai(
       pendingQtySelesai,
       null, // Fixed: Do not block for shortages (Rejects/Lost). Let the remaining pieces move forward.
       result.jenisKoreksi === 'reject'
@@ -368,12 +365,12 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     );
   };
 
-  const handleKoreksiLebihConfirm = (result: KoreksiLebihResult) => {
+  const handleKoreksiLebihConfirm = async (result: KoreksiLebihResult) => {
     const qtyTarget = currentStatus.qtyTerima ?? qtyTerimaDefault;
     const qtyLebih = pendingQtySelesai - qtyTarget;
     const now = new Date().toISOString();
 
-    addKoreksi({
+    await addKoreksi({
       id: `KOR-${Date.now()}`,
       barcode: bundle.barcode,
       poId: bundle.po,
@@ -392,7 +389,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     });
 
     // QTY tetap sesuai target, bukan qtyLebih, sampai di-approve
-    executeSelesai(
+    await executeSelesai(
       qtyTarget,
       'pending',
       `QTY Lebih +${qtyLebih} — Menunggu Approval`
@@ -400,19 +397,23 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
   };
 
   // Handle re-scan perbaikan reject
-  const handleSelesaiReScan = () => {
+  const handleSelesaiReScan = async () => {
     const now = new Date().toISOString();
-    activeRejectForThisBundle.forEach(k => {
-      // Cancel koreksi → potongan dibatalkan
-      useKoreksiStore.getState().cancelKoreksi(k.id);
-    });
+
+    // Cancel semua koreksi aktif secara paralel — WAJIB di-await
+    await Promise.all(
+      activeRejectForThisBundle.map(k =>
+        useKoreksiStore.getState().cancelKoreksi(k.id)
+      )
+    );
+
     const totalQtyPerbaikan = activeRejectForThisBundle.reduce((s, k) => s + k.qtyKoreksi, 0);
-    
-    // LOGIKA BARU: Catat Upah Perbaikan (Rework)
+
+    // Catat Upah Perbaikan (Rework) — WAJIB di-await
     const operatorId = currentStatus.karyawan || selectedKaryawan;
     if (operatorId && totalQtyPerbaikan > 0) {
       const upahPerPcs = calcNominalPotongan('upah_tahap', tahap, 1);
-      usePayrollStore.getState().addLedgerEntry({
+      await usePayrollStore.getState().addLedgerEntry({
         id: `RWK-${Date.now()}-${bundle.barcode}`,
         karyawanId: operatorId,
         tanggal: now,
@@ -424,6 +425,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       });
     }
 
+    // Update bundle & catat scan (optimistic + fire-and-forget)
     updateStatusTahap(bundle.barcode, tahap, {
       status: 'selesai',
       qtySelesai: totalQtyPerbaikan,

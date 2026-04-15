@@ -1,13 +1,53 @@
 'use client';
 
-import React from 'react';
-import { Sun, Moon, Sparkles, Zap, Palette, Layers } from 'lucide-react';
+import React, { useState } from 'react';
+import { Sun, Moon, ShieldCheck, Eye, EyeOff, CheckCircle } from 'lucide-react';
 import { useSettingsStore } from '@/stores/useSettingsStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { Heading, Label } from '@/components/atoms/Typography';
+import Button from '@/components/atoms/Button';
 import styles from './SettingsView.module.css';
 
 export default function SettingsView() {
   const { theme, setTheme, beam, updateBeam } = useSettingsStore();
+  const { currentUser, ownerPin, setOwnerPin } = useAuthStore();
+
+  // ── State PIN Form ─────────────────────────────────────────────────────────
+  const [pinLama, setPinLama] = useState('');
+  const [pinBaru, setPinBaru] = useState('');
+  const [pinKonfirmasi, setPinKonfirmasi] = useState('');
+  const [showPins, setShowPins] = useState(false);
+  const [pinStatus, setPinStatus] = useState<'idle' | 'success' | 'error_lama' | 'error_match' | 'error_length'>('idle');
+  const [isSavingPin, setIsSavingPin] = useState(false);
+
+  const isOwner = currentUser?.roles.includes('owner') || currentUser?.roles.includes('godadmin');
+
+  const handleGantiPin = async () => {
+    // Validasi
+    if (pinLama !== ownerPin) {
+      setPinStatus('error_lama');
+      return;
+    }
+    if (pinBaru.length < 4) {
+      setPinStatus('error_length');
+      return;
+    }
+    if (pinBaru !== pinKonfirmasi) {
+      setPinStatus('error_match');
+      return;
+    }
+
+    setIsSavingPin(true);
+    await setOwnerPin(pinBaru);
+    setIsSavingPin(false);
+    setPinStatus('success');
+    setPinLama('');
+    setPinBaru('');
+    setPinKonfirmasi('');
+
+    // Reset status setelah 3 detik
+    setTimeout(() => setPinStatus('idle'), 3000);
+  };
 
   return (
     <div className={styles.container}>
@@ -38,11 +78,115 @@ export default function SettingsView() {
         </div>
       </section>
 
-      {/* Section 2: Border Beams */}
+      {/* Section 2: Keamanan PIN — hanya tampil untuk Owner/Godadmin */}
+      {isOwner && (
+        <section className={styles.section}>
+          <Heading level={4}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <ShieldCheck size={18} /> Keamanan
+            </span>
+          </Heading>
+          <div className={styles.card}>
+            <div className={styles.settingRow}>
+              <div className={styles.settingInfo}>
+                <div className={styles.title}>PIN Owner</div>
+                <div className={styles.description}>
+                  PIN ini digunakan untuk mengkonfirmasi aksi-aksi berisiko tinggi di sistem.
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.pinForm}>
+              {/* PIN Lama */}
+              <div className={styles.pinField}>
+                <Label>PIN Saat Ini</Label>
+                <div className={styles.pinInputWrapper}>
+                  <input
+                    type={showPins ? 'text' : 'password'}
+                    className={styles.pinInput}
+                    value={pinLama}
+                    onChange={(e) => { setPinLama(e.target.value); setPinStatus('idle'); }}
+                    placeholder="••••"
+                    maxLength={8}
+                  />
+                </div>
+                {pinStatus === 'error_lama' && (
+                  <span className={styles.pinError}>PIN saat ini salah.</span>
+                )}
+              </div>
+
+              {/* PIN Baru */}
+              <div className={styles.pinField}>
+                <Label>PIN Baru</Label>
+                <div className={styles.pinInputWrapper}>
+                  <input
+                    type={showPins ? 'text' : 'password'}
+                    className={styles.pinInput}
+                    value={pinBaru}
+                    onChange={(e) => { setPinBaru(e.target.value); setPinStatus('idle'); }}
+                    placeholder="••••"
+                    maxLength={8}
+                  />
+                </div>
+                {pinStatus === 'error_length' && (
+                  <span className={styles.pinError}>PIN minimal 4 karakter.</span>
+                )}
+              </div>
+
+              {/* Konfirmasi PIN */}
+              <div className={styles.pinField}>
+                <Label>Konfirmasi PIN Baru</Label>
+                <div className={styles.pinInputWrapper}>
+                  <input
+                    type={showPins ? 'text' : 'password'}
+                    className={styles.pinInput}
+                    value={pinKonfirmasi}
+                    onChange={(e) => { setPinKonfirmasi(e.target.value); setPinStatus('idle'); }}
+                    placeholder="••••"
+                    maxLength={8}
+                  />
+                </div>
+                {pinStatus === 'error_match' && (
+                  <span className={styles.pinError}>PIN baru tidak cocok.</span>
+                )}
+              </div>
+
+              {/* Kontrol */}
+              <div className={styles.pinActions}>
+                <button
+                  className={styles.showHideBtn}
+                  onClick={() => setShowPins(v => !v)}
+                  type="button"
+                >
+                  {showPins ? <EyeOff size={14} /> : <Eye size={14} />}
+                  {showPins ? 'Sembunyikan' : 'Tampilkan'} PIN
+                </button>
+
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={handleGantiPin}
+                  disabled={!pinLama || !pinBaru || !pinKonfirmasi || isSavingPin}
+                >
+                  {isSavingPin ? 'Menyimpan...' : 'Simpan PIN Baru'}
+                </Button>
+              </div>
+
+              {/* Feedback */}
+              {pinStatus === 'success' && (
+                <div className={styles.pinSuccess}>
+                  <CheckCircle size={16} />
+                  PIN berhasil diperbarui dan disimpan ke server.
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Section 3: Border Beams */}
       <section className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <Heading level={4}>Efek Perbatasan (Border Beam)</Heading>
-        </div>
+        <Heading level={4}>Efek Perbatasan (Border Beam)</Heading>
         
         <div className={styles.card}>
           {/* Toggle Enabled */}

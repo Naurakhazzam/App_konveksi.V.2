@@ -29,17 +29,17 @@ export default function ModalTransaksiKeluar({ onClose, onConfirm }: ModalTransa
 
   const selectedItem = items.find(i => i.id === formData.itemId);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.itemId || formData.qty <= 0) return;
-    
+
     if (selectedItem && formData.qty > selectedItem.stokAktual) {
       alert(`Stok tidak mencukupi! Tersedia: ${selectedItem.stokAktual}`);
       return;
     }
 
     // Process FIFO and get real Cost (HPP)
-    const { totalCost, consumedBatches } = consumeFIFO(formData.itemId, formData.qty);
+    const { totalCost, consumedBatches } = await consumeFIFO(formData.itemId, formData.qty);
 
     onConfirm({
       ...formData,

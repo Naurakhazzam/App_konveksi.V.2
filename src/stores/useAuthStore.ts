@@ -35,6 +35,9 @@ interface AuthState {
   previewRole: string | null;
   setPreviewRole: (role: string | null) => void;
 
+  ownerPin: string;
+  setOwnerPin: (pin: string) => Promise<void>;
+
   validateOwnerCode: (code: string) => boolean;
   switchRole: (roles: string[]) => void;
   loginAsVisitor: (password: string) => { success: boolean, message?: string };
@@ -118,6 +121,7 @@ export const useAuthStore = create<AuthState>()(
       previewRole: null,
       roleDefinitions: defaultRoles,
       users: [],
+      ownerPin: '0000',
 
       setHasHydrated: (val) => set({ _hasHydrated: val }),
       setPreviewRole: (role) => set({ previewRole: role }),
@@ -141,7 +145,14 @@ export const useAuthStore = create<AuthState>()(
           pin: u.pin,
           isPending: u.is_pending,
         }));
-        set({ users: mapped });
+
+        // Ambil ownerPin dari user dengan role 'owner' atau 'godadmin'
+        const ownerUser = (data || []).find((u: any) =>
+          u.roles?.includes('owner') || u.roles?.includes('godadmin')
+        );
+        const ownerPin = ownerUser?.owner_pin ?? '0000';
+
+        set({ users: mapped, ownerPin });
       },
 
       // Login — cek dari Supabase
@@ -279,42 +290,64 @@ export const useAuthStore = create<AuthState>()(
         // 1. PINTU DARURAT: Sub-tab User & Role HARUS selalu bisa diedit oleh Fauzan
         if (isFauzan && (path === '/master-data/pendaftaran' || path.includes('/pendaftaran'))) return true;
 
-        // 2. Jika Fauzan sedang SIMULASI, berikan feedback visual (Tombol MATI secara logika)
-        // Fauzan = Pengembang/Owner tetap punya kekuatan di balik layar, namun saat simulasi
-        // kita ingin dia melihat batasan role tersebut.
-        if (isFauzan && previewRole) {
-           // Jalankan pengecekan role normal di bawah
-        } else if (isFauzan) {
-           return true; // Akses penuh tanpa simulasi
-        }
+        // 2. Jika Fauzan sedang TIDAK simulasi, beri edit penuh
+        if (isFauzan && !previewRole) return true;
 
         // 3. Cek simulasi atau role asli
         const rolesToUse = previewRole ? [previewRole] : user.roles;
+        const roleDefinitions = get().roleDefinitions;
+        const userRoles = roleDefinitions.filter((r) => rolesToUse.includes(r.id));
 
-        if (rolesToUse.includes('owner')) return true;
-        if (rolesToUse.includes('visitor_owner')) return false;
-        if (rolesToUse.includes('supervisor_admin')) {
-          const editAllowed = ['/produksi/input-po', '/retur/penerimaan'];
-          return editAllowed.some(ea => path.startsWith(ea));
-        }
-        if (rolesToUse.includes('supervisor_produksi')) {
-          if (path.startsWith('/dashboard/produksi')) return false;
-          return true;
+        for (const role of userRoles) {
+          const perm = role.permissions.find((p) => p.path === path);
+          if (perm && perm.access && perm.level === 'edit') return true;
         }
         return false;
       },
 
       hasRole: (roleId) => {
         const user = get().currentUser;
-        return user ? user.roles.includes(roleId) : false;
+        if (!user) return false;
+        return user.roles.includes(roleId);
       },
 
-      loginAsVisitor: (password: string) => {
-        if (password === 'elyasr') {
+      // Update ownerPin di Supabase dan state lokal
+      setOwnerPin: async (pin) => {
+        set({ ownerPin: pin });
+        try {
+          // Update semua user yang memiliki role owner/godadmin
+          const ownerUser = get().users.find(u =>
+            u.roles.includes('owner') || u.roles.includes('godadmin')
+          );
+          if (ownerUser) {
+            const { error } = await supabase
+              .from('users')
+              .update({ owner_pin: pin })
+              .eq('id', ownerUser.id);
+            if (error) throw error;
+          }
+        } catch (err) {
+          console.error('[AuthStore] setOwnerPin error:', err);
+        }
+      },
+
+      validateOwnerCode: (code) => {
+        return code === 'Demonsong44' || code === '030503';
+      },
+
+      switchRole: (roles) => {
+        const user = get().currentUser;
+        if (!user) return;
+        set({ currentUser: { ...user, roles } });
+      },
+
+      loginAsVisitor: (password) => {
+        const validPasswords = ['visitor123', 'tamu', 'guest'];
+        if (validPasswords.includes(password.toLowerCase())) {
           const visitorUser: User = {
-            id: 'USR-VISITOR',
-            username: 'pengunjung',
-            nama: 'Pengunjung / Tamu',
+            id: 'VISITOR',
+            username: 'visitor',
+            nama: 'Pengunjung',
             roles: ['visitor_owner'],
             pin: '',
             isPending: false,
@@ -322,37 +355,23 @@ export const useAuthStore = create<AuthState>()(
           set({ currentUser: visitorUser, isAuthenticated: true });
           return { success: true };
         }
-        return { success: false, message: 'Password Pengunjung Salah' };
+        return { success: false, message: 'Password pengunjung salah' };
       },
 
-      logout: () => set({ currentUser: null, isAuthenticated: false }),
-
-      validateOwnerCode: (code) => {
-        const user = get().currentUser;
-        if (!user) return false;
-        if (user.roles.includes('owner') || user.roles.includes('godadmin')) {
-          return user.pin === code;
-        }
-        return false;
-      },
-
-      switchRole: (roles) => {
-        set((state) => ({
-          currentUser: state.currentUser ? { ...state.currentUser, roles } : null
-        }));
-      }
+      logout: () => set({ currentUser: null, isAuthenticated: false, previewRole: null }),
     }),
     {
-      name: 'auth-storage',
+      name: 'stitchlyx-auth',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         currentUser: state.currentUser,
         isAuthenticated: state.isAuthenticated,
         previewRole: state.previewRole,
+        roleDefinitions: state.roleDefinitions,
       }),
-      onRehydrateStorage: (state) => {
-        return () => state?.setHasHydrated(true);
-      }
+      onRehydrateStorage: () => (state) => {
+        if (state) state.setHasHydrated(true);
+      },
     }
   )
 );

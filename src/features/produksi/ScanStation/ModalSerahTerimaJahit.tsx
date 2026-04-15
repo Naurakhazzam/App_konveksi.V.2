@@ -106,23 +106,25 @@ export default function ModalSerahTerimaJahit({
     };
   };
 
-  const handleApprove = () => {
-    // 1. Consume Inventory
-    const recordItems = countableItems.map(item => {
-      const komp = hppKomponen.find(k => k.id === item.komponenId);
-      const qtyToConsume = inputQtys[item.id] || 0;
-      
-      if (komp?.inventoryItemId) {
-        consumeFIFO(komp.inventoryItemId, qtyToConsume);
-      }
+  const handleApprove = async () => {
+    // 1. Consume Inventory (paralel untuk semua komponen)
+    const recordItems = await Promise.all(
+      countableItems.map(async (item) => {
+        const komp = hppKomponen.find(k => k.id === item.komponenId);
+        const qtyToConsume = inputQtys[item.id] || 0;
 
-      return {
-        komponenHPPId: item.komponenId,
-        inventoryItemId: komp?.inventoryItemId || '',
-        qtyDiserahkan: qtyToConsume,
-        qtyFisikPerPcs: item.qtyFisik || 0
-      };
-    });
+        if (komp?.inventoryItemId) {
+          await consumeFIFO(komp.inventoryItemId, qtyToConsume);
+        }
+
+        return {
+          komponenHPPId: item.komponenId,
+          inventoryItemId: komp?.inventoryItemId || '',
+          qtyDiserahkan: qtyToConsume,
+          qtyFisikPerPcs: item.qtyFisik || 0
+        };
+      })
+    );
 
     // 2. Create Record
     const newRecord: SerahTerimaJahit = {

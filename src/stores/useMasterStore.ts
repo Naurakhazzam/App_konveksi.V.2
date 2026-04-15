@@ -1,14 +1,9 @@
 import { create } from 'zustand';
 import { supabase } from '../lib/supabase';
 import {
-  Kategori, Model, Size, Warna, Karyawan, Klien, JenisReject, KategoriTrx, Satuan, Produk, HPPKomponen, ProdukHPPItem, AlasanReject, Jabatan
+  Kategori, Model, Size, Warna, Karyawan, Klien, JenisReject,
+  KategoriTrx, Satuan, Produk, HPPKomponen, ProdukHPPItem, AlasanReject, Jabatan
 } from '../types';
-import { 
-  initialClients, initialKategori, initialModels, initialWarna, initialSizes, initialHPPKomponen, initialProduk, initialProdukHPPItems 
-} from '../data/initial-production-data';
-import {
-  dummyJenisReject, dummyKategoriTrx, dummySatuan, dummyKaryawan, dummyAlasanReject
-} from '../data/dummy-master';
 
 interface MasterState {
   kategori: Kategori[];
@@ -25,78 +20,70 @@ interface MasterState {
   hppKomponen: HPPKomponen[];
   produkHPPItems: ProdukHPPItem[];
   jabatan: Jabatan[];
-  
-  // Supabase Actions
   isLoading: boolean;
+
   initializeMasterData: () => Promise<void>;
-  
   importProdukBulk: (data: {
-    kategori: Kategori[],
-    klien: Klien[],
-    model: Model[],
-    warna: Warna[],
-    sizes: Size[],
-    hppKomponen: HPPKomponen[],
-    produk: Produk[],
-    produkHPPItems: ProdukHPPItem[]
+    kategori: Kategori[]; klien: Klien[]; model: Model[];
+    warna: Warna[]; sizes: Size[]; hppKomponen: HPPKomponen[];
+    produk: Produk[]; produkHPPItems: ProdukHPPItem[];
   }) => void;
-  
-  // Actions
-  addKategori: (item: Kategori) => void;
-  updateKategori: (id: string, data: Partial<Kategori>) => void;
-  removeKategori: (id: string) => void;
 
-  addModel: (item: Model) => void;
-  updateModel: (id: string, data: Partial<Model>) => void;
-  removeModel: (id: string) => void;
+  addKategori: (item: Kategori) => Promise<void>;
+  updateKategori: (id: string, data: Partial<Kategori>) => Promise<void>;
+  removeKategori: (id: string) => Promise<void>;
 
-  addSize: (item: Size) => void;
-  updateSize: (id: string, data: Partial<Size>) => void;
-  removeSize: (id: string) => void;
+  addModel: (item: Model) => Promise<void>;
+  updateModel: (id: string, data: Partial<Model>) => Promise<void>;
+  removeModel: (id: string) => Promise<void>;
 
-  addWarna: (item: Warna) => void;
-  updateWarna: (id: string, data: Partial<Warna>) => void;
-  removeWarna: (id: string) => void;
+  addSize: (item: Size) => Promise<void>;
+  updateSize: (id: string, data: Partial<Size>) => Promise<void>;
+  removeSize: (id: string) => Promise<void>;
+
+  addWarna: (item: Warna) => Promise<void>;
+  updateWarna: (id: string, data: Partial<Warna>) => Promise<void>;
+  removeWarna: (id: string) => Promise<void>;
 
   addKaryawan: (item: Karyawan) => Promise<void>;
   updateKaryawan: (id: string, data: Partial<Karyawan>) => Promise<void>;
   removeKaryawan: (id: string) => Promise<void>;
 
-  addJabatan: (item: Jabatan) => void;
-  updateJabatan: (id: string, data: Partial<Jabatan>) => void;
-  removeJabatan: (id: string) => void;
+  addJabatan: (item: Jabatan) => Promise<void>;
+  updateJabatan: (id: string, data: Partial<Jabatan>) => Promise<void>;
+  removeJabatan: (id: string) => Promise<void>;
 
-  addKlien: (item: Klien) => void;
-  updateKlien: (id: string, data: Partial<Klien>) => void;
-  removeKlien: (id: string) => void;
+  addKlien: (item: Klien) => Promise<void>;
+  updateKlien: (id: string, data: Partial<Klien>) => Promise<void>;
+  removeKlien: (id: string) => Promise<void>;
 
-  addJenisReject: (item: JenisReject) => void;
-  updateJenisReject: (id: string, data: Partial<JenisReject>) => void;
-  removeJenisReject: (id: string) => void;
+  addJenisReject: (item: JenisReject) => Promise<void>;
+  updateJenisReject: (id: string, data: Partial<JenisReject>) => Promise<void>;
+  removeJenisReject: (id: string) => Promise<void>;
 
-  addAlasanReject: (item: AlasanReject) => void;
-  updateAlasanReject: (id: string, data: Partial<AlasanReject>) => void;
-  removeAlasanReject: (id: string) => void;
+  addAlasanReject: (item: AlasanReject) => Promise<void>;
+  updateAlasanReject: (id: string, data: Partial<AlasanReject>) => Promise<void>;
+  removeAlasanReject: (id: string) => Promise<void>;
 
-  addKategoriTrx: (item: KategoriTrx) => void;
-  updateKategoriTrx: (id: string, data: Partial<KategoriTrx>) => void;
-  removeKategoriTrx: (id: string) => void;
+  addKategoriTrx: (item: KategoriTrx) => Promise<void>;
+  updateKategoriTrx: (id: string, data: Partial<KategoriTrx>) => Promise<void>;
+  removeKategoriTrx: (id: string) => Promise<void>;
 
-  addSatuan: (item: Satuan) => void;
-  updateSatuan: (id: string, data: Partial<Satuan>) => void;
-  removeSatuan: (id: string) => void;
+  addSatuan: (item: Satuan) => Promise<void>;
+  updateSatuan: (id: string, data: Partial<Satuan>) => Promise<void>;
+  removeSatuan: (id: string) => Promise<void>;
 
-  addProduk: (item: Produk) => void;
-  updateProduk: (id: string, data: Partial<Produk>) => void;
-  removeProduk: (id: string) => void;
+  addProduk: (item: Produk) => Promise<void>;
+  updateProduk: (id: string, data: Partial<Produk>) => Promise<void>;
+  removeProduk: (id: string) => Promise<void>;
 
-  addHPPKomponen: (item: HPPKomponen) => void;
-  updateHPPKomponen: (id: string, data: Partial<HPPKomponen>) => void;
-  removeHPPKomponen: (id: string) => void;
+  addHPPKomponen: (item: HPPKomponen) => Promise<void>;
+  updateHPPKomponen: (id: string, data: Partial<HPPKomponen>) => Promise<void>;
+  removeHPPKomponen: (id: string) => Promise<void>;
 
-  addProdukHPPItem: (item: ProdukHPPItem) => void;
-  updateProdukHPPItem: (id: string, data: Partial<ProdukHPPItem>) => void;
-  removeProdukHPPItem: (id: string) => void;
+  addProdukHPPItem: (item: ProdukHPPItem) => Promise<void>;
+  updateProdukHPPItem: (id: string, data: Partial<ProdukHPPItem>) => Promise<void>;
+  removeProdukHPPItem: (id: string) => Promise<void>;
 
   getHPPItemsByProduk: (produkId: string) => ProdukHPPItem[];
   getTotalHPP: (produkId: string) => number;
@@ -106,70 +93,140 @@ interface MasterState {
   copyHPPToAllSizes: (fromProdukId: string) => void;
 }
 
+// ── Helper generik untuk CRUD ────────────────────────────────────────────────
+
+async function dbInsert(table: string, row: object) {
+  const { error } = await supabase.from(table).insert(row);
+  if (error) { console.error(`[MasterStore] insert ${table}:`, error.message); throw error; }
+}
+async function dbUpdate(table: string, id: string, row: object) {
+  const { error } = await supabase.from(table).update(row).eq('id', id);
+  if (error) { console.error(`[MasterStore] update ${table}:`, error.message); throw error; }
+}
+async function dbDelete(table: string, id: string) {
+  const { error } = await supabase.from(table).delete().eq('id', id);
+  if (error) { console.error(`[MasterStore] delete ${table}:`, error.message); throw error; }
+}
+
+// ── Store ────────────────────────────────────────────────────────────────────
+
 export const useMasterStore = create<MasterState>((set, get) => ({
-  kategori: initialKategori,
-  model: initialModels,
-  sizes: initialSizes,
-  warna: initialWarna,
-  klien: initialClients,
-  jenisReject: dummyJenisReject,
-  alasanReject: dummyAlasanReject,
-  kategoriTrx: dummyKategoriTrx,
-  satuan: dummySatuan,
-  produk: initialProduk,
-  hppKomponen: initialHPPKomponen,
-  produkHPPItems: initialProdukHPPItems,
-  jabatan: [
-    { id: 'JAB-001', nama: 'Supervisor_Produksi' },
-    { id: 'JAB-002', nama: 'Supervisor_Finising' },
-    { id: 'JAB-003', nama: 'Operator Cutting' },
-    { id: 'JAB-004', nama: 'Operator Jahit' },
-  ],
-  karyawan: [], // Start empty for Supabase fetch
+  kategori: [],
+  model: [],
+  sizes: [],
+  warna: [],
+  karyawan: [],
+  klien: [],
+  jenisReject: [],
+  alasanReject: [],
+  kategoriTrx: [],
+  satuan: [],
+  produk: [],
+  hppKomponen: [],
+  produkHPPItems: [],
+  jabatan: [],
   isLoading: false,
+
+  // ── LOAD SEMUA DATA MASTER SEKALIGUS ──────────────────────────────────────
 
   initializeMasterData: async () => {
     set({ isLoading: true });
     try {
-      const { data, error } = await supabase
-        .from('karyawan')
-        .select('*')
-        .order('id', { ascending: true });
+      const [
+        karyawanRes, klienRes, modelRes, kategoriRes, warnaRes,
+        sizeRes, satuanRes, kategoriTrxRes, jenisRejectRes, alasanRejectRes,
+        produkRes, hppKomponenRes, produkHPPItemRes, jabatanRes,
+      ] = await Promise.all([
+        supabase.from('karyawan').select('*').order('id'),
+        supabase.from('klien').select('*').order('nama'),
+        supabase.from('model').select('*').order('nama'),
+        supabase.from('kategori').select('*').order('nama'),
+        supabase.from('warna').select('*').order('nama'),
+        supabase.from('size').select('*').order('nama'),
+        supabase.from('satuan').select('*').order('nama'),
+        supabase.from('kategori_trx').select('*').order('nama'),
+        supabase.from('jenis_reject').select('*').order('nama'),
+        supabase.from('alasan_reject').select('*').order('nama'),
+        supabase.from('produk').select('*'),
+        supabase.from('hpp_komponen').select('*').order('nama'),
+        supabase.from('produk_hpp_item').select('*'),
+        supabase.from('jabatan').select('*').order('nama'),
+      ]);
 
-      if (error) {
-        // Jika tabel belum ada atau error koneksi, gunakan dummy sebagai fallback
-        console.warn('[Supabase] Gagal mengambil data karyawan, menggunakan dummy:', error.message);
-        set({ karyawan: dummyKaryawan });
-      } else if (data && data.length > 0) {
-        // Mapping data dari Supabase (snake_case ke camelCase jika perlu)
-        const mapped = data.map(k => ({
-          id: k.id,
-          nama: k.nama,
-          jabatan: k.jabatan,
-          tahapList: k.tahap_list || [],
-          gajiPokok: k.gaji_pokok || 0,
-          aktif: k.aktif !== undefined ? k.aktif : true
-        }));
-        set({ karyawan: mapped });
-      } else {
-        // Tabel kosong
-        set({ karyawan: [] });
-      }
+      set({
+        karyawan: (karyawanRes.data ?? []).map((r: any) => ({
+          id: r.id, nama: r.nama, jabatan: r.jabatan ?? '',
+          aktif: r.aktif ?? true, tahapList: r.tahap_list ?? [],
+          gajiPokok: Number(r.gaji_pokok ?? 0),
+        })),
+        klien: (klienRes.data ?? []).map((r: any) => ({
+          id: r.id, nama: r.nama, kontak: r.kontak ?? '', alamat: r.alamat ?? '',
+        })),
+        model: (modelRes.data ?? []).map((r: any) => ({
+          id: r.id, nama: r.nama, kategoriId: r.kategori_id ?? '',
+          targetPoin: Number(r.target_poin ?? 0),
+        })),
+        kategori: (kategoriRes.data ?? []).map((r: any) => ({
+          id: r.id, nama: r.nama,
+        })),
+        warna: (warnaRes.data ?? []).map((r: any) => ({
+          id: r.id, nama: r.nama, kodeHex: r.kode_hex ?? '#000000',
+        })),
+        sizes: (sizeRes.data ?? []).map((r: any) => ({
+          id: r.id, nama: r.nama,
+        })),
+        satuan: (satuanRes.data ?? []).map((r: any) => ({
+          id: r.id, nama: r.nama,
+        })),
+        kategoriTrx: (kategoriTrxRes.data ?? []).map((r: any) => ({
+          id: r.id, nama: r.nama, jenis: r.jenis,
+        })),
+        jenisReject: (jenisRejectRes.data ?? []).map((r: any) => ({
+          id: r.id, nama: r.nama, potongan: Number(r.potongan ?? 0),
+        })),
+        alasanReject: (alasanRejectRes.data ?? []).map((r: any) => ({
+          id: r.id, nama: r.nama,
+          tahapBertanggungJawab: r.tahap_bertanggung_jawab ?? '',
+          bisaDiperbaiki: r.bisa_diperbaiki ?? false,
+          dampakPotongan: r.dampak_potongan ?? 'upah_tahap',
+        })),
+        produk: (produkRes.data ?? []).map((r: any) => ({
+          id: r.id, modelId: r.model_id, sizeId: r.size_id, warnaId: r.warna_id,
+          skuInternal: r.sku_internal ?? '', skuKlien: r.sku_klien ?? '',
+          nama: r.nama ?? undefined, aktif: r.aktif ?? true,
+          hargaJual: Number(r.harga_jual ?? 0),
+        })),
+        hppKomponen: (hppKomponenRes.data ?? []).map((r: any) => ({
+          id: r.id, nama: r.nama, kategori: r.kategori, satuan: r.satuan,
+          deskripsi: r.deskripsi ?? undefined,
+          trackInventory: r.track_inventory ?? false,
+          inventoryItemId: r.inventory_item_id ?? undefined,
+        })),
+        produkHPPItems: (produkHPPItemRes.data ?? []).map((r: any) => ({
+          id: r.id, produkId: r.produk_id, komponenId: r.komponen_id,
+          harga: Number(r.harga ?? r.nilai ?? 0),
+          qty: Number(r.qty ?? 1),
+          qtyFisik: r.qty_fisik ? Number(r.qty_fisik) : undefined,
+        })),
+        jabatan: (jabatanRes.data ?? []).map((r: any) => ({
+          id: r.id, nama: r.nama,
+        })),
+        isLoading: false,
+      });
     } catch (err) {
-      console.error('[Supabase] Critical Error:', err);
-    } finally {
+      console.error('[MasterStore] initializeMasterData error:', err);
       set({ isLoading: false });
     }
   },
 
+  // ── IMPORT BULK (tetap lokal, untuk fitur import CSV) ────────────────────
+
   importProdukBulk: (data) => set((state) => {
     const merge = <T extends { id: string }>(original: T[], incoming: T[]): T[] => {
-      const map = new Map();
-      original.forEach(item => map.set(item.id, item));
-      incoming.forEach(item => map.set(item.id, { ...map.get(item.id), ...item }));
+      const map = new Map(original.map((i) => [i.id, i]));
+      incoming.forEach((i) => map.set(i.id, { ...map.get(i.id), ...i }));
       return Array.from(map.values());
     };
-
     return {
       kategori: merge(state.kategori, data.kategori),
       klien: merge(state.klien, data.klien),
@@ -178,182 +235,327 @@ export const useMasterStore = create<MasterState>((set, get) => ({
       sizes: merge(state.sizes, data.sizes),
       hppKomponen: merge(state.hppKomponen, data.hppKomponen),
       produk: merge(state.produk, data.produk),
-      produkHPPItems: merge(state.produkHPPItems, data.produkHPPItems)
+      produkHPPItems: merge(state.produkHPPItems, data.produkHPPItems),
     };
   }),
 
-  addKategori: (item) => set((state) => ({ kategori: [...state.kategori, item] })),
-  updateKategori: (id, data) => set((state) => ({ kategori: state.kategori.map(i => i.id === id ? { ...i, ...data } : i) })),
-  removeKategori: (id) => set((state) => ({ kategori: state.kategori.filter(i => i.id !== id) })),
+  // ── KATEGORI ──────────────────────────────────────────────────────────────
+  addKategori: async (item) => {
+    set((s) => ({ kategori: [...s.kategori, item] }));
+    await dbInsert('kategori', { id: item.id, nama: item.nama });
+  },
+  updateKategori: async (id, data) => {
+    set((s) => ({ kategori: s.kategori.map((i) => i.id === id ? { ...i, ...data } : i) }));
+    await dbUpdate('kategori', id, data);
+  },
+  removeKategori: async (id) => {
+    set((s) => ({ kategori: s.kategori.filter((i) => i.id !== id) }));
+    await dbDelete('kategori', id);
+  },
 
+  // ── MODEL ─────────────────────────────────────────────────────────────────
+  addModel: async (item) => {
+    set((s) => ({ model: [...s.model, item] }));
+    await dbInsert('model', { id: item.id, nama: item.nama, kategori_id: item.kategoriId, target_poin: item.targetPoin });
+  },
+  updateModel: async (id, data) => {
+    set((s) => ({ model: s.model.map((i) => i.id === id ? { ...i, ...data } : i) }));
+    const row: any = {};
+    if (data.nama !== undefined) row.nama = data.nama;
+    if (data.kategoriId !== undefined) row.kategori_id = data.kategoriId;
+    if (data.targetPoin !== undefined) row.target_poin = data.targetPoin;
+    await dbUpdate('model', id, row);
+  },
+  removeModel: async (id) => {
+    set((s) => ({ model: s.model.filter((i) => i.id !== id) }));
+    await dbDelete('model', id);
+  },
+
+  // ── SIZE ──────────────────────────────────────────────────────────────────
+  addSize: async (item) => {
+    set((s) => ({ sizes: [...s.sizes, item] }));
+    await dbInsert('size', { id: item.id, nama: item.nama });
+  },
+  updateSize: async (id, data) => {
+    set((s) => ({ sizes: s.sizes.map((i) => i.id === id ? { ...i, ...data } : i) }));
+    await dbUpdate('size', id, data);
+  },
+  removeSize: async (id) => {
+    set((s) => ({ sizes: s.sizes.filter((i) => i.id !== id) }));
+    await dbDelete('size', id);
+  },
+
+  // ── WARNA ─────────────────────────────────────────────────────────────────
+  addWarna: async (item) => {
+    set((s) => ({ warna: [...s.warna, item] }));
+    await dbInsert('warna', { id: item.id, nama: item.nama, kode_hex: item.kodeHex });
+  },
+  updateWarna: async (id, data) => {
+    set((s) => ({ warna: s.warna.map((i) => i.id === id ? { ...i, ...data } : i) }));
+    const row: any = {};
+    if (data.nama !== undefined) row.nama = data.nama;
+    if (data.kodeHex !== undefined) row.kode_hex = data.kodeHex;
+    await dbUpdate('warna', id, row);
+  },
+  removeWarna: async (id) => {
+    set((s) => ({ warna: s.warna.filter((i) => i.id !== id) }));
+    await dbDelete('warna', id);
+  },
+
+  // ── KARYAWAN ──────────────────────────────────────────────────────────────
   addKaryawan: async (item) => {
-    // 1. Update Cloud
-    const { error } = await supabase.from('karyawan').insert([{
-      id: item.id,
-      nama: item.nama,
-      jabatan: item.jabatan,
-      tahap_list: item.tahapList,
-      gaji_pokok: item.gajiPokok,
-      aktif: item.aktif
-    }]);
-
-    if (!error) {
-      // 2. Update Local State
-      set((state) => ({ karyawan: [...state.karyawan, item] }));
-    } else {
-      console.error('[Supabase] Add Gagal:', error.message);
-      throw error;
-    }
+    const { error } = await supabase.from('karyawan').insert({
+      id: item.id, nama: item.nama, jabatan: item.jabatan,
+      tahap_list: item.tahapList, gaji_pokok: item.gajiPokok, aktif: item.aktif,
+    });
+    if (error) { console.error('[MasterStore] addKaryawan:', error.message); throw error; }
+    set((s) => ({ karyawan: [...s.karyawan, item] }));
   },
-
   updateKaryawan: async (id, data) => {
-    // 1. Update Cloud (Snake case mapping)
-    const updateData: any = {};
-    if (data.nama) updateData.nama = data.nama;
-    if (data.jabatan) updateData.jabatan = data.jabatan;
-    if (data.tahapList) updateData.tahap_list = data.tahapList;
-    if (data.gajiPokok !== undefined) updateData.gaji_pokok = data.gajiPokok;
-    if (data.aktif !== undefined) updateData.aktif = data.aktif;
-
-    const { error } = await supabase.from('karyawan').update(updateData).eq('id', id);
-
-    if (!error) {
-      // 2. Update Local State
-      set((state) => ({ 
-        karyawan: state.karyawan.map(i => i.id === id ? { ...i, ...data } : i) 
-      }));
-    } else {
-      console.error('[Supabase] Update Gagal:', error.message);
-      throw error;
-    }
+    const row: any = {};
+    if (data.nama !== undefined) row.nama = data.nama;
+    if (data.jabatan !== undefined) row.jabatan = data.jabatan;
+    if (data.tahapList !== undefined) row.tahap_list = data.tahapList;
+    if (data.gajiPokok !== undefined) row.gaji_pokok = data.gajiPokok;
+    if (data.aktif !== undefined) row.aktif = data.aktif;
+    const { error } = await supabase.from('karyawan').update(row).eq('id', id);
+    if (error) { console.error('[MasterStore] updateKaryawan:', error.message); throw error; }
+    set((s) => ({ karyawan: s.karyawan.map((i) => i.id === id ? { ...i, ...data } : i) }));
   },
-
   removeKaryawan: async (id) => {
     const { error } = await supabase.from('karyawan').delete().eq('id', id);
-    if (!error) {
-      set((state) => ({ karyawan: state.karyawan.filter(i => i.id !== id) }));
-    } else {
-      console.error('[Supabase] Delete Gagal:', error.message);
-      throw error;
-    }
+    if (error) { console.error('[MasterStore] removeKaryawan:', error.message); throw error; }
+    set((s) => ({ karyawan: s.karyawan.filter((i) => i.id !== id) }));
   },
 
-  // ... (Sisa fungsi CRUD Client-side yang lain tetap menggunakan logic set lokal untuk sekarang)
-  // Master lainnya akan dimigrasikan bertahap di fase berikutnya.
-  
-  addModel: (item) => set((state) => ({ model: [...state.model, item] })),
-  updateModel: (id, data) => set((state) => ({ model: state.model.map(i => i.id === id ? { ...i, ...data } : i) })),
-  removeModel: (id) => set((state) => ({ model: state.model.filter(i => i.id !== id) })),
+  // ── JABATAN ───────────────────────────────────────────────────────────────
+  addJabatan: async (item) => {
+    set((s) => ({ jabatan: [...s.jabatan, item] }));
+    await dbInsert('jabatan', { id: item.id, nama: item.nama });
+  },
+  updateJabatan: async (id, data) => {
+    set((s) => ({ jabatan: s.jabatan.map((i) => i.id === id ? { ...i, ...data } : i) }));
+    await dbUpdate('jabatan', id, data);
+  },
+  removeJabatan: async (id) => {
+    set((s) => ({ jabatan: s.jabatan.filter((i) => i.id !== id) }));
+    await dbDelete('jabatan', id);
+  },
 
-  addSize: (item) => set((state) => ({ sizes: [...state.sizes, item] })),
-  updateSize: (id, data) => set((state) => ({ sizes: state.sizes.map(i => i.id === id ? { ...i, ...data } : i) })),
-  removeSize: (id) => set((state) => ({ sizes: state.sizes.filter(i => i.id !== id) })),
+  // ── KLIEN ─────────────────────────────────────────────────────────────────
+  addKlien: async (item) => {
+    set((s) => ({ klien: [...s.klien, item] }));
+    await dbInsert('klien', { id: item.id, nama: item.nama, kontak: item.kontak, alamat: item.alamat });
+  },
+  updateKlien: async (id, data) => {
+    set((s) => ({ klien: s.klien.map((i) => i.id === id ? { ...i, ...data } : i) }));
+    await dbUpdate('klien', id, data);
+  },
+  removeKlien: async (id) => {
+    set((s) => ({ klien: s.klien.filter((i) => i.id !== id) }));
+    await dbDelete('klien', id);
+  },
 
-  addWarna: (item) => set((state) => ({ warna: [...state.warna, item] })),
-  updateWarna: (id, data) => set((state) => ({ warna: state.warna.map(i => i.id === id ? { ...i, ...data } : i) })),
-  removeWarna: (id) => set((state) => ({ warna: state.warna.filter(i => i.id !== id) })),
+  // ── JENIS REJECT ──────────────────────────────────────────────────────────
+  addJenisReject: async (item) => {
+    set((s) => ({ jenisReject: [...s.jenisReject, item] }));
+    await dbInsert('jenis_reject', { id: item.id, nama: item.nama, potongan: item.potongan });
+  },
+  updateJenisReject: async (id, data) => {
+    set((s) => ({ jenisReject: s.jenisReject.map((i) => i.id === id ? { ...i, ...data } : i) }));
+    await dbUpdate('jenis_reject', id, data);
+  },
+  removeJenisReject: async (id) => {
+    set((s) => ({ jenisReject: s.jenisReject.filter((i) => i.id !== id) }));
+    await dbDelete('jenis_reject', id);
+  },
 
-  addJabatan: (item) => set((state) => ({ jabatan: [...state.jabatan, item] })),
-  updateJabatan: (id, data) => set((state) => ({ jabatan: state.jabatan.map(i => i.id === id ? { ...i, ...data } : i) })),
-  removeJabatan: (id) => set((state) => ({ jabatan: state.jabatan.filter(i => i.id !== id) })),
+  // ── ALASAN REJECT ─────────────────────────────────────────────────────────
+  addAlasanReject: async (item) => {
+    set((s) => ({ alasanReject: [...s.alasanReject, item] }));
+    await dbInsert('alasan_reject', {
+      id: item.id, nama: item.nama,
+      tahap_bertanggung_jawab: item.tahapBertanggungJawab,
+      bisa_diperbaiki: item.bisaDiperbaiki,
+      dampak_potongan: item.dampakPotongan,
+    });
+  },
+  updateAlasanReject: async (id, data) => {
+    set((s) => ({ alasanReject: s.alasanReject.map((i) => i.id === id ? { ...i, ...data } : i) }));
+    const row: any = {};
+    if (data.nama !== undefined) row.nama = data.nama;
+    if (data.tahapBertanggungJawab !== undefined) row.tahap_bertanggung_jawab = data.tahapBertanggungJawab;
+    if (data.bisaDiperbaiki !== undefined) row.bisa_diperbaiki = data.bisaDiperbaiki;
+    if (data.dampakPotongan !== undefined) row.dampak_potongan = data.dampakPotongan;
+    await dbUpdate('alasan_reject', id, row);
+  },
+  removeAlasanReject: async (id) => {
+    set((s) => ({ alasanReject: s.alasanReject.filter((i) => i.id !== id) }));
+    await dbDelete('alasan_reject', id);
+  },
 
-  addKlien: (item) => set((state) => ({ klien: [...state.klien, item] })),
-  updateKlien: (id, data) => set((state) => ({ klien: state.klien.map(i => i.id === id ? { ...i, ...data } : i) })),
-  removeKlien: (id) => set((state) => ({ klien: state.klien.filter(i => i.id !== id) })),
+  // ── KATEGORI TRX ──────────────────────────────────────────────────────────
+  addKategoriTrx: async (item) => {
+    set((s) => ({ kategoriTrx: [...s.kategoriTrx, item] }));
+    await dbInsert('kategori_trx', { id: item.id, nama: item.nama, jenis: item.jenis });
+  },
+  updateKategoriTrx: async (id, data) => {
+    set((s) => ({ kategoriTrx: s.kategoriTrx.map((i) => i.id === id ? { ...i, ...data } : i) }));
+    await dbUpdate('kategori_trx', id, data);
+  },
+  removeKategoriTrx: async (id) => {
+    set((s) => ({ kategoriTrx: s.kategoriTrx.filter((i) => i.id !== id) }));
+    await dbDelete('kategori_trx', id);
+  },
 
-  addJenisReject: (item) => set((state) => ({ jenisReject: [...state.jenisReject, item] })),
-  updateJenisReject: (id, data) => set((state) => ({ jenisReject: state.jenisReject.map(i => i.id === id ? { ...i, ...data } : i) })),
-  removeJenisReject: (id) => set((state) => ({ jenisReject: state.jenisReject.filter(i => i.id !== id) })),
+  // ── SATUAN ────────────────────────────────────────────────────────────────
+  addSatuan: async (item) => {
+    set((s) => ({ satuan: [...s.satuan, item] }));
+    await dbInsert('satuan', { id: item.id, nama: item.nama });
+  },
+  updateSatuan: async (id, data) => {
+    set((s) => ({ satuan: s.satuan.map((i) => i.id === id ? { ...i, ...data } : i) }));
+    await dbUpdate('satuan', id, data);
+  },
+  removeSatuan: async (id) => {
+    set((s) => ({ satuan: s.satuan.filter((i) => i.id !== id) }));
+    await dbDelete('satuan', id);
+  },
 
-  addAlasanReject: (item) => set((state) => ({ alasanReject: [...state.alasanReject, item] })),
-  updateAlasanReject: (id, data) => set((state) => ({ alasanReject: state.alasanReject.map(i => i.id === id ? { ...i, ...data } : i) })),
-  removeAlasanReject: (id) => set((state) => ({ alasanReject: state.alasanReject.filter(i => i.id !== id) })),
+  // ── PRODUK ────────────────────────────────────────────────────────────────
+  addProduk: async (item) => {
+    set((s) => ({ produk: [...s.produk, item] }));
+    await dbInsert('produk', {
+      id: item.id, model_id: item.modelId, size_id: item.sizeId, warna_id: item.warnaId,
+      sku_internal: item.skuInternal, sku_klien: item.skuKlien ?? null,
+      nama: item.nama ?? null, aktif: item.aktif, harga_jual: item.hargaJual,
+    });
+  },
+  updateProduk: async (id, data) => {
+    set((s) => ({ produk: s.produk.map((i) => i.id === id ? { ...i, ...data } : i) }));
+    const row: any = {};
+    if (data.modelId !== undefined) row.model_id = data.modelId;
+    if (data.sizeId !== undefined) row.size_id = data.sizeId;
+    if (data.warnaId !== undefined) row.warna_id = data.warnaId;
+    if (data.skuInternal !== undefined) row.sku_internal = data.skuInternal;
+    if (data.skuKlien !== undefined) row.sku_klien = data.skuKlien;
+    if (data.nama !== undefined) row.nama = data.nama;
+    if (data.aktif !== undefined) row.aktif = data.aktif;
+    if (data.hargaJual !== undefined) row.harga_jual = data.hargaJual;
+    await dbUpdate('produk', id, row);
+  },
+  removeProduk: async (id) => {
+    set((s) => ({ produk: s.produk.filter((i) => i.id !== id) }));
+    await dbDelete('produk', id);
+  },
 
-  addKategoriTrx: (item) => set((state) => ({ kategoriTrx: [...state.kategoriTrx, item] })),
-  updateKategoriTrx: (id, data) => set((state) => ({ kategoriTrx: state.kategoriTrx.map(i => i.id === id ? { ...i, ...data } : i) })),
-  removeKategoriTrx: (id) => set((state) => ({ kategoriTrx: state.kategoriTrx.filter(i => i.id !== id) })),
+  // ── HPP KOMPONEN ──────────────────────────────────────────────────────────
+  addHPPKomponen: async (item) => {
+    set((s) => ({ hppKomponen: [...s.hppKomponen, item] }));
+    await dbInsert('hpp_komponen', {
+      id: item.id, nama: item.nama, kategori: item.kategori, satuan: item.satuan,
+      deskripsi: item.deskripsi ?? null,
+      track_inventory: item.trackInventory ?? false,
+      inventory_item_id: item.inventoryItemId ?? null,
+    });
+  },
+  updateHPPKomponen: async (id, data) => {
+    set((s) => ({ hppKomponen: s.hppKomponen.map((i) => i.id === id ? { ...i, ...data } : i) }));
+    const row: any = {};
+    if (data.nama !== undefined) row.nama = data.nama;
+    if (data.kategori !== undefined) row.kategori = data.kategori;
+    if (data.satuan !== undefined) row.satuan = data.satuan;
+    if (data.deskripsi !== undefined) row.deskripsi = data.deskripsi;
+    if (data.trackInventory !== undefined) row.track_inventory = data.trackInventory;
+    if (data.inventoryItemId !== undefined) row.inventory_item_id = data.inventoryItemId;
+    await dbUpdate('hpp_komponen', id, row);
+  },
+  removeHPPKomponen: async (id) => {
+    set((s) => ({ hppKomponen: s.hppKomponen.filter((i) => i.id !== id) }));
+    await dbDelete('hpp_komponen', id);
+  },
 
-  addSatuan: (item) => set((state) => ({ satuan: [...state.satuan, item] })),
-  updateSatuan: (id, data) => set((state) => ({ satuan: state.satuan.map(i => i.id === id ? { ...i, ...data } : i) })),
-  removeSatuan: (id) => set((state) => ({ satuan: state.satuan.filter(i => i.id !== id) })),
+  // ── PRODUK HPP ITEM ───────────────────────────────────────────────────────
+  addProdukHPPItem: async (item) => {
+    set((s) => ({ produkHPPItems: [...s.produkHPPItems, item] }));
+    await dbInsert('produk_hpp_item', {
+      id: item.id, produk_id: item.produkId, komponen_id: item.komponenId,
+      nilai: item.harga, harga: item.harga, qty: item.qty,
+      qty_fisik: item.qtyFisik ?? null,
+    });
+  },
+  updateProdukHPPItem: async (id, data) => {
+    set((s) => ({ produkHPPItems: s.produkHPPItems.map((i) => i.id === id ? { ...i, ...data } : i) }));
+    const row: any = {};
+    if (data.harga !== undefined) { row.harga = data.harga; row.nilai = data.harga; }
+    if (data.qty !== undefined) row.qty = data.qty;
+    if (data.qtyFisik !== undefined) row.qty_fisik = data.qtyFisik;
+    await dbUpdate('produk_hpp_item', id, row);
+  },
+  removeProdukHPPItem: async (id) => {
+    set((s) => ({ produkHPPItems: s.produkHPPItems.filter((i) => i.id !== id) }));
+    await dbDelete('produk_hpp_item', id);
+  },
 
-  addProduk: (item) => set((state) => ({ produk: [...state.produk, item] })),
-  updateProduk: (id, data) => set((state) => ({ produk: state.produk.map(i => i.id === id ? { ...i, ...data } : i) })),
-  removeProduk: (id) => set((state) => ({ produk: state.produk.filter(i => i.id !== id) })),
+  // ── GETTERS & KALKULASI (logika bisnis tidak berubah) ─────────────────────
 
-  addHPPKomponen: (item) => set((state) => ({ hppKomponen: [...state.hppKomponen, item] })),
-  updateHPPKomponen: (id, data) => set((state) => ({ hppKomponen: state.hppKomponen.map(i => i.id === id ? { ...i, ...data } : i) })),
-  removeHPPKomponen: (id) => set((state) => ({ hppKomponen: state.hppKomponen.filter(i => i.id !== id) })),
+  getHPPItemsByProduk: (produkId) => get().produkHPPItems.filter((i) => i.produkId === produkId),
 
-  addProdukHPPItem: (item) => set((state) => ({ produkHPPItems: [...state.produkHPPItems, item] })),
-  updateProdukHPPItem: (id, data) => set((state) => ({ produkHPPItems: state.produkHPPItems.map(i => i.id === id ? { ...i, ...data } : i) })),
-  removeProdukHPPItem: (id) => set((state) => ({ produkHPPItems: state.produkHPPItems.filter(i => i.id !== id) })),
-
-  getHPPItemsByProduk: (produkId) => get().produkHPPItems.filter(i => i.produkId === produkId),
-  
   getTotalHPP: (produkId) => {
-    const items = get().produkHPPItems.filter(i => i.produkId === produkId);
-    return items.reduce((acc, curr) => acc + (curr.harga * curr.qty), 0);
+    const items = get().produkHPPItems.filter((i) => i.produkId === produkId);
+    return items.reduce((acc, curr) => acc + curr.harga * curr.qty, 0);
   },
-  
+
   getTotalHPPByKategori: (produkId, kategori) => {
     const state = get();
-    const items = state.produkHPPItems.filter(i => i.produkId === produkId);
-    return items.reduce((acc, curr) => {
-      const kom = state.hppKomponen.find(k => k.id === curr.komponenId);
-      if (kom && kom.kategori === kategori) {
-        return acc + (curr.harga * curr.qty);
-      }
-      return acc;
-    }, 0);
+    return state.produkHPPItems
+      .filter((i) => i.produkId === produkId)
+      .reduce((acc, curr) => {
+        const kom = state.hppKomponen.find((k) => k.id === curr.komponenId);
+        return kom?.kategori === kategori ? acc + curr.harga * curr.qty : acc;
+      }, 0);
   },
-  
+
   getMargin: (produkId) => {
     const state = get();
-    const prod = state.produk.find(p => p.id === produkId);
+    const prod = state.produk.find((p) => p.id === produkId);
     const hargaJual = prod?.hargaJual || 0;
     const totalHpp = state.getTotalHPP(produkId);
     const nominal = hargaJual - totalHpp;
-    const persen = hargaJual > 0 ? (nominal / hargaJual) * 100 : 0;
-    return { nominal, persen };
+    return { nominal, persen: hargaJual > 0 ? (nominal / hargaJual) * 100 : 0 };
   },
 
   copyHPP: (fromProdukId, toProdukId) => set((state) => {
-    const filtered = state.produkHPPItems.filter(i => i.produkId !== toProdukId);
-    const sourceItems = state.produkHPPItems.filter(i => i.produkId === fromProdukId);
-    const newItems = sourceItems.map(item => ({
-      ...item,
-      id: `PHI-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-      produkId: toProdukId
-    }));
+    const filtered = state.produkHPPItems.filter((i) => i.produkId !== toProdukId);
+    const newItems = state.produkHPPItems
+      .filter((i) => i.produkId === fromProdukId)
+      .map((item) => ({
+        ...item,
+        id: `PHI-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        produkId: toProdukId,
+      }));
     return { produkHPPItems: [...filtered, ...newItems] };
   }),
 
   copyHPPToAllSizes: (fromProdukId) => set((state) => {
-    const sourceProd = state.produk.find(p => p.id === fromProdukId);
+    const sourceProd = state.produk.find((p) => p.id === fromProdukId);
     if (!sourceProd) return state;
-    
     const sameModelProds = state.produk.filter(
-      p => p.modelId === sourceProd.modelId && p.id !== fromProdukId
+      (p) => p.modelId === sourceProd.modelId && p.id !== fromProdukId
     );
-    
-    const sourceItems = state.produkHPPItems.filter(i => i.produkId === fromProdukId);
-    const targetIds = sameModelProds.map(p => p.id);
-    let remaining = state.produkHPPItems.filter(
-      i => !targetIds.includes(i.produkId)
-    );
-    
-    const newItems: import('../types').ProdukHPPItem[] = [];
-    sameModelProds.forEach(targetProd => {
-      sourceItems.forEach(item => {
+    const sourceItems = state.produkHPPItems.filter((i) => i.produkId === fromProdukId);
+    const targetIds = sameModelProds.map((p) => p.id);
+    const remaining = state.produkHPPItems.filter((i) => !targetIds.includes(i.produkId));
+    const newItems: ProdukHPPItem[] = [];
+    sameModelProds.forEach((targetProd) => {
+      sourceItems.forEach((item) => {
         newItems.push({
           ...item,
           id: `PHI-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-          produkId: targetProd.id
+          produkId: targetProd.id,
         });
       });
     });
-    
     return { produkHPPItems: [...remaining, ...sourceItems, ...newItems] };
-  })
+  }),
 }));
