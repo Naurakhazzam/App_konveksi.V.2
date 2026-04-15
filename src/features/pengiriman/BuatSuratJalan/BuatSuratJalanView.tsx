@@ -164,4 +164,10 @@ export default function BuatSuratJalanView() {
               >
                 🚚 Konfirmasi & Buat Surat Jalan
               </Button>
-      
+            </div>
+          </Panel>
+        </div>
+      </div>
+    </PageWrapper>
+  );
+}
