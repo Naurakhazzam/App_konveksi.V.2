@@ -70,7 +70,6 @@ export default function BuatSuratJalanView() {
     try {
       await createSuratJalanAtomic({
         id: sjId,
-        nomorSJ: '', // akan diisi oleh RPC via get_next_sj_number()
         klienId: selectedKlien,
         tanggal: new Date().toISOString(),
         items: sjItems,
@@ -165,10 +164,4 @@ export default function BuatSuratJalanView() {
               >
                 🚚 Konfirmasi & Buat Surat Jalan
               </Button>
-            </div>
-          </Panel>
-        </div>
-      </div>
-    </PageWrapper>
-  );
-}
+      
