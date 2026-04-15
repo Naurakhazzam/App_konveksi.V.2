@@ -28,6 +28,7 @@ interface BundleState {
   markUpahPaid: (poId: string) => Promise<void>;
   addRejectRecord: (record: RejectRecord) => void;
   removeBundlesByPO: (poId: string) => Promise<void>;
+  updateBundleSuratJalan: (barcodes: string[], sjId: string) => Promise<void>;
 }
 
 // ── Nilai default satu StatusTahap ───────────────────────────────────────────
@@ -78,12 +79,14 @@ function buildBundleFromRows(
   return {
     barcode: bundleRow.barcode,
     po: bundleRow.po_id,
+    poItemId: bundleRow.po_item_id ?? undefined,
     model: bundleRow.model_id,
     warna: bundleRow.warna_id,
     size: bundleRow.size_id,
     qtyBundle: bundleRow.qty_bundle,
     skuKlien: bundleRow.sku_klien ?? '',
     skuInternal: bundleRow.sku_internal ?? '',
+    suratJalanId: bundleRow.surat_jalan_id ?? undefined,
     statusTahap,
   };
 }
@@ -290,6 +293,32 @@ export const useBundleStore = create<BundleState>((set, get) => ({
     }
   },
 
+  // ── UPDATE SURAT JALAN ID ─────────────────────────────────────────────────
+
+  updateBundleSuratJalan: async (barcodes, sjId) => {
+    // Optimistic update lokal
+    set((state) => ({
+      bundles: state.bundles.map((b) =>
+        barcodes.includes(b.barcode) ? { ...b, suratJalanId: sjId } : b
+      ),
+    }));
+    try {
+      const { error } = await supabase
+        .from('bundle')
+        .update({ surat_jalan_id: sjId })
+        .in('barcode', barcodes);
+      if (error) throw error;
+    } catch (err) {
+      console.error('[useBundleStore] updateBundleSuratJalan error:', err);
+      // Rollback lokal
+      set((state) => ({
+        bundles: state.bundles.map((b) =>
+          barcodes.includes(b.barcode) ? { ...b, suratJalanId: undefined } : b
+        ),
+      }));
+    }
+  },
+
   // ── REJECT RECORDS (lokal only, tidak perlu Supabase) ────────────────────
 
   addRejectRecord: (record) =>
@@ -316,8 +345,9 @@ export const useBundleStore = create<BundleState>((set, get) => ({
         // Hapus status tahap dulu
         await supabase.from('bundle_status_tahap').delete().in('bundle_id', ids);
 
-        // Hapus bundle
-        await supabase.from('bundle').delete().eq('po_id', poId);
+        // Hapus bundle berdasarkan IDs yang sudah diambil (bukan po_id)
+        // agar bundle baru yang mungkin masuk di sela operasi tidak ikut terhapus
+        await supabase.from('bundle').delete().in('id', ids);
 
         // Bersihkan id map
         set((state) => {

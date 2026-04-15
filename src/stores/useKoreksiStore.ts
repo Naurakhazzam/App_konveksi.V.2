@@ -237,14 +237,17 @@ export const useKoreksiStore = create<KoreksiState>((set, get) => ({
     const { bundles, updateStatusTahap } = useBundleStore.getState();
     const bundle = (bundles as any[]).find((b: any) => b.barcode === record.barcode);
     if (bundle) {
+      // Gunakan tahapBertanggungJawab (bukan tahapDitemukan) agar update
+      // terjadi di tahap yang sedang aktif, bukan di tahap sebelumnya.
+      const tahapTarget = record.tahapBertanggungJawab || record.tahapDitemukan;
       if (action === 'approve') {
-        const currentQty = bundle.statusTahap[record.tahapDitemukan as any]?.qtySelesai || 0;
-        await updateStatusTahap(bundle.barcode, record.tahapDitemukan, {
+        const currentQty = bundle.statusTahap[tahapTarget as any]?.qtySelesai || 0;
+        await updateStatusTahap(bundle.barcode, tahapTarget, {
           qtySelesai: currentQty + record.qtyKoreksi,
           koreksiStatus: 'approved',
         });
       } else {
-        await updateStatusTahap(record.barcode, record.tahapDitemukan, {
+        await updateStatusTahap(record.barcode, tahapTarget, {
           koreksiStatus: 'rejected',
         });
       }

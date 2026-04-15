@@ -23,7 +23,7 @@ export default function BuatSuratJalanView() {
   const router = useRouter();
   const { klien } = useMasterStore();
   const { getPOById } = usePOStore();
-  const { updateStatusTahap } = useBundleStore();
+  const { updateStatusTahap, updateBundleSuratJalan } = useBundleStore();
   const { addSuratJalan, getNextNomorSJ } = usePengirimanStore();
 
   const [selectedKlien, setSelectedKlien] = useState('');
@@ -80,16 +80,10 @@ export default function BuatSuratJalanView() {
       pengirim
     });
 
-    // Update bundles with SJ tracking
-    localItems.forEach(it => {
-      updateStatusTahap(it.bundle.barcode, 'packing', {
-        ...it.bundle.statusTahap.packing,
-        // Optional: We could mark as shipped here in the bundle store if needed
-      });
-    });
+    // Simpan suratJalanId ke setiap bundle agar tracking pengiriman berfungsi
+    const bundleBarcodes = localItems.map(it => it.bundle.barcode);
+    await updateBundleSuratJalan(bundleBarcodes, sjId);
 
-    // In a real app we'd need an action: updateBundle(barcode, { suratJalanId: sjId })
-    // For now, we'll just navigate
     router.push('/pengiriman/riwayat');
   };
 

@@ -13,6 +13,7 @@ export interface StatusTahap {
 export interface Bundle {
   barcode: string;
   po: string;
+  poItemId?: string;
   model: string;
   warna: string;
   size: string;
