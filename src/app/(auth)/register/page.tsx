@@ -89,7 +89,7 @@ export default function RegisterPage() {
             />
           </div>
           <div className={styles.field} style={{ background: 'rgba(255, 87, 87, 0.05)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255, 87, 87, 0.2)' }}>
-            <Label color="sub" style={{ fontWeight: 'bold' }}>Kode Otentikasi Tim</Label>
+            <Label color="sub">Kode Otentikasi Tim</Label>
             <input 
               type="password"
               value={authCode} 

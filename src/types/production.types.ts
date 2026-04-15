@@ -52,7 +52,7 @@ export interface KoreksiQTY {
   tahapDitemukan: string;               // Tahap yang menemukan masalah (e.g., 'qc')
   tahapBertanggungJawab: string;        // Tahap yang bertanggung jawab (e.g., 'jahit')
   karyawanPelapor: string;              // ID karyawan yang melaporkan
-  karyawanBertanggungJawab: string;     // ID karyawan di tahap yang bertanggung jawab
+  karyawanBertanggungJawab: string | null; // ID karyawan di tahap yang bertanggung jawab (null jika belum diketahui)
 
   jenisKoreksi: 'reject' | 'hilang' | 'salah_hitung' | 'lebih';
   alasanRejectId?: string;              // ID dari Master Alasan Reject (jika jenis = 'reject')
