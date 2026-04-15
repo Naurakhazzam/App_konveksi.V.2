@@ -13,7 +13,7 @@ import styles from '../login/Login.module.css';
 export default function RegisterPage() {
   const [nama, setNama] = useState('');
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [pin, setPin] = useState('');
   const [role, setRole] = useState('supervisor_produksi');
   const [authCode, setAuthCode] = useState('');
   
@@ -29,12 +29,18 @@ export default function RegisterPage() {
       return;
     }
 
+    // Validasi Panjang PIN (Contoh: minimal 4 angka)
+    if (pin.length < 4) {
+      alert('PIN harus minimal 4 angka!');
+      return;
+    }
+
     addUser({
       id: `USR-${Date.now()}`,
       username,
       nama,
       roles: [role],
-      password: password // Will be treated as password in login logic
+      pin: pin // Memperbaiki bug: Data sekarang masuk ke kolom PIN yang benar
     } as any);
 
     alert('Pendaftaran Berhasil! Akun Anda sedang menunggu persetujuan Admin.');
@@ -52,19 +58,21 @@ export default function RegisterPage() {
         <form onSubmit={handleRegister} className={styles.form}>
           <div className={styles.field}>
             <Label>Nama Lengkap</Label>
-            <TextInput value={nama} onChange={setNama} placeholder="Nama Lengkap" required />
+            <TextInput value={nama} onChange={setNama} placeholder="Nama Lengkap Operator" required />
           </div>
           <div className={styles.field}>
             <Label>Username</Label>
-            <TextInput value={username} onChange={setUsername} placeholder="Username untuk login" required />
+            <TextInput value={username} onChange={setUsername} placeholder="Username unik" required />
           </div>
           <div className={styles.field}>
-            <Label>Password</Label>
+            <Label>Buat PIN Keamanan</Label>
             <input 
-              type="password" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              placeholder="Minimal 6 karakter" 
+              type="text" 
+              inputMode="numeric"
+              pattern="[0-9]*"
+              value={pin} 
+              onChange={(e) => setPin(e.target.value)} 
+              placeholder="Masukkan angka PIN (Min. 4 angka)" 
               required 
               className={styles.pwdInput}
             />
@@ -81,12 +89,12 @@ export default function RegisterPage() {
             />
           </div>
           <div className={styles.field} style={{ background: 'rgba(255, 87, 87, 0.05)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255, 87, 87, 0.2)' }}>
-            <Label color="sub">Kode Otentikasi Tim</Label>
+            <Label color="sub" style={{ fontWeight: 'bold' }}>Kode Otentikasi Tim</Label>
             <input 
               type="password"
               value={authCode} 
               onChange={(e) => setAuthCode(e.target.value)} 
-              placeholder="Masukkan 6 digit kode rahasia" 
+              placeholder="Masukkan 6 digit kode rahasia tim" 
               required 
               className={styles.pwdInput}
               style={{ borderColor: 'var(--color-danger)' }}
