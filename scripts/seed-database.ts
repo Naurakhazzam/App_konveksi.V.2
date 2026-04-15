@@ -222,7 +222,7 @@ async function seedBundles() {
     packing: 'packing',
   };
 
-  // Insert bundles dulu (tanpa statusTahap)
+  // Insert bundles dulu (tanpa statusTahap & tanpa id — biar DB generate UUID)
   const bundleRows = (initialRealBundles as any[]).map((b) => ({
     barcode: b.barcode,
     po_id: b.po,
@@ -234,7 +234,20 @@ async function seedBundles() {
     sku_internal: b.skuInternal ?? '',
   }));
 
-  await upsertBatch('bundle', bundleRows, 'barcode');
+  // Gunakan insert dengan ignoreDuplicates agar aman dijalankan berulang
+  const bundleChunks = chunkArray(bundleRows, 500);
+  let totalBundles = 0;
+  for (let i = 0; i < bundleChunks.length; i++) {
+    const { error } = await supabase
+      .from('bundle')
+      .upsert(bundleChunks[i], { onConflict: 'barcode', ignoreDuplicates: true });
+    if (error) {
+      console.error(`  ❌ bundle batch ${i + 1} GAGAL:`, error.message);
+      throw error;
+    }
+    totalBundles += bundleChunks[i].length;
+    console.log(`  ✅ bundle: batch ${i + 1}/${bundleChunks.length} (${totalBundles}/${bundleRows.length} rows)`);
+  }
 
   // Ambil mapping barcode → id dari DB
   console.log('  🔍 Mengambil mapping barcode → id dari DB...');
