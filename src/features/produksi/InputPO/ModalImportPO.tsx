@@ -14,7 +14,7 @@ interface ModalImportPOProps {
 
 export default function ModalImportPO({ onClose }: ModalImportPOProps) {
   const masterData = useMasterStore();
-  const { incrementGlobalSequence, poList, createPOWithBundles } = usePOStore();
+  const { poList, createPOWithBundles } = usePOStore();
   const { success, error, warning } = useToast();
 
   const [file, setFile] = useState<File | null>(null);
@@ -39,7 +39,6 @@ export default function ModalImportPO({ onClose }: ModalImportPOProps) {
         const processed = processPOCSV(
           results,
           masterData,
-          incrementGlobalSequence,
           existingNomorPOs
         );
         setSummary(processed);
@@ -164,9 +163,9 @@ export default function ModalImportPO({ onClose }: ModalImportPOProps) {
       </ModalBody>
       <ModalFooter>
         <Button variant="ghost" onClick={onClose}>Batal</Button>
-        <Button 
-          variant="primary" 
-          onClick={handleImport} 
+        <Button
+          variant="primary"
+          onClick={handleImport}
           disabled={!summary || summary.errors.length > 0 || loading}
         >
           {loading ? 'Mengimpor...' : 'Konfirmasi & Tambahkan ke Antrian'}
