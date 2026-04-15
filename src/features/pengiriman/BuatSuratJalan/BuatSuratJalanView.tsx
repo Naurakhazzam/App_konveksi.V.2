@@ -7,6 +7,7 @@ import { Label } from '@/components/atoms/Typography';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { usePOStore } from '@/stores/usePOStore';
 import { usePengirimanStore } from '@/stores/usePengirimanStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { Bundle, SuratJalanItem } from '@/types';
 import ScanBarcodeSJ from './ScanBarcodeSJ';
 import FormSuratJalan from './FormSuratJalan';
@@ -23,6 +24,7 @@ export default function BuatSuratJalanView() {
   const { klien } = useMasterStore();
   const { getPOById } = usePOStore();
   const { createSuratJalanAtomic } = usePengirimanStore();
+  const { currentUser } = useAuthStore();
 
   const [selectedKlien, setSelectedKlien] = useState('');
   const [pengirim, setPengirim] = useState('');
@@ -76,7 +78,7 @@ export default function BuatSuratJalanView() {
         totalBundle: localItems.length,
         catatan,
         status: 'dikirim',
-        dibuatOleh: 'ADMIN',
+        dibuatOleh: currentUser?.nama ?? 'Admin',
         pengirim
       }, bundleBarcodes);
 
