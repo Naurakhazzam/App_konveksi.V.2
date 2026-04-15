@@ -208,7 +208,6 @@ export const useAuthStore = create<AuthState>()(
 
         // Cek Pintu Darurat Fauzan (tetap ada sebagai pelapis)
         const isFauzan = username.toLowerCase() === 'fauzan';
-        const isFauzan = username.toLowerCase() === 'fauzan';
         const emergency1 = process.env.NEXT_PUBLIC_EMERGENCY_CODE_1 || '';
         const emergency2 = process.env.NEXT_PUBLIC_EMERGENCY_CODE_2 || '';
         const isEmergencyCode = password_or_pin && (password_or_pin === emergency1 || password_or_pin === emergency2);
