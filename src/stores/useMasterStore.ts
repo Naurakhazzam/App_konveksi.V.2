@@ -241,91 +241,167 @@ export const useMasterStore = create<MasterState>((set, get) => ({
 
   // ── KATEGORI ──────────────────────────────────────────────────────────────
   addKategori: async (item) => {
+    const backup = get().kategori;
     set((s) => ({ kategori: [...s.kategori, item] }));
-    await dbInsert('kategori', { id: item.id, nama: item.nama });
+    try {
+      await dbInsert('kategori', { id: item.id, nama: item.nama });
+    } catch (err) {
+      set({ kategori: backup });
+    }
   },
   updateKategori: async (id, data) => {
+    const backup = get().kategori;
     set((s) => ({ kategori: s.kategori.map((i) => i.id === id ? { ...i, ...data } : i) }));
-    await dbUpdate('kategori', id, data);
+    try {
+      await dbUpdate('kategori', id, data);
+    } catch (err) {
+      set({ kategori: backup });
+    }
   },
   removeKategori: async (id) => {
+    const backup = get().kategori;
+    const hasModels = get().model.some((m) => m.kategoriId === id);
+    if (hasModels) {
+      alert('Gagal: Kategori ini masih memiliki beberapa Model terkait.');
+      return;
+    }
     set((s) => ({ kategori: s.kategori.filter((i) => i.id !== id) }));
-    await dbDelete('kategori', id);
+    try {
+      await dbDelete('kategori', id);
+    } catch (err) {
+      set({ kategori: backup });
+    }
   },
 
   // ── MODEL ─────────────────────────────────────────────────────────────────
   addModel: async (item) => {
+    const backup = get().model;
     set((s) => ({ model: [...s.model, item] }));
-    await dbInsert('model', { id: item.id, nama: item.nama, kategori_id: item.kategoriId, target_poin: item.targetPoin });
+    try {
+      await dbInsert('model', { id: item.id, nama: item.nama, kategori_id: item.kategoriId, target_poin: item.targetPoin });
+    } catch (err) {
+      set({ model: backup });
+    }
   },
   updateModel: async (id, data) => {
+    const backup = get().model;
     set((s) => ({ model: s.model.map((i) => i.id === id ? { ...i, ...data } : i) }));
-    const row: any = {};
-    if (data.nama !== undefined) row.nama = data.nama;
-    if (data.kategoriId !== undefined) row.kategori_id = data.kategoriId;
-    if (data.targetPoin !== undefined) row.target_poin = data.targetPoin;
-    await dbUpdate('model', id, row);
+    try {
+      const row: any = {};
+      if (data.nama !== undefined) row.nama = data.nama;
+      if (data.kategoriId !== undefined) row.kategori_id = data.kategoriId;
+      if (data.targetPoin !== undefined) row.target_poin = data.targetPoin;
+      await dbUpdate('model', id, row);
+    } catch (err) {
+      set({ model: backup });
+    }
   },
   removeModel: async (id) => {
+    const backup = get().model;
+    const hasProducts = get().produk.some((p) => p.modelId === id);
+    if (hasProducts) {
+      alert('Gagal: Model ini masih digunakan oleh beberapa Produk/HPP.');
+      return;
+    }
     set((s) => ({ model: s.model.filter((i) => i.id !== id) }));
-    await dbDelete('model', id);
+    try {
+      await dbDelete('model', id);
+    } catch (err) {
+      set({ model: backup });
+    }
   },
 
   // ── SIZE ──────────────────────────────────────────────────────────────────
   addSize: async (item) => {
+    const backup = get().sizes;
     set((s) => ({ sizes: [...s.sizes, item] }));
-    await dbInsert('size', { id: item.id, nama: item.nama });
+    try {
+      await dbInsert('size', { id: item.id, nama: item.nama });
+    } catch (err) { set({ sizes: backup }); }
   },
   updateSize: async (id, data) => {
+    const backup = get().sizes;
     set((s) => ({ sizes: s.sizes.map((i) => i.id === id ? { ...i, ...data } : i) }));
-    await dbUpdate('size', id, data);
+    try {
+      await dbUpdate('size', id, data);
+    } catch (err) { set({ sizes: backup }); }
   },
   removeSize: async (id) => {
+    const backup = get().sizes;
     set((s) => ({ sizes: s.sizes.filter((i) => i.id !== id) }));
-    await dbDelete('size', id);
+    try {
+      await dbDelete('size', id);
+    } catch (err) { set({ sizes: backup }); }
   },
 
   // ── WARNA ─────────────────────────────────────────────────────────────────
   addWarna: async (item) => {
+    const backup = get().warna;
     set((s) => ({ warna: [...s.warna, item] }));
-    await dbInsert('warna', { id: item.id, nama: item.nama, kode_hex: item.kodeHex });
+    try {
+      await dbInsert('warna', { id: item.id, nama: item.nama, kode_hex: item.kodeHex });
+    } catch (err) { set({ warna: backup }); }
   },
   updateWarna: async (id, data) => {
+    const backup = get().warna;
     set((s) => ({ warna: s.warna.map((i) => i.id === id ? { ...i, ...data } : i) }));
-    const row: any = {};
-    if (data.nama !== undefined) row.nama = data.nama;
-    if (data.kodeHex !== undefined) row.kode_hex = data.kodeHex;
-    await dbUpdate('warna', id, row);
+    try {
+      const row: any = {};
+      if (data.nama !== undefined) row.nama = data.nama;
+      if (data.kodeHex !== undefined) row.kode_hex = data.kodeHex;
+      await dbUpdate('warna', id, row);
+    } catch (err) { set({ warna: backup }); }
   },
   removeWarna: async (id) => {
+    const backup = get().warna;
     set((s) => ({ warna: s.warna.filter((i) => i.id !== id) }));
-    await dbDelete('warna', id);
+    try {
+      await dbDelete('warna', id);
+    } catch (err) { set({ warna: backup }); }
   },
 
   // ── KARYAWAN ──────────────────────────────────────────────────────────────
   addKaryawan: async (item) => {
-    const { error } = await supabase.from('karyawan').insert({
-      id: item.id, nama: item.nama, jabatan: item.jabatan,
-      tahap_list: item.tahapList, gaji_pokok: item.gajiPokok, aktif: item.aktif,
-    });
-    if (error) { console.error('[MasterStore] addKaryawan:', error.message); throw error; }
+    const backup = get().karyawan;
     set((s) => ({ karyawan: [...s.karyawan, item] }));
+    try {
+      const { error } = await supabase.from('karyawan').insert({
+        id: item.id, nama: item.nama, jabatan: item.jabatan,
+        tahap_list: item.tahapList, gaji_pokok: item.gajiPokok, aktif: item.aktif,
+      });
+      if (error) throw error;
+    } catch (err) {
+      console.error('[MasterStore] addKaryawan:', (err as any).message);
+      set({ karyawan: backup });
+    }
   },
   updateKaryawan: async (id, data) => {
-    const row: any = {};
-    if (data.nama !== undefined) row.nama = data.nama;
-    if (data.jabatan !== undefined) row.jabatan = data.jabatan;
-    if (data.tahapList !== undefined) row.tahap_list = data.tahapList;
-    if (data.gajiPokok !== undefined) row.gaji_pokok = data.gajiPokok;
-    if (data.aktif !== undefined) row.aktif = data.aktif;
-    const { error } = await supabase.from('karyawan').update(row).eq('id', id);
-    if (error) { console.error('[MasterStore] updateKaryawan:', error.message); throw error; }
+    const backup = get().karyawan;
     set((s) => ({ karyawan: s.karyawan.map((i) => i.id === id ? { ...i, ...data } : i) }));
+    try {
+      const row: any = {};
+      if (data.nama !== undefined) row.nama = data.nama;
+      if (data.jabatan !== undefined) row.jabatan = data.jabatan;
+      if (data.tahapList !== undefined) row.tahap_list = data.tahapList;
+      if (data.gajiPokok !== undefined) row.gaji_pokok = data.gajiPokok;
+      if (data.aktif !== undefined) row.aktif = data.aktif;
+      const { error } = await supabase.from('karyawan').update(row).eq('id', id);
+      if (error) throw error;
+    } catch (err) {
+      console.error('[MasterStore] updateKaryawan:', (err as any).message);
+      set({ karyawan: backup });
+    }
   },
   removeKaryawan: async (id) => {
-    const { error } = await supabase.from('karyawan').delete().eq('id', id);
-    if (error) { console.error('[MasterStore] removeKaryawan:', error.message); throw error; }
+    const backup = get().karyawan;
     set((s) => ({ karyawan: s.karyawan.filter((i) => i.id !== id) }));
+    try {
+      const { error } = await supabase.from('karyawan').delete().eq('id', id);
+      if (error) throw error;
+    } catch (err) {
+      console.error('[MasterStore] removeKaryawan:', (err as any).message);
+      set({ karyawan: backup });
+    }
   },
 
   // ── JABATAN ───────────────────────────────────────────────────────────────
@@ -525,37 +601,102 @@ export const useMasterStore = create<MasterState>((set, get) => ({
     return { nominal, persen: hargaJual > 0 ? (nominal / hargaJual) * 100 : 0 };
   },
 
-  copyHPP: (fromProdukId, toProdukId) => set((state) => {
-    const filtered = state.produkHPPItems.filter((i) => i.produkId !== toProdukId);
-    const newItems = state.produkHPPItems
-      .filter((i) => i.produkId === fromProdukId)
-      .map((item) => ({
-        ...item,
-        id: `PHI-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-        produkId: toProdukId,
-      }));
-    return { produkHPPItems: [...filtered, ...newItems] };
-  }),
+  copyHPP: async (fromProdukId, toProdukId) => {
+    const backup = get().produkHPPItems;
+    const sourceItems = backup.filter((i) => i.produkId === fromProdukId);
+    
+    // 1. Map ke tipe data DB
+    const newItems = sourceItems.map((item) => ({
+      ...item,
+      id: `PHI-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      produkId: toProdukId,
+    }));
 
-  copyHPPToAllSizes: (fromProdukId) => set((state) => {
-    const sourceProd = state.produk.find((p) => p.id === fromProdukId);
-    if (!sourceProd) return state;
-    const sameModelProds = state.produk.filter(
+    // 2. Optimistic Update (Zustand)
+    set((state) => ({
+      produkHPPItems: [
+        ...state.produkHPPItems.filter((i) => i.produkId !== toProdukId),
+        ...newItems
+      ]
+    }));
+
+    try {
+      // 3. Clear existing items in DB for target
+      await supabase.from('produk_hpp_item').delete().eq('produk_id', toProdukId);
+      
+      // 4. Insert new items to DB
+      if (newItems.length > 0) {
+        const { error } = await supabase.from('produk_hpp_item').insert(
+          newItems.map(i => ({
+            id: i.id,
+            produk_id: i.produkId,
+            komponen_id: i.komponenId,
+            harga: i.harga,
+            nilai: i.harga,
+            qty: i.qty,
+            qty_fisik: i.qtyFisik ?? null,
+          }))
+        );
+        if (error) throw error;
+      }
+    } catch (err) {
+      console.error('[MasterStore] copyHPP failed, rolling back:', err);
+      set({ produkHPPItems: backup });
+    }
+  },
+
+  copyHPPToAllSizes: async (fromProdukId) => {
+    const backup = get().produkHPPItems;
+    const sourceProd = get().produk.find((p) => p.id === fromProdukId);
+    if (!sourceProd) return;
+
+    const sameModelProds = get().produk.filter(
       (p) => p.modelId === sourceProd.modelId && p.id !== fromProdukId
     );
-    const sourceItems = state.produkHPPItems.filter((i) => i.produkId === fromProdukId);
+    const sourceItems = backup.filter((i) => i.produkId === fromProdukId);
     const targetIds = sameModelProds.map((p) => p.id);
-    const remaining = state.produkHPPItems.filter((i) => !targetIds.includes(i.produkId));
+
     const newItems: ProdukHPPItem[] = [];
     sameModelProds.forEach((targetProd) => {
       sourceItems.forEach((item) => {
         newItems.push({
           ...item,
-          id: `PHI-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          id: `PHI-${Date.now()}-${Math.random().toString(36).slice(2, 6)}-${targetProd.id.slice(-4)}`,
           produkId: targetProd.id,
         });
       });
     });
-    return { produkHPPItems: [...remaining, ...sourceItems, ...newItems] };
-  }),
+
+    // 1. Optimistic Update (Zustand)
+    set((state) => ({
+      produkHPPItems: [
+        ...state.produkHPPItems.filter((i) => !targetIds.includes(i.produkId)),
+        ...newItems
+      ]
+    }));
+
+    try {
+      // 2. Clear existing entries for all targets in DB
+      await supabase.from('produk_hpp_item').delete().in('produk_id', targetIds);
+
+      // 3. Bulk Insert
+      if (newItems.length > 0) {
+        const { error } = await supabase.from('produk_hpp_item').insert(
+          newItems.map(i => ({
+            id: i.id,
+            produk_id: i.produkId,
+            komponen_id: i.komponenId,
+            harga: i.harga,
+            nilai: i.harga,
+            qty: i.qty,
+            qty_fisik: i.qtyFisik ?? null,
+          }))
+        );
+        if (error) throw error;
+      }
+    } catch (err) {
+      console.error('[MasterStore] copyHPPToAllSizes failed, rolling back:', err);
+      set({ produkHPPItems: backup });
+    }
+  },
 }));

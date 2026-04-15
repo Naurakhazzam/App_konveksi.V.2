@@ -455,41 +455,30 @@ export const usePOStore = create<POState>((set, get) => ({
     useBundleStore.getState().addBundles(bundles);
 
     try {
-      // 3. Insert PO ke Supabase
-      const { error: poError } = await supabase
-        .from('purchase_order')
-        .insert(toPORow(po));
-      if (poError) throw poError;
+      // 3. Persiapkan row untuk Bundles
+      const bundleRows = bundles.map((b: any) => ({
+        id: b.id,
+        barcode: b.barcode,
+        po_id: b.po,
+        po_item_id: b.poItemId ?? null,
+        model_id: b.model,
+        warna_id: b.warna,
+        size_id: b.size,
+        qty_bundle: b.qtyBundle,
+        sku_klien: b.skuKlien ?? null,
+        sku_internal: b.skuInternal ?? null,
+      }));
 
-      // 4. Insert PO Items
-      if (po.items.length > 0) {
-        const { error: itemError } = await supabase
-          .from('po_item')
-          .insert(po.items.map(toItemRow));
-        if (itemError) throw itemError;
-      }
+      // 4. Eksekusi Atomic RPC (Single Transaction in Database)
+      const { error: rpcError } = await supabase.rpc('create_po_atomic', {
+        p_po: toPORow(po),
+        p_items: po.items.map(toItemRow),
+        p_bundles: bundleRows,
+      });
 
-      // 5. Insert Bundles
-      if (bundles.length > 0) {
-        const bundleRows = bundles.map((b: any) => ({
-          id: b.id,
-          barcode: b.barcode,
-          po_id: b.po,
-          po_item_id: b.poItemId ?? null,
-          model_id: b.model,
-          warna_id: b.warna,
-          size_id: b.size,
-          qty_bundle: b.qtyBundle,
-          sku_klien: b.skuKlien ?? null,
-          sku_internal: b.skuInternal ?? null,
-        }));
-        const { error: bundleError } = await supabase
-          .from('bundle')
-          .insert(bundleRows);
-        if (bundleError) throw bundleError;
-      }
+      if (rpcError) throw rpcError;
 
-      // 6. Log Activity — Hanya jika SEMUA BERHASIL
+      // 5. Log Activity — Hanya jika SEMUA BERHASIL
       useLogStore.getState().addLog({
         user: { id: currentUser.id, nama: currentUser.nama, role: currentUser.roles[0] || 'User' },
         modul: 'produksi',
