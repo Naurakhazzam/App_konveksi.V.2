@@ -451,6 +451,23 @@ export const usePOStore = create<POState>((set, get) => ({
       return;
     }
 
+    // Minta sequence dari server (atomic, tidak bisa collision)
+    const { data: startSeq, error: seqError } = await supabase
+      .rpc('reserve_bundle_sequence', { p_count: bundles.length });
+    
+    if (seqError || startSeq === null) throw new Error('Gagal mendapat sequence dari server');
+
+    function replaceSequenceInBarcode(originalBarcode: string, newSeq: number): string {
+      // Ganti HANYA segmen 5-digit sequence sebelum -BDL
+      return originalBarcode.replace(/-(\d{5})-BDL/, `-${String(newSeq).padStart(5, '0')}-BDL`);
+    }
+    
+    let currentGlobalSeq = startSeq;
+    bundles.forEach((b: any) => {
+      b.barcode = replaceSequenceInBarcode(b.barcode, currentGlobalSeq);
+      currentGlobalSeq++;
+    });
+
     // 2. Optimistic update lokal
     set((state) => ({
       poList: [...state.poList, po],

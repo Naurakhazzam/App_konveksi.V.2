@@ -53,7 +53,6 @@ export interface ProcessedPOData {
 export const processPOCSV = (
   results: Papa.ParseResult<any>,
   masterData: { klien: any[], produk: any[], model: any[], warna: any[], sizes: any[] },
-  incrementGlobalSeq: (count: number) => number,
   existingNomorPOs: string[] = []
 ): ProcessedPOData => {
   const entries: ProcessedPOEntry[] = [];
@@ -142,9 +141,7 @@ export const processPOCSV = (
       catatan: poRows[0][6] || ''
     };
 
-    // Generate Bundles — menggunakan generateBarcode() kanonik (K2)
-    const startSeq = incrementGlobalSeq(poTotalBundles);
-    let currentGlobalSeq = startSeq;
+    // Generate Bundles dengan placeholder sequence 00000 (akan diganti di store)
     const poBundles: any[] = [];
 
     items.forEach(item => {
@@ -159,13 +156,13 @@ export const processPOCSV = (
         const bundleQty = Math.min(qtyLeft, item.qtyPerBundle);
         qtyLeft -= bundleQty;
 
-        // Gunakan generateBarcode() kanonik (K2) — bukan inline string
+        // Gunakan generateBarcode() dengan sequence 0 sebagai template
         const barcodeString = generateBarcode({
           nomorPO,
           model: modelName,
           warna: warnaName,
           size: sizeName,
-          globalSequence: currentGlobalSeq,
+          globalSequence: 0,
           bundleIndex: i,
           tanggal: new Date()
         });
@@ -190,8 +187,6 @@ export const processPOCSV = (
             packing: { ...defaultStatus },
           }
         });
-
-        currentGlobalSeq++;
       }
     });
 
