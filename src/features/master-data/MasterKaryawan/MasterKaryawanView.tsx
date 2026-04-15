@@ -13,7 +13,7 @@ import FormKaryawan from './FormKaryawan';
 import styles from './MasterKaryawanView.module.css';
 
 export default function MasterKaryawanView() {
-  const { karyawan, addKaryawan, updateKaryawan, removeKaryawan } = useMasterStore();
+  const { karyawan, jabatan, addKaryawan, updateKaryawan, removeKaryawan } = useMasterStore();
   const [search, setSearch] = useState('');
   const [filterJabatan, setFilterJabatan] = useState('Semua');
   const [filterStatus, setFilterStatus] = useState('Semua');
@@ -21,8 +21,11 @@ export default function MasterKaryawanView() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Karyawan | null>(null);
 
-  const jabatans = Array.from(new Set(karyawan.map(k => k.jabatan)));
-  const jabatanOptions = [{ value: 'Semua', label: 'Semua Jabatan' }, ...jabatans.map(j => ({ value: j, label: j }))];
+  // Filter dropdown dari master jabatan (bukan dari karyawan) agar selalu sinkron
+  const jabatanOptions = [
+    { value: 'Semua', label: 'Semua Jabatan' },
+    ...jabatan.map(j => ({ value: j.id, label: j.nama }))
+  ];
   const statusOptions = [
     { value: 'Semua', label: 'Semua Status' },
     { value: 'Aktif', label: 'Aktif' },
@@ -76,7 +79,7 @@ export default function MasterKaryawanView() {
   const columns: Column<Karyawan>[] = [
     { key: 'id', header: 'ID', render: (val) => <span style={{ fontFamily: 'var(--font-mono)' }}>{val}</span> },
     { key: 'nama', header: 'Nama', render: (val) => <span style={{ fontWeight: 600 }}>{val}</span> },
-    { key: 'jabatan', header: 'Jabatan' },
+    { key: 'jabatan', header: 'Jabatan', render: (val) => jabatan.find(j => j.id === val)?.nama ?? val },
     { key: 'gajiPokok', header: 'Gaji Pokok', render: (v) => <span className={styles.money}>{formatRupiah(v)}</span> },
     { key: 'status', header: 'Status', render: (_, row) => (
       <Badge variant={row.aktif ? 'success' : 'neutral'}>{row.aktif ? 'Aktif' : 'Nonaktif'}</Badge>

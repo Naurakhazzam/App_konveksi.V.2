@@ -54,7 +54,7 @@ export default function FormKaryawan({ open, onClose, initialValues, onSubmit }:
     );
   };
 
-  const jabatanOptions = globalJabatanOptions.map(j => ({ value: j.nama, label: j.nama }));
+  const jabatanOptions = globalJabatanOptions.map(j => ({ value: j.id, label: j.nama }));
   if (jabatanOptions.length === 0 || !jabatanOptions.find(o => o.value === 'Lainnya')) {
     jabatanOptions.push({ value: 'Lainnya', label: 'Lainnya' });
   }
