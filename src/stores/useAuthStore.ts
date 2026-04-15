@@ -381,7 +381,7 @@ export const useAuthStore = create<AuthState>()(
       validateOwnerCode: (code) => {
         const emergency1 = process.env.NEXT_PUBLIC_EMERGENCY_CODE_1 || '';
         const emergency2 = process.env.NEXT_PUBLIC_EMERGENCY_CODE_2 || '';
-        return code && (code === emergency1 || code === emergency2);
+        return !!(code && (code === emergency1 || code === emergency2));
       },
 
       switchRole: (roles) => {
@@ -390,7 +390,6 @@ export const useAuthStore = create<AuthState>()(
         set({ currentUser: { ...user, roles } });
       },
 
-      loginAsVisitor: (password) => {
       loginAsVisitor: (password) => {
         const vis1 = process.env.NEXT_PUBLIC_VISITOR_PASS_1 || '';
         const vis2 = process.env.NEXT_PUBLIC_VISITOR_PASS_2 || '';
