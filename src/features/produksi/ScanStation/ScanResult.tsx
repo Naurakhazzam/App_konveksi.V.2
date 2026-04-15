@@ -203,12 +203,12 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     return (hppItem?.harga || 0) * qty;
   };
 
-  const handleQtyConfirm = (qtySelesai: number, alasan: string, needsKoreksiOld: boolean) => {
+  const handleQtyConfirm = async (qtySelesai: number, alasan: string, needsKoreksiOld: boolean) => {
     const now = new Date().toISOString();
 
     if (tahap === 'cutting' && currentStatus.status === null) {
       if (poItem) {
-        updateItemCuttingStatus(poItem.id, 'finished');
+        await updateItemCuttingStatus(poItem.id, 'finished');
       }
       updateStatusTahap(bundle.barcode, tahap, {
         status: 'selesai',
@@ -252,7 +252,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     }
 
     // QTY tepat → selesai normal
-    executeSelesai(qtySelesai, null, null);
+    await executeSelesai(qtySelesai, null, null);
   };
 
   const executeSelesai = async (
@@ -261,40 +261,13 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     koreksiAlasan: string | null
   ) => {
     const now = new Date().toISOString();
-
-    // 1. Update Bundle Store (optimistic)
-    updateStatusTahap(bundle.barcode, tahap, {
-      status: 'selesai',
-      qtySelesai,
-      waktuSelesai: now,
-      koreksiStatus,
-      koreksiAlasan,
-    });
-
-    // 2. Add Scan Record (fire-and-forget — OK)
-    addRecord({
-      id: `SCAN-${Date.now()}`,
-      barcode: bundle.barcode,
-      po: bundle.po,
-      tahap,
-      aksi: 'selesai',
-      qty: qtySelesai,
-      waktu: now
-    });
-
-    // 3. Catat Upah ke Payroll — WAJIB di-await (data gaji karyawan)
     const operatorId = currentStatus.karyawan || selectedKaryawan;
+    const upahPerPcs = calcNominalPotongan('upah_tahap', tahap, 1);
+    const totalUpah = upahPerPcs * qtySelesai;
 
-    if (needsKaryawan && (!operatorId || operatorId.trim() === '')) {
-      console.warn('[ScanResult] Upah tidak dicatat: Operator ID tidak ditemukan.');
-      warning(
-        'Upah Gagal Dicatat',
-        `Karyawan yang bertanggung jawab di tahap ${TAHAP_LABEL[tahap]} tidak ditemukan. Upah borongan untuk bundle ini tidak masuk ke payroll.`
-      );
-    } else if (operatorId && qtySelesai > 0) {
-      const upahPerPcs = calcNominalPotongan('upah_tahap', tahap, 1);
-      const totalUpah = upahPerPcs * qtySelesai;
-
+    // ── STEP 1: FINANCE / PAYROLL FIRST ───────────────────────────────────
+    // Kita catat uangnya dulu. Jika gagal di level DB, kita batalkan status Selesai.
+    if (needsKaryawan && operatorId && operatorId.trim() !== '' && qtySelesai > 0) {
       try {
         await usePayrollStore.getState().addLedgerEntry({
           id: `PAY-${Date.now()}-${bundle.barcode}-${tahap}`,
@@ -307,14 +280,38 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
           status: 'belum_lunas'
         });
       } catch (payrollErr) {
-        // Bundle tetap selesai, tapi upah gagal tercatat — notifikasi operator
-        console.error('[ScanResult] Gagal catat upah ke payroll:', payrollErr);
+        // BATALKAN seluruh proses jika payroll gagal (DB Connection issue, dsb)
+        console.error('[ScanResult] Gagal catat upah. Transaksi dibatalkan:', payrollErr);
         warning(
-          'Peringatan: Upah Tidak Tercatat',
-          `Bundle ${bundle.barcode} ditandai selesai, tapi upah ${TAHAP_LABEL[tahap]} gagal disimpan (Database Issue). Hubungi admin.`
+          'ERROR: Upah Gagal Disimpan',
+          `Sistem gagal mencatat upah ke database. Status bundle TIDAK akan diupdate menjadi selesai. Silakan coba scan ulang atau lapor Admin.`
         );
+        return; // EXIT EARLY - BUNDLE TETAP 'TERIMA'
       }
+    } else if (needsKaryawan && (!operatorId || operatorId.trim() === '')) {
+       // Guard fallback jika data karyawan hilang di tengah jalan
+       warning('Data Operator Hilang', 'Status bundle selesai, tapi upah TIDAK dicatat karena identitas operator tidak ditemukan.');
     }
+
+    // ── STEP 2: UPDATE BUNDLE STATUS (Only if Finance Succeeded) ──────────
+    updateStatusTahap(bundle.barcode, tahap, {
+      status: 'selesai',
+      qtySelesai,
+      waktuSelesai: now,
+      koreksiStatus,
+      koreksiAlasan,
+    });
+
+    // ── STEP 3: LOGGING (Non-critical) ─────────────────────────────────────
+    addRecord({
+      id: `SCAN-${Date.now()}`,
+      barcode: bundle.barcode,
+      po: bundle.po,
+      tahap,
+      aksi: 'selesai',
+      qty: qtySelesai,
+      waktu: now
+    });
 
     if (onComplete) onComplete();
   };
@@ -353,13 +350,33 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       );
     }
 
+    // ── STEP 1: DEDUCTION FIRST (Finansial) ──────────────────────────────
+    if (karyawanBertanggungJawab && nominal > 0) {
+      try {
+        await usePayrollStore.getState().addLedgerEntry({
+          id: `DED-${Date.now()}-${koreksiId}`,
+          karyawanId: karyawanBertanggungJawab,
+          tanggal: now,
+          keterangan: `POTONGAN ${result.jenisKoreksi.toUpperCase()} (${TAHAP_LABEL[tahap]}) - ${bundle.barcode}`,
+          sumberId: bundle.barcode,
+          total: -nominal,
+          tipe: 'reject_potong',
+          status: 'belum_lunas'
+        });
+      } catch (err) {
+        warning('Gagal Potong Gaji', 'Koreksi dibatalkan karena gagal menghubungi server payroll.');
+        return;
+      }
+    }
+
+    // ── STEP 2: LOG KOREKSI ─────────────────────────────────────────────
     await addKoreksi({
       id: koreksiId,
       barcode: bundle.barcode,
       poId: bundle.po,
       tahapDitemukan: tahap,
       tahapBertanggungJawab,
-      karyawanPelapor: selectedKaryawan || 'ADMIN',
+      karyawanPelapor: currentUser?.nama || selectedKaryawan || 'SYSTEM',
       karyawanBertanggungJawab,
       jenisKoreksi: result.jenisKoreksi,
       alasanRejectId: result.alasanReject?.id,
@@ -368,20 +385,6 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       statusPotongan: 'pending',
       waktuLapor: now,
     });
-
-    // Tambah Potongan ke Payroll — WAJIB di-await
-    if (karyawanBertanggungJawab && nominal > 0) {
-      await usePayrollStore.getState().addLedgerEntry({
-        id: `DED-${Date.now()}-${koreksiId}`,
-        karyawanId: karyawanBertanggungJawab,
-        tanggal: now,
-        keterangan: `POTONGAN ${result.jenisKoreksi.toUpperCase()} (${TAHAP_LABEL[tahap]}) - ${bundle.barcode}`,
-        sumberId: bundle.barcode,
-        total: -nominal,
-        tipe: 'reject_potong',
-        status: 'belum_lunas'
-      });
-    }
 
     await executeSelesai(
       pendingQtySelesai,
@@ -405,7 +408,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       poId: bundle.po,
       tahapDitemukan: tahap,
       tahapBertanggungJawab: tahap,
-      karyawanPelapor: selectedKaryawan || 'ADMIN',
+      karyawanPelapor: currentUser?.nama || selectedKaryawan || 'SYSTEM',
       karyawanBertanggungJawab: currentStatus.karyawan || '',
       jenisKoreksi: 'lebih',
       alasanLebih: result.alasanLebih,
