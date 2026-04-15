@@ -204,7 +204,7 @@ export const useMasterStore = create<MasterState>((set, get) => ({
         })),
         produkHPPItems: (produkHPPItemRes.data ?? []).map((r: any) => ({
           id: r.id, produkId: r.produk_id, komponenId: r.komponen_id,
-          harga: Number(r.harga ?? r.nilai ?? 0),
+          harga: Number(r.nilai || r.harga || 0),
           qty: Number(r.qty ?? 1),
           qtyFisik: r.qty_fisik ? Number(r.qty_fisik) : undefined,
         })),
