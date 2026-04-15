@@ -10,6 +10,7 @@ import { Label } from '@/components/atoms/Typography';
 import { usePOStore } from '@/stores/usePOStore';
 import { useKoreksiStore } from '@/stores/useKoreksiStore';
 import { useScanStore } from '@/stores/useScanStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 import {
   TahapKey, TAHAP_ORDER, TAHAP_LABEL, REQUIRES_KARYAWAN,
   validateCanTerima, getQtyTerima, getTahapStatusIcon, getPrevTahap, getExpectedQTY,
@@ -36,6 +37,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
   const { poList, getPemakaianBahan, addPemakaianBahan, updateItemCuttingStatus } = usePOStore();
   const { addKoreksi, koreksiList } = useKoreksiStore();
   const { addRecord } = useScanStore();
+  const { currentUser } = useAuthStore();
 
   const [showQtyModal, setShowQtyModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -163,7 +165,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       inventoryItemId,
       pemakaianKainMeter: meter,
       pemakaianBeratGram: gram,
-      inputOleh: 'ADMIN',
+      inputOleh: currentUser?.id ?? currentUser?.nama ?? 'SYSTEM',
       waktuInput: new Date().toISOString()
     });
     setShowBahanModal(false);

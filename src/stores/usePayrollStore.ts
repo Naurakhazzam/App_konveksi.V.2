@@ -89,6 +89,18 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
   // ── ADD LEDGER ENTRY ──────────────────────────────────────────────────────
 
   addLedgerEntry: async (entry) => {
+    // Validasi: karyawanId wajib ada dan valid di master karyawan
+    if (!entry.karyawanId || entry.karyawanId.trim() === '') {
+      console.error('[usePayrollStore] addLedgerEntry dibatalkan: karyawanId kosong.', entry);
+      return;
+    }
+    const { karyawan } = useMasterStore.getState();
+    const karyawanValid = karyawan.find(k => k.id === entry.karyawanId);
+    if (!karyawanValid) {
+      console.error(`[usePayrollStore] addLedgerEntry dibatalkan: karyawanId "${entry.karyawanId}" tidak ditemukan di master.`, entry);
+      return;
+    }
+
     set((state) => ({ ledger: [...state.ledger, entry] }));
     try {
       const { error } = await supabase.from('gaji_ledger').insert({
