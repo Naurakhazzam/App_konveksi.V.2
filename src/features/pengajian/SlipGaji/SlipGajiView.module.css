@@ -282,3 +282,48 @@
     display: none !important;
   }
 }
+
+.escrowSection {
+  margin-top: 20px;
+  border: 1px dashed #ffa500;
+  background: #fff9f0;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.escrowHeader {
+  font-size: 11px;
+  font-weight: 800;
+  color: #c66911;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.escrowList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.escrowItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  border-bottom: 1px dotted #eebda0;
+  padding-bottom: 4px;
+}
+
+.escrowWarning {
+  color: #d32f2f;
+  font-weight: 700;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.red { color: #d32f2f; }
+.orange { color: #f57c00; }
+.muted { opacity: 0.5; }

@@ -11,10 +11,12 @@ interface RekapKaryawan {
   upahKotor: number;
   potongan: number;
   rework: number;
-  upahBersih: number;
+  upahBersih: number; // borongan bersih
+  totalEscrow: number;
   sisaKasbon: number;
   entryIds: string[];
   isLunas: boolean;
+  gajiPokok: number; 
 }
 
 interface RekapGajiTableProps {
@@ -43,8 +45,13 @@ export default function RekapGajiTable({ data, onBayar, onViewSlip }: RekapGajiT
     },
     { 
       key: 'upahBersih', 
-      header: 'Upah Bersih', 
+      header: 'Upah Borongan', 
       render: (v) => <span className={styles.total}>{formatRupiah(v)}</span> 
+    },
+    { 
+      key: 'totalEscrow', 
+      header: 'Escrow (Hold)', 
+      render: (v) => <span className={v > 0 ? styles.warning : ''}>{v > 0 ? formatRupiah(v) : '—'}</span> 
     },
     { 
       key: 'sisaKasbon', 

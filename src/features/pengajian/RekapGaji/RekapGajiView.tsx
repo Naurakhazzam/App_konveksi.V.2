@@ -43,11 +43,12 @@ export default function RekapGajiView() {
         upahKotor: calc.upah,
         potongan: calc.potongan,
         rework: calc.rework,
-        upahBersih: calc.upahBersih,
-        gajiPokok: calc.gajiPokok || 0, // NEW field
+        upahBersih: calc.upahBersih, // borongan bersih (tanpa gapok)
+        totalEscrow: calc.totalEscrow,
+        gajiPokok: calc.gajiPokok || 0,
         sisaKasbon: calc.kasbonSisa,
         entryIds: calc.entries.map(e => e.id),
-        isLunas: calc.entries.length > 0 && calc.entries.every(e => e.status === 'lunas')
+        isLunas: calc.entries.length > 0 && calc.entries.every(e => e.status === 'lunas' || e.status === 'escrow')
       };
     });
   }, [karyawan, calculateUpah, dateRange, ledger, kasbon]);

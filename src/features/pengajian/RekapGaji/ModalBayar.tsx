@@ -26,11 +26,11 @@ export default function ModalBayar({ rekap, onClose, onConfirm }: ModalBayarProp
   const [hariKerja, setHariKerja] = useState(6); // Default 6 days
 
   // Logic: 
-  // upahBersih already includes FULL gajiPokok.
-  // We need to subtract the difference if hariKerja < 6.
-  const diffProrata = (hariKerja < 6) ? (rekap.gajiPokok / 6) * (6 - hariKerja) : 0;
-  const upahSetelahProrata = rekap.upahBersih - diffProrata;
-  const totalBayar = upahSetelahProrata - potongKasbon;
+  // rekap.upahBersih is ONLY borongan (variable).
+  // gajiPokok is the full weekly amount (6 days).
+  const gajiPokokProrata = (rekap.gajiPokok / 6) * hariKerja;
+  const upahTotal = rekap.upahBersih + gajiPokokProrata;
+  const totalBayar = upahTotal - potongKasbon;
 
   const handleConfirm = () => {
     // Advanced Validation
@@ -39,8 +39,8 @@ export default function ModalBayar({ rekap, onClose, onConfirm }: ModalBayarProp
       return;
     }
 
-    if (potongKasbon > upahSetelahProrata) {
-      error('Input Invalid', 'Jumlah potong tidak boleh melebihi upah setelah pro-rata.');
+    if (potongKasbon > upahTotal) {
+      error('Input Invalid', 'Jumlah potong tidak boleh melebihi upah total.');
       return;
     }
 
@@ -60,20 +60,20 @@ export default function ModalBayar({ rekap, onClose, onConfirm }: ModalBayarProp
         <div className={styles.container}>
           <div className={styles.summaryCard}>
             <div className={styles.row}>
-              <span>Upah Bruto (Total)</span>
+              <span>Upah Borongan</span>
               <strong>{formatRupiah(rekap.upahBersih)}</strong>
             </div>
             {rekap.gajiPokok > 0 && (
               <div className={`${styles.row} ${styles.calculation}`}>
-                <span>Prorata Gaji Pokok ({hariKerja}/6 hari)</span>
-                <span className={diffProrata > 0 ? styles.red : ''}>
-                  {diffProrata > 0 ? `- ${formatRupiah(diffProrata)}` : 'Full'}
+                <span>Gaji Pokok ({hariKerja}/6 hari)</span>
+                <span>
+                  + {formatRupiah(gajiPokokProrata)}
                 </span>
               </div>
             )}
             <div className={styles.row}>
-              <span>Upah Akhir (Setelah Pro-rata)</span>
-              <Heading level={4}>{formatRupiah(upahSetelahProrata)}</Heading>
+              <span>Upah Total (Kotor)</span>
+              <Heading level={4}>{formatRupiah(upahTotal)}</Heading>
             </div>
             <div className={styles.row}>
               <span>Sisa Kasbon Aktif</span>
@@ -102,11 +102,11 @@ export default function ModalBayar({ rekap, onClose, onConfirm }: ModalBayarProp
                 className={styles.input}
                 value={potongKasbon}
                 onChange={(e) => setPotongKasbon(Number(e.target.value))}
-                max={Math.min(rekap.sisaKasbon, upahSetelahProrata)}
+                max={Math.min(rekap.sisaKasbon, upahTotal)}
                 min={0}
               />
               <p className={styles.hint}>
-                Max potong: {formatRupiah(Math.min(rekap.sisaKasbon, upahSetelahProrata))}
+                Max potong: {formatRupiah(Math.min(rekap.sisaKasbon, upahTotal))}
               </p>
             </div>
           </div>

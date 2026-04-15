@@ -19,7 +19,10 @@ interface PayrollState {
     rework: number;
     gajiPokok: number;
     upahBersih: number;
+    upahLunas: number;
     kasbonSisa: number;
+    totalEscrow: number;
+    escrowEntries: GajiLedgerEntry[];
     entries: GajiLedgerEntry[];
   };
   prosesBayar: (karyawanId: string, entryIds: string[], inputKasbon: number, hariKerja?: number) => Promise<void>;
@@ -121,20 +124,22 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
       if (error) throw error;
     } catch (err) {
       console.error('[usePayrollStore] addLedgerEntry error:', err);
+      // Rollback optimistic update
       set((state) => ({ ledger: state.ledger.filter((l) => l.id !== entry.id) }));
+      // Re-throw agar caller bisa mendeteksi kegagalan dan notifikasi user
+      throw err;
     }
   },
 
   // ── CALCULATE UPAH (pure logic, tidak ada side effect DB) ────────────────
 
   calculateUpah: (karyawanId, startDate, endDate) => {
-    let entries = get().ledger.filter(
-      (l) => l.karyawanId === karyawanId && l.status !== 'escrow'
-    );
+    // Ambil SEMUA entri untuk rentang tanggal ini (termasuk lunas, escrow, dsb)
+    let entries = get().ledger.filter((l) => l.karyawanId === karyawanId);
 
     if (startDate && endDate) {
-      const start = new Date(startDate).getTime();
-      const end = new Date(endDate).getTime();
+      const start = new Date(startDate).setHours(0, 0, 0, 0);
+      const end = new Date(endDate).setHours(23, 59, 59, 999);
       entries = entries.filter((e) => {
         const time = new Date(e.tanggal).getTime();
         return time >= start && time <= end;
@@ -144,11 +149,31 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
     let upah = 0;
     let potongan = 0;
     let rework = 0;
+    let upahLunas = 0; // NEW: untuk history/slip
+    let totalEscrow = 0;
+    const escrowEntries: GajiLedgerEntry[] = [];
 
     entries.forEach((e) => {
-      if (e.tipe === 'selesai') upah += e.total;
-      if (e.tipe === 'reject_potong') potongan += Math.abs(e.total);
-      if (e.tipe === 'rework') rework += e.total;
+      // L-03: Pisahkan Escrow
+      if (e.status === 'escrow') {
+        totalEscrow += e.total;
+        escrowEntries.push(e);
+        return;
+      }
+
+      // L-02: Untuk rekap upah bersih (yang bisa dicairkan), hanya hitung yang 'belum_lunas'
+      if (e.status === 'belum_lunas') {
+        if (e.tipe === 'selesai') upah += e.total;
+        if (e.tipe === 'reject_potong') potongan += Math.abs(e.total);
+        if (e.tipe === 'rework') rework += e.total;
+      }
+
+      // Untuk history slip gaji
+      if (e.status === 'lunas') {
+        if (e.tipe === 'selesai') upahLunas += e.total;
+        if (e.tipe === 'reject_potong') upahLunas -= Math.abs(e.total);
+        if (e.tipe === 'rework') upahLunas += e.total;
+      }
     });
 
     const karyawanObj = useMasterStore.getState().karyawan.find((k) => k.id === karyawanId);
@@ -160,7 +185,10 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
       potongan,
       rework,
       gajiPokok,
-      upahBersih: upah - potongan + rework + gajiPokok,
+      upahBersih: upah - potongan + rework,
+      upahLunas, // Untuk Slip Gaji
+      totalEscrow,
+      escrowEntries,
       kasbonSisa,
       entries,
     };
@@ -178,8 +206,27 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
   prosesBayar: async (karyawanId, entryIds, inputKasbon, hariKerja) => {
     const tanggalBayar = new Date().toISOString();
     const upahData = get().calculateUpah(karyawanId);
+    const gajiPokokHarian = upahData.gajiPokok / 6;
+    const gajiPokokProrata = Math.round(gajiPokokHarian * (hariKerja || 0));
 
-    // 1. Optimistic update lokal
+    // 1. Tentukan total bersih (Borongan + Gapok - Kasbon)
+    const totalBersihPay = (upahData.upahBersih + gajiPokokProrata) - inputKasbon;
+
+    // 2. Buat entri Gapok di Ledger (agar tercatat permanen)
+    const gapokEntry: GajiLedgerEntry | null = gajiPokokProrata > 0 ? {
+      id: `GP-${Date.now()}-${karyawanId}`,
+      karyawanId,
+      tanggal: tanggalBayar,
+      keterangan: `Gaji Pokok (${hariKerja}/6 hari)`,
+      sumberId: 'SYSTEM',
+      total: gajiPokokProrata,
+      tipe: 'selesai',
+      status: 'lunas',
+      isPrinted: false,
+      tanggalBayar
+    } : null;
+
+    // 3. Optimistic update lokal
     const newKasbonEntry: KasbonEntry | null =
       inputKasbon > 0
         ? {
@@ -193,23 +240,39 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
         : null;
 
     set((state) => ({
-      ledger: state.ledger.map((l) =>
-        entryIds.includes(l.id) ? { ...l, status: 'lunas' as const, tanggalBayar } : l
-      ),
-      kasbon: newKasbonEntry
-        ? [...state.kasbon, newKasbonEntry]
-        : state.kasbon,
+      ledger: [
+        ...(gapokEntry ? [gapokEntry] : []),
+        ...state.ledger.map((l) =>
+          entryIds.includes(l.id) ? { ...l, status: 'lunas' as const, tanggalBayar } : l
+        )
+      ],
+      kasbon: newKasbonEntry ? [...state.kasbon, newKasbonEntry] : state.kasbon,
     }));
 
     try {
-      // 2. Update status ledger di Supabase secara paralel
+      // 4. Update status ledger & Insert Gapok di Supabase secara paralel
       await Promise.all([
         supabase
           .from('gaji_ledger')
           .update({ status: 'lunas', lunas: true, tanggal_bayar: tanggalBayar })
           .in('id', entryIds),
 
-        // 3. Insert kasbon potongan jika ada
+        ...(gapokEntry ? [
+          supabase.from('gaji_ledger').insert({
+            id: gapokEntry.id,
+            karyawan_id: gapokEntry.karyawanId,
+            tipe: gapokEntry.tipe,
+            total: gapokEntry.total,
+            tanggal: gapokEntry.tanggal,
+            sumber_id: gapokEntry.sumberId,
+            keterangan: gapokEntry.keterangan,
+            status: gapokEntry.status,
+            lunas: true,
+            tanggal_bayar: tanggalBayar,
+          })
+        ] : []),
+
+        // 5. Insert kasbon potongan jika ada
         ...(newKasbonEntry
           ? [
               supabase.from('kasbon').insert({
@@ -228,8 +291,7 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
       console.error('[usePayrollStore] prosesBayar error:', err);
     }
 
-    // 4. Catat ke Jurnal Umum
-    const totalBersihPay = upahData.upahBersih - inputKasbon;
+    // 6. Catat ke Jurnal Umum
     if (totalBersihPay > 0) {
       await useJurnalStore.getState().addEntry({
         id: `JUR-PAY-${Date.now()}`,

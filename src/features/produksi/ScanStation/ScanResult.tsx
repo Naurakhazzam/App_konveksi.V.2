@@ -23,6 +23,7 @@ import ModalSerahTerimaJahit from './ModalSerahTerimaJahit';
 import { ModalKoreksiKurang, ModalKoreksiLebih, KoreksiKurangResult, KoreksiLebihResult } from './ModalKoreksiQTY';
 import { useSerahTerimaStore } from '@/stores/useSerahTerimaStore';
 import { usePayrollStore } from '@/stores/usePayrollStore';
+import { useToast } from '@/components/molecules/Toast';
 import styles from './ScanResult.module.css';
 
 interface ScanResultProps {
@@ -38,6 +39,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
   const { addKoreksi, koreksiList } = useKoreksiStore();
   const { addRecord } = useScanStore();
   const { currentUser } = useAuthStore();
+  const { warning } = useToast();
 
   const [showQtyModal, setShowQtyModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -286,16 +288,25 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       const upahPerPcs = calcNominalPotongan('upah_tahap', tahap, 1);
       const totalUpah = upahPerPcs * qtySelesai;
 
-      await usePayrollStore.getState().addLedgerEntry({
-        id: `PAY-${Date.now()}-${bundle.barcode}-${tahap}`,
-        karyawanId: operatorId,
-        tanggal: now,
-        keterangan: `Upah ${TAHAP_LABEL[tahap]} - PO: ${bundle.po} (${bundle.barcode})`,
-        sumberId: bundle.barcode,
-        total: totalUpah,
-        tipe: 'selesai',
-        status: 'belum_lunas'
-      });
+      try {
+        await usePayrollStore.getState().addLedgerEntry({
+          id: `PAY-${Date.now()}-${bundle.barcode}-${tahap}`,
+          karyawanId: operatorId,
+          tanggal: now,
+          keterangan: `Upah ${TAHAP_LABEL[tahap]} - PO: ${bundle.po} (${bundle.barcode})`,
+          sumberId: bundle.barcode,
+          total: totalUpah,
+          tipe: 'selesai',
+          status: 'belum_lunas'
+        });
+      } catch (payrollErr) {
+        // Bundle tetap selesai, tapi upah gagal tercatat — notifikasi operator
+        console.error('[ScanResult] Gagal catat upah ke payroll:', payrollErr);
+        warning(
+          'Peringatan: Upah Tidak Tercatat',
+          `Bundle ${bundle.barcode} ditandai selesai, tapi upah ${TAHAP_LABEL[tahap]} gagal disimpan. Hubungi admin untuk input manual.`
+        );
+      }
     }
 
     if (onComplete) onComplete();
