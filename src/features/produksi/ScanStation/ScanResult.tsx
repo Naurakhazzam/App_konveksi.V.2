@@ -608,4 +608,54 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         </Button>
       </div>
 
-      <ModalQtySelesa
+      <ModalQtySelesai
+        open={showQtyModal}
+        onClose={() => setShowQtyModal(false)}
+        onConfirm={handleQtyConfirm}
+        qtyTerima={expectedQty}
+        tahap={tahap}
+      />
+
+      <ModalReject
+        open={showRejectModal}
+        onClose={() => setShowRejectModal(false)}
+        barcode={bundle.barcode}
+        tahap={tahap}
+        qtyMax={expectedQty}
+      />
+
+      <ModalPemakaianBahan
+        open={showBahanModal}
+        onClose={() => setShowBahanModal(false)}
+        artikelNama={`${modelName} - ${warnaName} - ${sizeName}`}
+        poNomor={bundle.po}
+        onConfirm={handleBahanConfirm}
+      />
+
+      <ModalSerahTerimaJahit
+        open={showSerahTerima}
+        onClose={() => setShowSerahTerima(false)}
+        onApprove={handleSerahTerimaApprove}
+        bundle={bundle}
+        karyawanId={selectedKaryawan}
+      />
+
+      <ModalKoreksiKurang
+        open={showKoreksiKurang}
+        onClose={() => setShowKoreksiKurang(false)}
+        onConfirm={handleKoreksiKurangConfirm}
+        qtyKurang={Math.abs(pendingQtySelesai - (currentStatus.qtyTerima ?? qtyTerimaDefault))}
+        tahapSaatIni={TAHAP_LABEL[tahap]}
+        prevTahapLabel={getPrevTahap(tahap) ? TAHAP_LABEL[getPrevTahap(tahap)!] : undefined}
+      />
+
+      <ModalKoreksiLebih
+        open={showKoreksiLebih}
+        onClose={() => setShowKoreksiLebih(false)}
+        onConfirm={handleKoreksiLebihConfirm}
+        qtyLebih={pendingQtySelesai - (currentStatus.qtyTerima ?? qtyTerimaDefault)}
+        tahapSaatIni={TAHAP_LABEL[tahap]}
+      />
+    </div>
+  );
+}
