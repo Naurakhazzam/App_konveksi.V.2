@@ -1,5 +1,6 @@
 import Papa from 'papaparse';
 import { downloadCSV } from './export-utils';
+import { generateBarcode } from './barcode-generator';
 
 export const PO_CSV_HEADER = [
   'Nomor_PO',
@@ -37,10 +38,16 @@ export const generatePOMassTemplate = () => {
 };
 
 
-export interface ProcessedPOData {
-  pos: any[];
+export interface ProcessedPOEntry {
+  po: any;
   bundles: any[];
+}
+
+export interface ProcessedPOData {
+  entries: ProcessedPOEntry[];
   errors: string[];
+  /** @deprecated Gunakan entries[].bundles — dipertahankan untuk kompatibilitas UI summary */
+  totalBundles: number;
 }
 
 export const processPOCSV = (
@@ -49,13 +56,12 @@ export const processPOCSV = (
   incrementGlobalSeq: (count: number) => number,
   existingNomorPOs: string[] = []
 ): ProcessedPOData => {
-  const pos: any[] = [];
-  const bundles: any[] = [];
+  const entries: ProcessedPOEntry[] = [];
   const errors: string[] = [];
   const rows = results.data;
 
   if (rows.length === 0) {
-    return { pos, bundles, errors: ['File CSV kosong'] };
+    return { entries, errors: ['File CSV kosong'], totalBundles: 0 };
   }
 
   // Group by Nomor_PO
@@ -125,8 +131,8 @@ export const processPOCSV = (
 
     if (items.length === 0) return;
 
-    // Create PO
-    pos.push({
+    // Create PO object
+    const po = {
       id: poId,
       klienId: matchKlien.id,
       nomorPO,
@@ -134,11 +140,12 @@ export const processPOCSV = (
       items,
       status: 'aktif',
       catatan: poRows[0][6] || ''
-    });
+    };
 
-    // Generate Bundles
+    // Generate Bundles — menggunakan generateBarcode() kanonik (K2)
     const startSeq = incrementGlobalSeq(poTotalBundles);
     let currentGlobalSeq = startSeq;
+    const poBundles: any[] = [];
 
     items.forEach(item => {
       const modelName = masterData.model.find(m => m.id === item.modelId)?.nama || 'MDL';
@@ -152,12 +159,21 @@ export const processPOCSV = (
         const bundleQty = Math.min(qtyLeft, item.qtyPerBundle);
         qtyLeft -= bundleQty;
 
-        // Custom function locally since we can't easily import from another feature folder without circular issues
-        const barcodeString = `PO${nomorPO.replace(/[^a-zA-Z0-9]/g, '')}-${currentGlobalSeq.toString().padStart(5, '0')}-BDL${i.toString().padStart(2, '0')}`;
+        // Gunakan generateBarcode() kanonik (K2) — bukan inline string
+        const barcodeString = generateBarcode({
+          nomorPO,
+          model: modelName,
+          warna: warnaName,
+          size: sizeName,
+          globalSequence: currentGlobalSeq,
+          bundleIndex: i,
+          tanggal: new Date()
+        });
 
-        bundles.push({
+        poBundles.push({
           barcode: barcodeString,
           po: poId,
+          poItemId: item.id, // K3: Wajib isi poItemId
           model: item.modelId,
           warna: item.warnaId,
           size: item.sizeId,
@@ -178,8 +194,12 @@ export const processPOCSV = (
         currentGlobalSeq++;
       }
     });
+
+    // Gabungkan PO + bundle-nya menjadi satu entry
+    entries.push({ po, bundles: poBundles });
   });
 
-  return { pos, bundles, errors };
+  const totalBundles = entries.reduce((acc, e) => acc + e.bundles.length, 0);
+  return { entries, errors, totalBundles };
 };
 

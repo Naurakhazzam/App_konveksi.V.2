@@ -4,7 +4,6 @@ import Button from '@/components/atoms/Button';
 import { Label } from '@/components/atoms/Typography';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { usePOStore } from '@/stores/usePOStore';
-import { useBundleStore } from '@/stores/useBundleStore';
 import { useToast } from '@/components/molecules/Toast';
 import { generatePOMassTemplate, processPOCSV, ProcessedPOData } from '@/lib/utils/po-import';
 import Papa from 'papaparse';
@@ -15,8 +14,7 @@ interface ModalImportPOProps {
 
 export default function ModalImportPO({ onClose }: ModalImportPOProps) {
   const masterData = useMasterStore();
-  const { addPO, incrementGlobalSequence, poList } = usePOStore();
-  const { addBundles } = useBundleStore();
+  const { incrementGlobalSequence, poList, createPOWithBundles } = usePOStore();
   const { success, error, warning } = useToast();
 
   const [file, setFile] = useState<File | null>(null);
@@ -54,8 +52,8 @@ export default function ModalImportPO({ onClose }: ModalImportPOProps) {
     });
   };
 
-  const handleImport = () => {
-    if (!summary || summary.pos.length === 0) return;
+  const handleImport = async () => {
+    if (!summary || summary.entries.length === 0) return;
 
     // Safety check: block if there are errors (Missing SKU/Client)
     if (summary.errors.length > 0) {
@@ -63,11 +61,35 @@ export default function ModalImportPO({ onClose }: ModalImportPOProps) {
       return;
     }
 
-    // Add to stores
-    summary.pos.forEach(po => addPO(po));
-    addBundles(summary.bundles);
+    setLoading(true);
 
-    success("Impor Berhasil", `${summary.pos.length} PO berhasil diimpor dengan total ${summary.bundles.length} bundle.`);
+    // Proses setiap PO secara atomik via createPOWithBundles (RPC create_po_atomic)
+    // Jika satu PO gagal, PO lain tetap diproses
+    let successCount = 0;
+    let failCount = 0;
+    let totalBundleCount = 0;
+
+    for (const entry of summary.entries) {
+      try {
+        await createPOWithBundles(entry.po, entry.bundles);
+        successCount++;
+        totalBundleCount += entry.bundles.length;
+      } catch (err) {
+        console.error(`[ModalImportPO] Gagal import PO ${entry.po.nomorPO}:`, err);
+        failCount++;
+      }
+    }
+
+    setLoading(false);
+
+    if (failCount === 0) {
+      success("Impor Berhasil", `${successCount} PO berhasil diimpor dengan total ${totalBundleCount} bundle.`);
+    } else if (successCount > 0) {
+      warning("Impor Sebagian", `${successCount} PO berhasil, ${failCount} PO gagal. Periksa koneksi dan coba lagi.`);
+    } else {
+      error("Impor Gagal", `Semua ${failCount} PO gagal diimpor. Periksa koneksi database.`);
+    }
+
     onClose();
   };
 
@@ -129,9 +151,9 @@ export default function ModalImportPO({ onClose }: ModalImportPOProps) {
                   </div>
                 ) : (
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontSize: '14px', color: 'white' }}>
-                    <div>Total Baris Terbaca: <strong>{summary.pos.reduce((acc, p) => acc + p.items.length, 0)} baris</strong></div>
-                    <div>Total PO Unik: <strong>{summary.pos.length} PO</strong></div>
-                    <div>Total Bundel Tiket: <strong>{summary.bundles.length} bundle</strong></div>
+                    <div>Total Baris Terbaca: <strong>{summary.entries.reduce((acc, e) => acc + e.po.items.length, 0)} baris</strong></div>
+                    <div>Total PO Unik: <strong>{summary.entries.length} PO</strong></div>
+                    <div>Total Bundel Tiket: <strong>{summary.totalBundles} bundle</strong></div>
                     <div>Status Validasi: <strong style={{ color: '#4ade80' }}>SIAP IMPOR</strong></div>
                   </div>
                 )}
@@ -145,9 +167,9 @@ export default function ModalImportPO({ onClose }: ModalImportPOProps) {
         <Button 
           variant="primary" 
           onClick={handleImport} 
-          disabled={!summary || summary.errors.length > 0}
+          disabled={!summary || summary.errors.length > 0 || loading}
         >
-          Konfirmasi & Tambahkan ke Antrian
+          {loading ? 'Mengimpor...' : 'Konfirmasi & Tambahkan ke Antrian'}
         </Button>
       </ModalFooter>
     </Modal>

@@ -268,20 +268,24 @@ export const usePOStore = create<POState>((set, get) => ({
     set((state) => ({ poList: state.poList.filter((p) => p.id !== id) }));
 
     try {
-      // Delete PO items terlebih dahulu
+      // Urutan hapus: child → parent (menghindari FK constraint error)
+
+      // 1. Hapus bundle_status_tahap + bundle (via removeBundlesByPO)
+      await useBundleStore.getState().removeBundlesByPO(id);
+
+      // 2. Hapus koreksi terkait PO ini
+      const { useKoreksiStore } = require('./useKoreksiStore');
+      await useKoreksiStore.getState().removeKoreksiByPO(id);
+
+      // 3. Hapus PO items
       await supabase.from('po_item').delete().eq('po_id', id);
 
-      // Delete PO
+      // 4. Hapus purchase_order (parent — terakhir)
       const { error } = await supabase
         .from('purchase_order')
         .delete()
         .eq('id', id);
       if (error) throw error;
-
-      // Cleanup associated bundles and corrections
-      const { useKoreksiStore } = require('./useKoreksiStore');
-      useBundleStore.getState().removeBundlesByPO(id);
-      useKoreksiStore.getState().removeKoreksiByPO(id);
 
       // Log Activity
       const user = useAuthStore.getState().currentUser;
@@ -488,11 +492,19 @@ export const usePOStore = create<POState>((set, get) => ({
       });
     } catch (err) {
       console.error('[usePOStore] createPOWithBundles error:', err);
-      // Rollback lokal
+      // Rollback lokal — PO + globalSequence
       set((state) => ({
         poList: state.poList.filter((p) => p.id !== po.id),
         globalSequence: state.globalSequence - bundles.length,
       }));
+      // Rollback bundle store
+      const bundleBarcodes = bundles.map((b: any) => b.barcode);
+      useBundleStore.setState((state) => ({
+        bundles: state.bundles.filter(
+          (b) => !bundleBarcodes.includes(b.barcode)
+        ),
+      }));
+      throw err; // Lempar ke pemanggil (ModalImportPO) agar bisa handle per-PO
     }
   },
 }));
