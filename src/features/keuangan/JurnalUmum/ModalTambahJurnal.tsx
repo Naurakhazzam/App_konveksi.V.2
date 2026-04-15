@@ -9,6 +9,7 @@ import { usePOStore } from '@/stores/usePOStore';
 import { useInventoryStore } from '@/stores/useInventoryStore';
 import { JenisTransaksi } from '@/types';
 import { formatRupiah } from '@/lib/utils/formatters';
+import AuthGateModal from '@/components/organisms/AuthGateModal/AuthGateModal';
 import styles from './ModalTambahJurnal.module.css';
 
 interface ModalTambahJurnalProps {
@@ -35,6 +36,10 @@ export default function ModalTambahJurnal({ onClose, onConfirm }: ModalTambahJur
     inventoryQty: 0,
     pricePerUnit: 0
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [authGateOpen, setAuthGateOpen] = useState(false);
+  const [pendingData, setPendingData] = useState<any>(null);
 
   const selectedKategori = kategoriTrx.find(k => k.id === formData.kategoriTrxId);
   const isBahanBaku = selectedKategori?.jenis === 'direct_bahan';
@@ -65,16 +70,23 @@ export default function ModalTambahJurnal({ onClose, onConfirm }: ModalTambahJur
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.kategoriTrxId) return;
-    if (formData.nominal <= 0 && !isUpah) return;
+
+    // BUG #27: Nominal validasi
+    if (!isUpah && (!formData.nominal || formData.nominal <= 0)) {
+      alert('Nominal harus lebih dari 0.');
+      return;
+    }
 
     if (isBahanBaku && (!formData.inventoryItemId || formData.inventoryQty <= 0)) {
       alert('Untuk pembelian bahan, mohon pilih item inventory dan jumlahnya.');
       return;
     }
 
+    // BUG #26: Double-submit prevention
+    if (isSubmitting) return;
+
+    // Prepare final data
     const jurnalId = formData.id;
-    
-    // Construct detailed description for materials
     let finalKeterangan = formData.keterangan;
     if (isBahanBaku && selectedItem) {
       const detailStr = `${selectedItem.nama} — ${formData.inventoryQty} ${itemSatuan} @ ${formatRupiah(formData.pricePerUnit)}`;
@@ -87,21 +99,34 @@ export default function ModalTambahJurnal({ onClose, onConfirm }: ModalTambahJur
       keterangan: finalKeterangan
     };
 
-    // Integrasi Inventory Batch (FIFO)
-    if (isBahanBaku && formData.inventoryItemId) {
-      addBatch({
-        id: `BATCH-${Date.now()}`,
-        itemId: formData.inventoryItemId,
-        invoiceNo: formData.noFaktur,
-        qty: formData.inventoryQty,
-        qtyTerpakai: 0,
-        hargaSatuan: formData.pricePerUnit,
-        tanggal: formData.tanggal,
-        keterangan: finalKeterangan
-      });
-    }
+    // BUG #28: AuthGate sebelum eksekusi
+    setPendingData(finalData);
+    setAuthGateOpen(true);
+  };
 
-    onConfirm(finalData);
+  const executeSubmit = async () => {
+    if (!pendingData) return;
+    setIsSubmitting(true);
+    try {
+      // Integrasi Inventory Batch (FIFO)
+      if (isBahanBaku && pendingData.inventoryItemId) {
+        addBatch({
+          id: `BATCH-${Date.now()}`,
+          itemId: pendingData.inventoryItemId,
+          invoiceNo: pendingData.noFaktur,
+          qty: pendingData.inventoryQty,
+          qtyTerpakai: 0,
+          hargaSatuan: pendingData.pricePerUnit,
+          tanggal: pendingData.tanggal,
+          keterangan: pendingData.keterangan
+        });
+      }
+
+      await onConfirm(pendingData);
+    } finally {
+      setIsSubmitting(false);
+      setPendingData(null);
+    }
   };
 
   const handleTogglePO = (poId: string) => {
@@ -274,11 +299,26 @@ export default function ModalTambahJurnal({ onClose, onConfirm }: ModalTambahJur
         </ModalBody>
         <ModalFooter>
           <Button variant="ghost" onClick={onClose} type="button">Batal</Button>
-          <Button variant="primary" type="submit" disabled={isUpah}>
-            Simpan Transaksi
+          <Button variant="primary" type="submit" disabled={isUpah || isSubmitting}>
+            {isSubmitting ? 'Memproses...' : 'Simpan Transaksi'}
           </Button>
         </ModalFooter>
       </form>
+
+      <AuthGateModal
+        isOpen={authGateOpen}
+        onClose={() => {
+          setAuthGateOpen(false);
+          setPendingData(null);
+        }}
+        type="password"
+        onSuccess={() => {
+          setAuthGateOpen(false);
+          executeSubmit();
+        }}
+        title="Otorisasi Pencatatan Jurnal"
+        message="Masukkan password Anda untuk menyetujui transaksi keuangan ini."
+      />
     </Modal>
   );
 }

@@ -293,21 +293,44 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
     const backup = get().kasbon;
     set((state) => ({ kasbon: [...state.kasbon, kasbon] }));
     try {
-      const { error } = await supabase.from('kasbon').insert({
-        id: kasbon.id, karyawan_id: kasbon.karyawanId, jumlah: kasbon.jumlah,
-        tanggal: kasbon.tanggal, keterangan: kasbon.keterangan,
-        status: kasbon.status, lunas: kasbon.status === 'lunas',
+      // Data Kasbon
+      const pKasbon = {
+        id: kasbon.id,
+        karyawanId: kasbon.karyawanId,
+        jumlah: kasbon.jumlah,
+        tanggal: kasbon.tanggal,
+        keterangan: kasbon.keterangan,
+        status: kasbon.status,
+        dibuatOleh: currentUser.id
+      };
+
+      const namaKaryawan = useMasterStore.getState().karyawan.find((k) => k.id === kasbon.karyawanId)?.nama || kasbon.karyawanId;
+
+      // Data Jurnal Pengeluaran
+      const pJurnal = {
+        id: `JRN-KSB-${Date.now()}`,
+        tanggal: kasbon.tanggal,
+        kategori: 'KTR-004', // Menggunakan ID kategori sementara (umumnya KTR-004 untuk Kasbon/Lainnya)
+        jumlah: kasbon.jumlah,
+        keterangan: `Kasbon Pekerja - ${namaKaryawan}`
+      };
+
+      const { error } = await supabase.rpc('record_kasbon_atomic', {
+        p_kasbon: pKasbon,
+        p_jurnal: pJurnal
       });
+      
       if (error) throw error;
 
       useLogStore.getState().addLog({
         user: { id: currentUser.id, nama: currentUser.nama, role: currentUser.roles[0] || 'User' },
-        modul: 'penggajian', aksi: 'Tambah Kasbon', target: kasbon.karyawanId,
-        metadata: { nominal: kasbon.jumlah },
+        modul: 'penggajian', aksi: 'Tambah Kasbon (Atomic)', target: kasbon.karyawanId,
+        metadata: { nominal: kasbon.jumlah, jurnalLanjut: true },
       });
     } catch (err) {
       console.error('[usePayrollStore] addKasbon error:', err);
       set({ kasbon: backup });
+      throw err;
     }
   },
 

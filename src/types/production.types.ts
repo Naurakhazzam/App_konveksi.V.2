@@ -86,6 +86,7 @@ export interface ReturnItem {
   karyawanOriginal: string;             // Person who made the mistake
   karyawanPerbaikan: string | null;     // Person assigned to fix
   alasanRejectId: string;
+  alasanRejectNama?: string;            // NEW: Snapshot nama alasan reject
   jenisReject: 'bisa_diperbaiki' | 'tidak_bisa';
   status: ReturnStatus;
   nominalPotongan: number;              // Same as original wage (punishment)

@@ -182,8 +182,11 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       });
 
       if (inventoryItemId) {
-        const qtyToConsume = meter > 0 ? meter : gram;
-        if (qtyToConsume > 0) {
+        if (!meter || meter <= 0) {
+          warning('Data Bahan', 'Pemakaian kain tidak valid, stok tidak dipotong.');
+        } else {
+          // meter per pcs × jumlah pcs bundle = total meter terpakai
+          const qtyToConsume = meter * bundle.qtyBundle;
           try {
             await useInventoryStore.getState().consumeFIFO(inventoryItemId, qtyToConsume);
           } catch (fifoErr) {
