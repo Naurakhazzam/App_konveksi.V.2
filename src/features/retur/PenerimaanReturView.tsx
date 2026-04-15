@@ -47,30 +47,33 @@ export default function PenerimaanReturView() {
     return st.karyawan ? karyawan.find(k => k.id === st.karyawan) : null;
   };
 
-  const calcPenalty = () => {
+  const calcPenalty = (): number | null => {
     if (!foundBundle) return 0;
-    
-    // 1. Dapatkan Produk ID dari bundle ini
-    // Untuk dummy, kita cari produk yang cocok dengan model + warna + size
-    const prd = (useMasterStore.getState() as any).produk.find((p: any) => 
-      p.modelId === foundBundle.model && 
-      p.warnaId === foundBundle.warna && 
+
+    // 1. Cari produk yang cocok dengan model + warna + size dari bundle
+    const prd = (useMasterStore.getState() as any).produk.find((p: any) =>
+      p.modelId === foundBundle.model &&
+      p.warnaId === foundBundle.warna &&
       p.sizeId === foundBundle.size
     );
+    if (!prd) return null; // Produk tidak ditemukan di master
 
-    if (!prd) return 7500 * qtyRetur; // Fallback jika tidak ditemukan
+    // 2. Cari ID komponen "Upah Jahit" secara dinamis dari master HPP
+    const komponenJahit = hppKomponen.find(k => k.nama === 'Upah Jahit');
+    if (!komponenJahit) return null; // Komponen tidak ditemukan di master
 
-    // 2. Cari komponen 'Upah Jahit' (KOMP-010) untuk produk ini
-    const hppItem = produkHPPItems.find(h => h.produkId === prd.id && h.komponenId === 'KOMP-010');
-    
-    if (!hppItem) return 7500 * qtyRetur; // Fallback
+    // 3. Cari harga upah jahit untuk produk ini
+    const hppItem = produkHPPItems.find(h =>
+      h.produkId === prd.id && h.komponenId === komponenJahit.id
+    );
+    if (!hppItem) return null; // HPP item tidak ditemukan
 
     return hppItem.harga * qtyRetur;
   };
 
   const handleConfirm = () => {
     if (!selectedAlasan) return alert('Pilih alasan retur');
-    
+
     // ANTI-LEAK: Cek jika sudah pernah diretur dan belum selesai
     const { isBarcodeInReturn } = useReturnStore.getState();
     if (isBarcodeInReturn(foundBundle.barcode)) {
@@ -81,6 +84,9 @@ export default function PenerimaanReturView() {
     if (!worker) return alert('Karyawan asal tidak ditemukan di riwayat bundle ini.');
 
     const penalty = calcPenalty();
+    if (penalty === null) {
+      return alert('Gagal: Data HPP "Upah Jahit" untuk produk ini tidak ditemukan di master data. Pastikan produk dan komponen HPP sudah diisi dengan benar.');
+    }
     const now = new Date().toISOString();
     const returnId = `RET-${Date.now()}`;
 
@@ -208,7 +214,10 @@ export default function PenerimaanReturView() {
                 <div className={styles.divider} />
                 <div className={styles.penaltyInfo}>
                   <Label>Estimasi Potongan Upah:</Label>
-                  <Heading level={3} color="red">-{formatRupiah(calcPenalty())}</Heading>
+                  {calcPenalty() === null
+                    ? <span style={{ color: 'var(--color-status-danger)', fontSize: '13px' }}>⚠️ Data HPP Upah Jahit tidak ditemukan di master</span>
+                    : <Heading level={3} color="red">-{formatRupiah(calcPenalty() as number)}</Heading>
+                  }
                 </div>
 
                 <Button variant="primary" fullWidth onClick={handleConfirm} disabled={!selectedAlasan}>
