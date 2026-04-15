@@ -77,7 +77,7 @@ export default function MonitoringStatusPO({ poList, bundles, sequenceIndex }: M
   const columnsBelum: Column<PurchaseOrder>[] = [
     { key: 'nomorPO', header: 'Nomor PO', render: (v) => <strong>{v}</strong> },
     { key: 'klienId', header: 'Klien', render: (v) => getKlienName(v) },
-    { key: 'tanggalInput', header: 'Tgl Input' },
+    { key: 'tanggalInput', header: 'Tgl Input', render: (val) => val ? new Date(val).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-' },
     { key: 'items', header: 'Total QTY', render: (v: any[]) => v.reduce((sum, i) => sum + i.qty, 0) + ' pcs' },
     { key: 'id', header: 'Action', render: (v) => <Badge variant="neutral">Antri</Badge> }
   ];

@@ -107,7 +107,7 @@ export default function DetailPO({ poId }: DetailPOProps) {
         <div className={styles.header}>
           <div>
             <Heading level={3}>{po.nomorPO}</Heading>
-            <p>Klien: {clientName} | Tanggal: {po.tanggalInput}</p>
+            <p>Klien: {clientName} | Tanggal: {new Date(po.tanggalInput).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
           </div>
           <div>
             <Button 

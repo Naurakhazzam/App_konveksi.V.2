@@ -63,7 +63,7 @@ export default function InputPOView() {
       </span>
     )},
     { key: 'klienId', header: 'Klien' }, // normally map to client name
-    { key: 'tanggalInput', header: 'Tanggal Input' },
+    { key: 'tanggalInput', header: 'Tanggal Input', render: (val) => val ? new Date(val).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : '-' },
     { key: 'itemsCount', header: 'Jumlah Artikel', render: (_, row: any) => row.items?.length || 0 },
     { key: 'itemsQty', header: 'Total QTY', render: (_, row: any) => row.items?.reduce((acc: number, curr: any) => acc + curr.qty, 0) || 0 },
     { key: 'status', header: 'Status', render: (val) => {
