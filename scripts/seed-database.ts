@@ -9,12 +9,6 @@
  * Script ini aman dijalankan berkali-kali (menggunakan upsert, bukan insert).
  */
 
-import * as dotenv from 'dotenv';
-import { resolve } from 'path';
-
-// Load .env.local dari root project
-dotenv.config({ path: resolve(process.cwd(), '.env.local') });
-
 import { createClient } from '@supabase/supabase-js';
 import {
   initialClients,
