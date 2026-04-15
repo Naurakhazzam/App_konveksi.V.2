@@ -208,8 +208,8 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       }
       updateStatusTahap(bundle.barcode, tahap, {
         status: 'selesai',
-        qtyTerima: qtySelesai,
-        qtySelesai: qtySelesai,
+        qtyTerima: bundle.qtyBundle,   // Qty yg MASUK cutting = target dari PO
+        qtySelesai: qtySelesai,         // Qty yg KELUAR cutting = input aktual operator
         waktuTerima: now,
         waktuSelesai: now,
         karyawan: selectedKaryawan,
