@@ -276,6 +276,18 @@ export const usePOStore = create<POState>((set, get) => ({
       );
     }
 
+    // BUG #23: Guard hapus PO dengan retur aktif
+    const { useReturnStore } = require('./useReturnStore');
+    const returnStore = useReturnStore.getState();
+    const activeReturns = returnStore.returns?.filter(
+      (r: any) => r.poId === id && r.status !== 'selesai'
+    ) ?? [];
+    if (activeReturns.length > 0) {
+      throw new Error(
+        `PO tidak bisa dihapus. Terdapat ${activeReturns.length} retur aktif yang belum selesai. Selesaikan proses retur terlebih dahulu.`
+      );
+    }
+
     // Optimistic update
     set((state) => ({ poList: state.poList.filter((p) => p.id !== id) }));
 

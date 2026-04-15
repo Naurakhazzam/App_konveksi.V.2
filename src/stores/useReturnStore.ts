@@ -8,6 +8,7 @@ interface ReturnState {
 
   loadReturns: () => Promise<void>;
   addReturn: (item: ReturnItem) => Promise<void>;
+  processReturnAtomic: (returnItem: ReturnItem, ledgerEntry: Record<string, any>, bundleBarcode: string) => Promise<void>;
   updateReturnStatus: (id: string, status: ReturnStatus, updates?: Partial<ReturnItem>) => Promise<void>;
   getReturnByBarcode: (barcode: string) => ReturnItem | undefined;
   isBarcodeInReturn: (barcode: string) => boolean;
@@ -30,6 +31,7 @@ function mapReturn(row: any): ReturnItem {
     karyawanOriginal: row.karyawan_original ?? '',
     karyawanPerbaikan: row.karyawan_perbaikan ?? null,
     alasanRejectId: row.alasan_reject_id ?? '',
+    alasanRejectNama: row.alasan_reject_nama ?? '',
     jenisReject: row.jenis_reject,
     status: row.status,
     nominalPotongan: Number(row.nominal_potongan ?? 0),
@@ -139,6 +141,48 @@ export const useReturnStore = create<ReturnState>((set, get) => ({
 
   getPendingReturns: () =>
     get().returns.filter((r) => r.status !== 'selesai'),
+
+  // ── PROCESS RETURN (ATOMIC VIA RPC) ──────────────────────────────────────
+
+  processReturnAtomic: async (returnItem, ledgerEntry, bundleBarcode) => {
+    // Backup state sebelum optimistic update
+    const backup = get().returns;
+
+    // Optimistic update
+    set((state) => ({ returns: [returnItem, ...state.returns] }));
+
+    try {
+      const returnPayload = {
+        id: returnItem.id,
+        barcode: returnItem.barcode,
+        po_id: returnItem.poId,
+        klien_id: returnItem.klienId,
+        artikel_nama: returnItem.artikelNama,
+        alasan_reject_id: returnItem.alasanRejectId,
+        alasan_reject_nama: (returnItem as any).alasanRejectNama ?? '',
+        original_size: returnItem.originalSize,
+        current_size: returnItem.currentSize,
+        karyawan_original: returnItem.karyawanOriginal,
+        jenis_reject: returnItem.jenisReject,
+        nominal_potongan: returnItem.nominalPotongan,
+        qty_bundle: returnItem.qtyBundle,
+        waktu_diterima: returnItem.waktuDiterima,
+      };
+
+      const { error } = await supabase.rpc('process_return_atomic', {
+        p_return_item: returnPayload,
+        p_ledger_entry: ledgerEntry,
+        p_bundle_barcode: bundleBarcode,
+      });
+
+      if (error) throw error;
+    } catch (err) {
+      console.error('[useReturnStore] processReturnAtomic error:', err);
+      // Rollback ke state sebelum update
+      set({ returns: backup });
+      throw err;
+    }
+  },
 
   // ── REMOVE BY BARCODE ─────────────────────────────────────────────────────
 

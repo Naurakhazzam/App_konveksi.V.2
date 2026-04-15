@@ -46,7 +46,6 @@ export default function StationPerbaikanView() {
     const now = new Date().toISOString();
 
     // 1. Create PENDING (Escrow) Ledger Entry
-    // This is the money that WILL be paid/restored ONLY IF the item is shipped.
     addLedgerEntry({
       id: `ESC-RET-${Date.now()}`,
       karyawanId: repairerId,
@@ -55,21 +54,27 @@ export default function StationPerbaikanView() {
         ? `RESTITUSI PERBAIKAN (SELF) - ${foundReturn.barcode}`
         : `UPAH PERBAIKAN (OTHER) - ${foundReturn.barcode}`,
       sumberId: foundReturn.barcode,
-      total: foundReturn.nominalPotongan, // The original wage amount
+      total: foundReturn.nominalPotongan,
       tipe: assignmentType === 'self' ? 'rework' : 'selesai',
-      status: 'escrow' // Key: Not in payroll balance until activated
+      status: 'escrow'
     });
 
-    // 2. Update Return Store
-    updateReturnStatus(foundReturn.id, 'siap_kirim', {
+    // BUG #24: Set ke proses_perbaikan dulu, bukan langsung siap_kirim
+    updateReturnStatus(foundReturn.id, 'proses_perbaikan', {
       karyawanPerbaikan: repairerId,
       isSelfRepair: assignmentType === 'self',
       waktuPerbaikan: now
     });
 
-    alert(`Tugas perbaikan berhasil diberikan ke ${karyawan.find(k => k.id === repairerId)?.nama}. Upah akan cair setelah barang dikirim.`);
+    alert(`Tugas perbaikan berhasil diberikan ke ${karyawan.find(k => k.id === repairerId)?.nama}. Selesaikan perbaikan lalu klik "Selesai Perbaikan".`);
     setFoundReturn(null);
     setSearch('');
+  };
+
+  // BUG #24: Fungsi baru — tandai perbaikan selesai → siap_kirim
+  const handleSelesaiPerbaikan = (ret: any) => {
+    if (!confirm(`Tandai perbaikan bundle ${ret.barcode} sudah selesai dan siap dikirim kembali?`)) return;
+    updateReturnStatus(ret.id, 'siap_kirim', {});
   };
 
   return (
@@ -187,7 +192,17 @@ export default function StationPerbaikanView() {
                 { 
                   key: 'status', 
                   header: 'Status', 
-                  render: v => <Badge variant="neutral">{v.toUpperCase()}</Badge> 
+                  render: v => <Badge variant={v === 'proses_perbaikan' ? 'warning' : 'info'}>{v.replace('_', ' ').toUpperCase()}</Badge> 
+                },
+                {
+                  // BUG #24: Tombol Selesai Perbaikan hanya muncul saat proses_perbaikan
+                  key: 'id',
+                  header: 'Aksi',
+                  render: (_, row) => row.status === 'proses_perbaikan' ? (
+                    <Button variant="primary" size="sm" onClick={() => handleSelesaiPerbaikan(row)}>
+                      ✅ Selesai Perbaikan
+                    </Button>
+                  ) : <span style={{ opacity: 0.4 }}>Siap Kirim</span>
                 }
               ]} 
               data={activeList} 
