@@ -375,7 +375,7 @@ export const usePOStore = create<POState>((set, get) => ({
           }
 
           if (qtyToConsume > 0) {
-            invStore.consumeFIFO(data.inventoryItemId, qtyToConsume);
+            await invStore.consumeFIFO(data.inventoryItemId, qtyToConsume);
             useLogStore.getState().addLog({
               user: { id: 'SYSTEM', nama: 'System', role: 'System' },
               modul: 'inventory',
