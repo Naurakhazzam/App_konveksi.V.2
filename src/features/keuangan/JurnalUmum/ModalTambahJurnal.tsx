@@ -56,7 +56,11 @@ export default function ModalTambahJurnal({ onClose, onConfirm }: ModalTambahJur
   // Auto-generate invoice number when isBahanBaku becomes true
   useEffect(() => {
     if (isBahanBaku && !formData.noFaktur) {
-      setFormData(prev => ({ ...prev, noFaktur: generateInvoiceNo() }));
+      // generateInvoiceNo sekarang async (RPC) — harus await sebelum set state
+      (async () => {
+        const invoiceNo = await generateInvoiceNo();
+        setFormData(prev => ({ ...prev, noFaktur: invoiceNo }));
+      })();
     }
   }, [isBahanBaku, generateInvoiceNo, formData.noFaktur]);
 
@@ -108,20 +112,10 @@ export default function ModalTambahJurnal({ onClose, onConfirm }: ModalTambahJur
     if (!pendingData) return;
     setIsSubmitting(true);
     try {
-      // Integrasi Inventory Batch (FIFO)
-      if (isBahanBaku && pendingData.inventoryItemId) {
-        addBatch({
-          id: `BATCH-${Date.now()}`,
-          itemId: pendingData.inventoryItemId,
-          invoiceNo: pendingData.noFaktur,
-          qty: pendingData.inventoryQty,
-          qtyTerpakai: 0,
-          hargaSatuan: pendingData.pricePerUnit,
-          tanggal: pendingData.tanggal,
-          keterangan: pendingData.keterangan
-        });
-      }
-
+      // CATATAN: Tidak memanggil addBatch() di sini.
+      // RPC record_purchase_atomic (via onConfirm → useJurnalStore.addEntry)
+      // sudah menangani INSERT inventory_batch + UPDATE stok secara atomik.
+      // Memanggil addBatch() secara terpisah akan menyebabkan double-stok (BUG #29).
       await onConfirm(pendingData);
     } finally {
       setIsSubmitting(false);

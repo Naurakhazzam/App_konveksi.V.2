@@ -23,8 +23,10 @@ interface InventoryState {
   consumeFIFO: (itemId: string, qtyNeeded: number) => Promise<{
     totalCost: number;
     consumedBatches: { batchId: string; qty: number; harga: number }[];
+    insufficient?: boolean;
+    qtyShortfall?: number;
   }>;
-  generateInvoiceNo: () => string;
+  generateInvoiceNo: () => Promise<string>;
   getHargaRataRata: (itemId: string) => number;
   convertToMeter: (val: number, fromUnit: string) => number;
 }
@@ -175,6 +177,14 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
       return;
     }
 
+    // BUG #32: Validasi sebelum operasi
+    if (!batch.qty || batch.qty <= 0) {
+      throw new Error('Qty batch harus lebih dari 0.');
+    }
+    if (!batch.hargaSatuan || batch.hargaSatuan <= 0) {
+      throw new Error('Harga satuan harus lebih dari 0.');
+    }
+
     // 1. Update lokal
     set((state) => ({ batches: [...state.batches, batch] }));
     await get().updateStock(batch.itemId, batch.qty);
@@ -243,74 +253,79 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
 
   // ── GENERATE INVOICE NO ───────────────────────────────────────────────────
 
-  generateInvoiceNo: () => {
-    const { invoiceCounter } = get();
-    const date = new Date();
-    const dd = String(date.getDate()).padStart(2, '0');
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const yy = String(date.getFullYear()).slice(-2);
-    const nextNo = String(invoiceCounter).padStart(4, '0');
-    const invoiceNo = `${nextNo}/INV/${dd}/${mm}/${yy}`;
-    set({ invoiceCounter: invoiceCounter + 1 });
-    return invoiceNo;
+  // BUG #31: generateInvoiceNo sekarang async — menggunakan DB SEQUENCE agar
+  // nomor invoice tidak reset saat halaman di-refresh.
+  generateInvoiceNo: async () => {
+    const { data, error } = await supabase.rpc('get_next_invoice_number');
+    if (error) {
+      // Fallback ke timestamp jika RPC gagal
+      console.error('[useInventoryStore] get_next_invoice_number failed, using fallback:', error);
+      return `FALLBACK-${Date.now()}`;
+    }
+    return data as string;
   },
 
-  // ── CONSUME FIFO ──────────────────────────────────────────────────────────
-  // Logika FIFO tidak berubah. Yang bertambah: update qty_terpakai di Supabase.
-
+  // BUG #30: consumeFIFO sekarang memanggil RPC atomic dengan SELECT FOR UPDATE.
+  // Keuntungan:
+  //   - Mencegah race condition antar dua operator scan bersamaan
+  //   - Rollback otomatis jika sebagian update gagal (single DB transaction)
+  //   - Stok tidak bisa negatif (UPDATE menggunakan GREATEST(0, ...))
+  //   - Mengembalikan flag insufficient + qtyShortfall untuk warning UI
   consumeFIFO: async (itemId, qtyNeeded) => {
-    const { batches } = get();
+    const { data, error } = await supabase.rpc('consume_fifo_atomic', {
+      p_item_id  : itemId,
+      p_qty_needed: qtyNeeded,
+    });
 
-    // --- Kalkulasi FIFO (sama persis seperti sebelumnya) ---
-    const relevantBatches = batches
-      .filter((b) => b.itemId === itemId && b.qty - b.qtyTerpakai > 0)
-      .sort((a, b) => new Date(a.tanggal).getTime() - new Date(b.tanggal).getTime());
+    if (error) throw error;
 
-    let remainingToConsume = qtyNeeded;
-    let totalCost = 0;
-    const consumedDetails: { batchId: string; qty: number; harga: number }[] = [];
-    const updatedBatches = [...batches];
-
-    for (const batch of relevantBatches) {
-      if (remainingToConsume <= 0) break;
-
-      const availableInBatch = batch.qty - batch.qtyTerpakai;
-      const amountToTake = Math.min(availableInBatch, remainingToConsume);
-
-      consumedDetails.push({ batchId: batch.id, qty: amountToTake, harga: batch.hargaSatuan });
-      totalCost += amountToTake * batch.hargaSatuan;
-      remainingToConsume -= amountToTake;
-
-      const batchIdx = updatedBatches.findIndex((b) => b.id === batch.id);
-      if (batchIdx !== -1) {
-        updatedBatches[batchIdx] = {
-          ...updatedBatches[batchIdx],
-          qtyTerpakai: updatedBatches[batchIdx].qtyTerpakai + amountToTake,
-        };
-      }
-    }
-
-    // Update state lokal
-    set({ batches: updatedBatches });
-    await get().updateStock(itemId, -qtyNeeded);
-
-    // --- Simpan perubahan qty_terpakai ke Supabase secara paralel ---
+    // Refresh state batches dari DB setelah konsumsi agar UI tetap akurat
     try {
-      await Promise.all(
-        consumedDetails.map(({ batchId, qty }) => {
-          const updatedBatch = updatedBatches.find((b) => b.id === batchId);
-          if (!updatedBatch) return Promise.resolve();
-          return supabase
-            .from('inventory_batch')
-            .update({ qty_terpakai: updatedBatch.qtyTerpakai })
-            .eq('id', batchId);
-        })
-      );
-    } catch (err) {
-      console.error('[useInventoryStore] consumeFIFO Supabase sync error:', err);
+      const { data: batchRows } = await supabase
+        .from('inventory_batch')
+        .select('*')
+        .eq('item_id', itemId)
+        .order('tanggal', { ascending: true });
+
+      if (batchRows) {
+        const updatedBatches = batchRows.map(mapBatch);
+        set((state) => ({
+          batches: [
+            ...state.batches.filter((b) => b.itemId !== itemId),
+            ...updatedBatches,
+          ],
+        }));
+      }
+
+      // Sync stok di items state
+      const { data: itemRow } = await supabase
+        .from('inventory_item')
+        .select('stok')
+        .eq('id', itemId)
+        .single();
+      if (itemRow) {
+        set((state) => ({
+          items: state.items.map((i) =>
+            i.id === itemId ? { ...i, stokAktual: Number(itemRow.stok) } : i
+          ),
+        }));
+      }
+    } catch (refreshErr) {
+      console.warn('[useInventoryStore] consumeFIFO state refresh failed:', refreshErr);
     }
 
-    return { totalCost, consumedBatches: consumedDetails };
+    if (data.insufficient) {
+      console.warn(
+        `[consumeFIFO] Stok tidak cukup untuk item ${itemId}. Shortfall: ${data.qtyShortfall}`
+      );
+    }
+
+    return {
+      totalCost: Number(data.totalCost ?? 0),
+      consumedBatches: data.consumedBatches ?? [],
+      insufficient: data.insufficient ?? false,
+      qtyShortfall: data.qtyShortfall ?? 0,
+    };
   },
 
   // ── HELPERS ───────────────────────────────────────────────────────────────

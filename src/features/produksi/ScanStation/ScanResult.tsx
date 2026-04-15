@@ -188,7 +188,14 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
           // meter per pcs × jumlah pcs bundle = total meter terpakai
           const qtyToConsume = meter * bundle.qtyBundle;
           try {
-            await useInventoryStore.getState().consumeFIFO(inventoryItemId, qtyToConsume);
+            const fifoResult = await useInventoryStore.getState().consumeFIFO(inventoryItemId, qtyToConsume);
+            // BUG #30: Tampilkan warning jika stok tidak mencukupi — produksi tetap lanjut
+            if (fifoResult.insufficient) {
+              warning(
+                'Stok Tidak Cukup',
+                `Stok bahan tidak mencukupi (kurang ${fifoResult.qtyShortfall?.toFixed(2)} unit). Produksi tetap lanjut, harap segera input pembelian bahan.`
+              );
+            }
           } catch (fifoErr) {
             console.error('[ScanResult] consumeFIFO gagal', fifoErr);
             warning('Peringatan Stok', 'Kain terpakai tapi gagal memotong stok gudang secara otomatis.');

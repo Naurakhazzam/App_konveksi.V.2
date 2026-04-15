@@ -26,10 +26,19 @@ export default function FormBahanBaku({ onClose, onConfirm, item }: FormBahanBak
     stokMinimum: 0
   });
 
+  // BUG #33: Proteksi double-submit
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.nama || !formData.satuanId) return;
-    onConfirm(formData);
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      onConfirm(formData);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -109,7 +118,9 @@ export default function FormBahanBaku({ onClose, onConfirm, item }: FormBahanBak
         </ModalBody>
         <ModalFooter>
           <Button variant="ghost" onClick={onClose} type="button">Batal</Button>
-          <Button variant="primary" type="submit">Simpan Bahan Baku</Button>
+          <Button variant="primary" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Menyimpan...' : 'Simpan Bahan Baku'}
+          </Button>
         </ModalFooter>
       </form>
     </Modal>
