@@ -25,22 +25,26 @@ export default function ListAntrianTahap({ tahap }: ListAntrianTahapProps) {
   const prevStageIdx = TAHAP_ORDER.indexOf(tahap) - 1;
   const prevStage = prevStageIdx >= 0 ? TAHAP_ORDER[prevStageIdx] : null;
 
+  const { koreksiList } = useKoreksiStore(); // Get corrections for real qty calculation
+
   const data = useMemo(() => {
-    const list: (Bundle & { viewStatus: string, viewStatusType: string })[] = [];
+    const list: (Bundle & { viewStatus: string, viewStatusType: string, expectedQty: number })[] = [];
 
     bundles.forEach(b => {
       const currentST = b.statusTahap[tahap];
+      // W-05: Hitung expected qty sekali saja di sini (memoized)
+      const expectedQty = getExpectedQTY(b, tahap, koreksiList);
 
       // 1. ANTRIAN MASUK (Sudah selesai di tahap sebelumnya, tapi belum di-terima di tahap ini)
       if (prevStage && b.statusTahap[prevStage].status === 'selesai' && currentST.status === null) {
-        list.push({ ...b, viewStatus: `Menunggu Antrian ${TAHAP_LABEL[tahap]}`, viewStatusType: 'warning' });
+        list.push({ ...b, viewStatus: `Menunggu Antrian ${TAHAP_LABEL[tahap]}`, viewStatusType: 'warning', expectedQty });
         return;
       }
 
       // 2. PROSES (Sedang dikerjakan di tahap ini)
       let isProses = false;
       if (tahap === 'cutting') {
-        const po = poList.find(p => p.id === b.po); // Fix: use p.id
+        const po = poList.find(p => p.id === b.po);
         const item = po?.items.find(i => i.modelId === b.model && i.warnaId === b.warna && i.sizeId === b.size);
         if (item?.statusCutting === 'started' && currentST.status === null) {
           isProses = true;
@@ -52,7 +56,7 @@ export default function ListAntrianTahap({ tahap }: ListAntrianTahapProps) {
       }
 
       if (isProses) {
-        list.push({ ...b, viewStatus: `Sedang Proses ${TAHAP_LABEL[tahap]}`, viewStatusType: 'info' });
+        list.push({ ...b, viewStatus: `Sedang Proses ${TAHAP_LABEL[tahap]}`, viewStatusType: 'info', expectedQty });
         return;
       }
 
@@ -70,14 +74,13 @@ export default function ListAntrianTahap({ tahap }: ListAntrianTahapProps) {
         let label = '';
         if (tahap === 'packing') label = 'Menunggu Pengiriman';
         else label = `Selesai ${TAHAP_LABEL[tahap]} (Menunggu ${TAHAP_LABEL[nextStage!]})`;
-        list.push({ ...b, viewStatus: label, viewStatusType: 'success' });
+        list.push({ ...b, viewStatus: label, viewStatusType: 'success', expectedQty });
       }
     });
 
     return list;
-  }, [bundles, poList, tahap, nextStage, prevStage]);
+  }, [bundles, poList, tahap, nextStage, prevStage, koreksiList]);
 
-  const { koreksiList } = useKoreksiStore(); // Get corrections for real qty calculation
 
   const columns: Column<any>[] = [
     { key: 'po', header: 'Nomor PO', render: (val) => <strong>{val}</strong> },
@@ -101,7 +104,7 @@ export default function ListAntrianTahap({ tahap }: ListAntrianTahapProps) {
       header: 'Isi (pcs)', 
       align: 'center',
       render: (_, row) => {
-        const expected = getExpectedQTY(row, tahap, koreksiList);
+        const expected = row.expectedQty;
         const isShort = expected < row.qtyBundle;
         return (
           <div style={{ color: isShort ? '#ef4444' : 'inherit', fontWeight: isShort ? 'bold' : 'normal' }}>

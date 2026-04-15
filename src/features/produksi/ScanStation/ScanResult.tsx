@@ -284,7 +284,14 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
 
     // 3. Catat Upah ke Payroll — WAJIB di-await (data gaji karyawan)
     const operatorId = currentStatus.karyawan || selectedKaryawan;
-    if (operatorId && qtySelesai > 0) {
+
+    if (needsKaryawan && (!operatorId || operatorId.trim() === '')) {
+      console.warn('[ScanResult] Upah tidak dicatat: Operator ID tidak ditemukan.');
+      warning(
+        'Upah Gagal Dicatat',
+        `Karyawan yang bertanggung jawab di tahap ${TAHAP_LABEL[tahap]} tidak ditemukan. Upah borongan untuk bundle ini tidak masuk ke payroll.`
+      );
+    } else if (operatorId && qtySelesai > 0) {
       const upahPerPcs = calcNominalPotongan('upah_tahap', tahap, 1);
       const totalUpah = upahPerPcs * qtySelesai;
 
@@ -304,7 +311,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         console.error('[ScanResult] Gagal catat upah ke payroll:', payrollErr);
         warning(
           'Peringatan: Upah Tidak Tercatat',
-          `Bundle ${bundle.barcode} ditandai selesai, tapi upah ${TAHAP_LABEL[tahap]} gagal disimpan. Hubungi admin untuk input manual.`
+          `Bundle ${bundle.barcode} ditandai selesai, tapi upah ${TAHAP_LABEL[tahap]} gagal disimpan (Database Issue). Hubungi admin.`
         );
       }
     }
@@ -336,6 +343,15 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
 
     const nominal = calcNominalPotongan(dampakPotongan, tahapBertanggungJawab, qtyKurang);
     const koreksiId = `KOR-${Date.now()}`;
+
+    // C-04: Validasi penanggung jawab (terutama untuk Hilang/Salah Hitung)
+    if (nominal > 0 && (!karyawanBertanggungJawab || karyawanBertanggungJawab.trim() === '')) {
+      const targetLabel = TAHAP_LABEL[tahapBertanggungJawab as TahapKey] || tahapBertanggungJawab;
+      warning(
+        'Koreksi Terbatas',
+        `Operator penanggung jawab di tahap ${targetLabel} tidak ditemukan. Koreksi akan dicatat tanpa potongan gaji otomatis.`
+      );
+    }
 
     await addKoreksi({
       id: koreksiId,
@@ -615,6 +631,10 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         onConfirm={handleKoreksiKurangConfirm}
         qtyKurang={(currentStatus.qtyTerima ?? qtyTerimaDefault) - pendingQtySelesai}
         tahapSaatIni={TAHAP_LABEL[tahap]}
+        prevTahapLabel={(() => {
+          const prev = getPrevTahap(tahap);
+          return prev ? TAHAP_LABEL[prev] : undefined;
+        })()}
       />
       <ModalKoreksiLebih
         open={showKoreksiLebih}

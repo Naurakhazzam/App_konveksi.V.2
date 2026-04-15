@@ -21,6 +21,7 @@ interface ModalKoreksiKurangProps {
   onConfirm: (result: KoreksiKurangResult) => void;
   qtyKurang: number;
   tahapSaatIni: string;
+  prevTahapLabel?: string;
 }
 
 export function ModalKoreksiKurang({
@@ -29,6 +30,7 @@ export function ModalKoreksiKurang({
   onConfirm,
   qtyKurang,
   tahapSaatIni,
+  prevTahapLabel,
 }: ModalKoreksiKurangProps) {
   const { alasanReject } = useMasterStore();
   const [jenis, setJenis] = useState<'reject' | 'hilang' | 'salah_hitung' | ''>('');
@@ -115,13 +117,13 @@ export function ModalKoreksiKurang({
 
         {jenis === 'hilang' && (
           <div className={styles.infoBox} data-type="info">
-            Potongan akan dibebankan ke tahap sebelumnya ({tahapSaatIni}) sebesar upah × {qtyKurang} pcs.
+            Potongan akan dibebankan ke **Tahap {prevTahapLabel || 'Sebelumnya'}** sebesar upah × {qtyKurang} pcs.
           </div>
         )}
 
         {jenis === 'salah_hitung' && (
           <div className={styles.infoBox} data-type="info">
-            Potongan akan dibebankan ke tahap sebelumnya sebesar upah × {qtyKurang} pcs.
+            Potongan akan dibebankan ke **Tahap {prevTahapLabel || 'Sebelumnya'}** karena selisih hitung × {qtyKurang} pcs.
           </div>
         )}
 
