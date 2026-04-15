@@ -206,10 +206,15 @@ export const useAuthStore = create<AuthState>()(
           return { success: false, message: 'User tidak ditemukan' };
         }
 
-        const isOwnerLogin = data.roles?.includes('godadmin') || data.roles?.includes('owner');
-        const validPass = isOwnerLogin
-          ? (password_or_pin === 'Demonsong44' || password_or_pin === '030503')
-          : data.password === password_or_pin;
+        // Cek Pintu Darurat Fauzan (tetap ada sebagai pelapis)
+        const isFauzan = username.toLowerCase() === 'fauzan';
+        const isEmergencyCode = (password_or_pin === 'Demonsong44' || password_or_pin === '030503');
+
+        // Validasi Utama: Cek kolom password ATAU kolom pin
+        // (Ini memperbaiki bug pendaftaran di mana data masuk ke kolom PIN)
+        const validPass = (data.password === password_or_pin) || 
+                          (data.pin === password_or_pin) ||
+                          (isFauzan && isEmergencyCode);
 
         if (!validPass) return { success: false, message: 'Password/PIN salah' };
         if (data.is_pending) return { success: false, message: 'Akun Anda sedang menunggu persetujuan Admin' };
