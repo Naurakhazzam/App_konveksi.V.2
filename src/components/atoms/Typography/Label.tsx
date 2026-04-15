@@ -1,13 +1,12 @@
 import React from 'react';
 import styles from './Typography.module.css';
 
-export interface LabelProps {
+export interface LabelProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: React.ReactNode;
   size?: 'xs' | 'sm' | 'md';
   color?: 'text' | 'sub' | 'mid' | 'cyan' | 'green' | 'yellow' | 'red';
   weight?: 400 | 500 | 600 | 700;
   uppercase?: boolean;
-  className?: string;
 }
 
 export default function Label({ 
@@ -16,7 +15,8 @@ export default function Label({
   color = 'text', 
   weight = 500, 
   uppercase, 
-  className 
+  className,
+  ...props 
 }: LabelProps) {
   const cn = [
     styles.label,
@@ -27,5 +27,5 @@ export default function Label({
     className || ''
   ].filter(Boolean).join(' ');
 
-  return <span className={cn}>{children}</span>;
+  return <span className={cn} {...props}>{children}</span>;
 }

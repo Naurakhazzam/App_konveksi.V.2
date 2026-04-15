@@ -262,6 +262,15 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
   ) => {
     const now = new Date().toISOString();
     const operatorId = currentStatus.karyawan || selectedKaryawan;
+
+    // C-05: Blokir jika tahap ini wajib operator tapi belum dipilih
+    if (needsKaryawan && (!operatorId || operatorId.trim() === '')) {
+      warning(
+        'Operator Belum Dipilih',
+        `Pilih operator terlebih dahulu sebelum menyelesaikan tahap ${TAHAP_LABEL[tahap]}.`
+      );
+      return;
+    }
     const upahPerPcs = calcNominalPotongan('upah_tahap', tahap, 1);
     const totalUpah = upahPerPcs * qtySelesai;
 
@@ -336,7 +345,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
 
     // Cari karyawan di tahap yang bertanggungjawab pada bundle ini
     const statusBertanggungjawab = bundle.statusTahap[tahapBertanggungJawab as TahapKey] || bundle.statusTahap[tahap];
-    const karyawanBertanggungJawab = statusBertanggungjawab?.karyawan || '';
+    const karyawanBertanggungJawab = statusBertanggungjawab?.karyawan ?? null;
 
     const nominal = calcNominalPotongan(dampakPotongan, tahapBertanggungJawab, qtyKurang);
     const koreksiId = `KOR-${Date.now()}`;
@@ -409,7 +418,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       tahapDitemukan: tahap,
       tahapBertanggungJawab: tahap,
       karyawanPelapor: currentUser?.nama || selectedKaryawan || 'SYSTEM',
-      karyawanBertanggungJawab: currentStatus.karyawan || '',
+      karyawanBertanggungJawab: currentStatus.karyawan ?? null,
       jenisKoreksi: 'lebih',
       alasanLebih: result.alasanLebih,
       alasanLebihText: result.alasanLebihText,
@@ -599,53 +608,4 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         </Button>
       </div>
 
-      <ModalQtySelesai
-        open={showQtyModal}
-        onClose={() => setShowQtyModal(false)}
-        onConfirm={handleQtyConfirm}
-        qtyTerima={currentStatus.status === 'terima' ? (currentStatus.qtyTerima ?? 0) : qtyTerimaDefault}
-        tahap={tahap}
-        title={tahap === 'cutting' && currentStatus.status === null ? "Input Hasil Potong (Actual Yield)" : undefined}
-      />
-      <ModalReject
-        open={showRejectModal}
-        onClose={() => setShowRejectModal(false)}
-        barcode={bundle.barcode}
-        tahap={tahap}
-        qtyMax={currentStatus.qtyTerima || qtyTerimaDefault}
-      />
-      <ModalPemakaianBahan
-        open={showBahanModal}
-        onClose={() => setShowBahanModal(false)}
-        artikelNama={`${modelName} - ${warnaName} - ${sizeName}`}
-        poNomor={bundle.po}
-        onConfirm={handleBahanConfirm}
-      />
-      <ModalSerahTerimaJahit
-        open={showSerahTerima}
-        onClose={() => setShowSerahTerima(false)}
-        onApprove={handleSerahTerimaApprove}
-        bundle={bundle}
-        karyawanId={selectedKaryawan}
-      />
-      <ModalKoreksiKurang
-        open={showKoreksiKurang}
-        onClose={() => setShowKoreksiKurang(false)}
-        onConfirm={handleKoreksiKurangConfirm}
-        qtyKurang={(currentStatus.qtyTerima ?? qtyTerimaDefault) - pendingQtySelesai}
-        tahapSaatIni={TAHAP_LABEL[tahap]}
-        prevTahapLabel={(() => {
-          const prev = getPrevTahap(tahap);
-          return prev ? TAHAP_LABEL[prev] : undefined;
-        })()}
-      />
-      <ModalKoreksiLebih
-        open={showKoreksiLebih}
-        onClose={() => setShowKoreksiLebih(false)}
-        onConfirm={handleKoreksiLebihConfirm}
-        qtyLebih={pendingQtySelesai - (currentStatus.qtyTerima ?? qtyTerimaDefault)}
-        tahapSaatIni={TAHAP_LABEL[tahap]}
-      />
-    </div>
-  );
-}
+      <ModalQtySelesa
