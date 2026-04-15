@@ -6,7 +6,6 @@ import Button from '@/components/atoms/Button';
 import { Label } from '@/components/atoms/Typography';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { usePOStore } from '@/stores/usePOStore';
-import { useBundleStore } from '@/stores/useBundleStore';
 import { usePengirimanStore } from '@/stores/usePengirimanStore';
 import { Bundle, SuratJalanItem } from '@/types';
 import ScanBarcodeSJ from './ScanBarcodeSJ';
@@ -23,8 +22,7 @@ export default function BuatSuratJalanView() {
   const router = useRouter();
   const { klien } = useMasterStore();
   const { getPOById } = usePOStore();
-  const { updateStatusTahap, updateBundleSuratJalan } = useBundleStore();
-  const { addSuratJalan, getNextNomorSJ } = usePengirimanStore();
+  const { createSuratJalanAtomic } = usePengirimanStore();
 
   const [selectedKlien, setSelectedKlien] = useState('');
   const [pengirim, setPengirim] = useState('');
@@ -51,8 +49,7 @@ export default function BuatSuratJalanView() {
     if (!confirm(`Buat Surat Jalan untuk ${localItems.length} bundel?`)) return;
 
     const sjId = `SJ-${Date.now()}`;
-    const nomorSJ = await getNextNomorSJ();
-    
+
     const sjItems: SuratJalanItem[] = localItems.map(it => ({
       id: `${sjId}-${it.bundle.barcode}`,
       bundleBarcode: it.bundle.barcode,
@@ -66,25 +63,28 @@ export default function BuatSuratJalanView() {
       alasanSelisih: it.alasan
     }));
 
-    addSuratJalan({
-      id: sjId,
-      nomorSJ,
-      klienId: selectedKlien,
-      tanggal: new Date().toISOString(),
-      items: sjItems,
-      totalQty: localItems.reduce((sum, i) => sum + i.qtySJ, 0),
-      totalBundle: localItems.length,
-      catatan,
-      status: 'dikirim',
-      dibuatOleh: 'ADMIN',
-      pengirim
-    });
-
-    // Simpan suratJalanId ke setiap bundle agar tracking pengiriman berfungsi
     const bundleBarcodes = localItems.map(it => it.bundle.barcode);
-    await updateBundleSuratJalan(bundleBarcodes, sjId);
 
-    router.push('/pengiriman/riwayat');
+    try {
+      await createSuratJalanAtomic({
+        id: sjId,
+        nomorSJ: '', // akan diisi oleh RPC via get_next_sj_number()
+        klienId: selectedKlien,
+        tanggal: new Date().toISOString(),
+        items: sjItems,
+        totalQty: localItems.reduce((sum, i) => sum + i.qtySJ, 0),
+        totalBundle: localItems.length,
+        catatan,
+        status: 'dikirim',
+        dibuatOleh: 'ADMIN',
+        pengirim
+      }, bundleBarcodes);
+
+      router.push('/pengiriman/riwayat');
+    } catch (err) {
+      alert('Gagal membuat Surat Jalan. Periksa koneksi dan coba lagi.');
+      console.error('[BuatSuratJalanView] handleSubmit error:', err);
+    }
   };
 
   return (

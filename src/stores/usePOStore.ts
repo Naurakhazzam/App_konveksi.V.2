@@ -264,6 +264,18 @@ export const usePOStore = create<POState>((set, get) => ({
   removePO: async (id: string) => {
     const po = get().getPOById(id);
 
+    // Guard: Tolak hapus PO jika ada bundle yang sudah masuk Surat Jalan
+    const bundleStore = useBundleStore.getState();
+    const poBundle = bundleStore.bundles.filter(
+      b => b.po === id && b.suratJalanId
+    );
+    if (poBundle.length > 0) {
+      throw new Error(
+        `PO tidak bisa dihapus. ${poBundle.length} bundle ` +
+        `sudah masuk Surat Jalan. Batalkan SJ terlebih dahulu.`
+      );
+    }
+
     // Optimistic update
     set((state) => ({ poList: state.poList.filter((p) => p.id !== id) }));
 

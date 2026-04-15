@@ -7,10 +7,9 @@ interface PengirimanState {
   isLoading: boolean;
 
   loadPengiriman: () => Promise<void>;
-  addSuratJalan: (sj: SuratJalan) => Promise<void>;
+  createSuratJalanAtomic: (sj: Omit<SuratJalan, 'nomorSJ'>, bundleBarcodes: string[]) => Promise<string>;
   updateStatusSJ: (id: string, status: SuratJalan['status']) => Promise<void>;
   getSuratJalanById: (id: string) => SuratJalan | undefined;
-  getNextNomorSJ: () => Promise<string>;
 }
 
 // ── Helper: DB rows → SuratJalan ─────────────────────────────────────────────
@@ -81,15 +80,16 @@ export const usePengirimanStore = create<PengirimanState>((set, get) => ({
     }
   },
 
-  // ── ADD SURAT JALAN ───────────────────────────────────────────────────────
+  // ── CREATE SURAT JALAN (ATOMIC VIA RPC) ──────────────────────────────────
 
-  addSuratJalan: async (sj) => {
-    set((state) => ({ suratJalanList: [sj, ...state.suratJalanList] }));
+  createSuratJalanAtomic: async (sj, bundleBarcodes) => {
+    // Optimistic update — nomor SJ placeholder sementara
+    const optimisticSJ: SuratJalan = { ...sj, nomorSJ: '...' };
+    set((state) => ({ suratJalanList: [optimisticSJ, ...state.suratJalanList] }));
+
     try {
-      // 1. Insert header
-      const { error: sjError } = await supabase.from('surat_jalan').insert({
+      const sjPayload = {
         id: sj.id,
-        nomor_sj: sj.nomorSJ,
         klien_id: sj.klienId,
         tanggal: sj.tanggal,
         total_qty: sj.totalQty,
@@ -98,33 +98,45 @@ export const usePengirimanStore = create<PengirimanState>((set, get) => ({
         status: sj.status,
         dibuat_oleh: sj.dibuatOleh,
         pengirim: sj.pengirim,
-      });
-      if (sjError) throw sjError;
+      };
 
-      // 2. Insert items (jika ada)
-      if (sj.items.length > 0) {
-        const { error: itemsError } = await supabase.from('surat_jalan_items').insert(
-          sj.items.map((item) => ({
-            id: item.id,
-            surat_jalan_id: sj.id,
-            bundle_barcode: item.bundleBarcode,
-            po_id: item.poId,
-            model_id: item.modelId,
-            warna_id: item.warnaId,
-            size_id: item.sizeId,
-            sku_klien: item.skuKlien,
-            qty: item.qty,
-            qty_packing: item.qtyPacking,
-            alasan_selisih: item.alasanSelisih ?? null,
-          }))
-        );
-        if (itemsError) throw itemsError;
-      }
+      const itemsPayload = sj.items.map((item) => ({
+        id: item.id,
+        bundle_barcode: item.bundleBarcode,
+        po_id: item.poId,
+        model_id: item.modelId,
+        warna_id: item.warnaId,
+        size_id: item.sizeId,
+        sku_klien: item.skuKlien,
+        qty: item.qty,
+        qty_packing: item.qtyPacking,
+        alasan_selisih: item.alasanSelisih ?? null,
+      }));
+
+      const { data: nomorSJ, error } = await supabase.rpc('create_sj_atomic', {
+        p_sj: sjPayload,
+        p_items: itemsPayload,
+        p_bundle_barcodes: bundleBarcodes,
+      });
+
+      if (error) throw error;
+
+      // Update state lokal dengan nomor SJ yang valid dari server
+      const finalNomorSJ = nomorSJ as string;
+      set((state) => ({
+        suratJalanList: state.suratJalanList.map((s) =>
+          s.id === sj.id ? { ...s, nomorSJ: finalNomorSJ } : s
+        ),
+      }));
+
+      return finalNomorSJ;
     } catch (err) {
-      console.error('[usePengirimanStore] addSuratJalan error:', err);
+      console.error('[usePengirimanStore] createSuratJalanAtomic error:', err);
+      // Rollback optimistic update
       set((state) => ({
         suratJalanList: state.suratJalanList.filter((s) => s.id !== sj.id),
       }));
+      throw err;
     }
   },
 
@@ -152,37 +164,4 @@ export const usePengirimanStore = create<PengirimanState>((set, get) => ({
   getSuratJalanById: (id) =>
     get().suratJalanList.find((sj) => sj.id === id),
 
-  // ── GET NEXT NOMOR SJ (aman dari duplikasi) ───────────────────────────────
-  // Query DB langsung untuk sequence terakhir pada bulan ini.
-
-  getNextNomorSJ: async () => {
-    const now = new Date();
-    const yearMonth = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`;
-    const prefix = `SJ/${yearMonth}/`;
-
-    try {
-      const { data, error } = await supabase
-        .from('surat_jalan')
-        .select('nomor_sj')
-        .like('nomor_sj', `${prefix}%`)
-        .order('nomor_sj', { ascending: false })
-        .limit(1);
-
-      if (error) throw error;
-
-      let nextSeq = 1;
-      if (data && data.length > 0) {
-        const lastNomor = data[0].nomor_sj as string;
-        const lastSeq = parseInt(lastNomor.replace(prefix, ''), 10);
-        if (!isNaN(lastSeq)) nextSeq = lastSeq + 1;
-      }
-
-      return `${prefix}${String(nextSeq).padStart(3, '0')}`;
-    } catch (err) {
-      console.error('[usePengirimanStore] getNextNomorSJ error:', err);
-      // Fallback: pakai panjang list lokal supaya tidak crash
-      const seq = get().suratJalanList.length + 1;
-      return `${prefix}${String(seq).padStart(3, '0')}`;
-    }
-  },
 }));
