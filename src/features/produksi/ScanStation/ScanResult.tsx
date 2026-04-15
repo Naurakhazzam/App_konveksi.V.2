@@ -23,6 +23,7 @@ import ModalSerahTerimaJahit from './ModalSerahTerimaJahit';
 import { ModalKoreksiKurang, ModalKoreksiLebih, KoreksiKurangResult, KoreksiLebihResult } from './ModalKoreksiQTY';
 import { useSerahTerimaStore } from '@/stores/useSerahTerimaStore';
 import { usePayrollStore } from '@/stores/usePayrollStore';
+import { useInventoryStore } from '@/stores/useInventoryStore';
 import { useToast } from '@/components/molecules/Toast';
 import { supabase } from '@/lib/supabase';
 import styles from './ScanResult.module.css';
@@ -49,6 +50,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
   const [showKoreksiKurang, setShowKoreksiKurang] = useState(false);
   const [showKoreksiLebih, setShowKoreksiLebih] = useState(false);
   const [selectedKaryawan, setSelectedKaryawan] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Pending qty data passed through to koreksi modals
   const [pendingQtySelesai, setPendingQtySelesai] = useState(0);
@@ -162,24 +164,43 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
   };
 
   const handleBahanConfirm = async (meter: number, gram: number, inventoryItemId: string) => {
-    await addPemakaianBahan({
-      po: bundle.po,
-      skuKlien: bundle.skuKlien,
-      modelId: bundle.model,
-      warnaId: bundle.warna,
-      sizeId: bundle.size,
-      artikelNama: `${modelName} - ${warnaName} - ${sizeName}`,
-      inventoryItemId,
-      pemakaianKainMeter: meter,
-      pemakaianBeratGram: gram,
-      inputOleh: currentUser?.id ?? currentUser?.nama ?? 'SYSTEM',
-      waktuInput: new Date().toISOString()
-    });
-    setShowBahanModal(false);
-    if (tahap === 'cutting') {
-      setShowQtyModal(true);
-    } else {
-      executeTerima(qtyTerimaDefault);
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      await addPemakaianBahan({
+        po: bundle.po,
+        skuKlien: bundle.skuKlien,
+        modelId: bundle.model,
+        warnaId: bundle.warna,
+        sizeId: bundle.size,
+        artikelNama: `${modelName} - ${warnaName} - ${sizeName}`,
+        inventoryItemId,
+        pemakaianKainMeter: meter,
+        pemakaianBeratGram: gram,
+        inputOleh: currentUser?.id ?? currentUser?.nama ?? 'SYSTEM',
+        waktuInput: new Date().toISOString()
+      });
+
+      if (inventoryItemId) {
+        const qtyToConsume = meter > 0 ? meter : gram;
+        if (qtyToConsume > 0) {
+          try {
+            await useInventoryStore.getState().consumeFIFO(inventoryItemId, qtyToConsume);
+          } catch (fifoErr) {
+            console.error('[ScanResult] consumeFIFO gagal', fifoErr);
+            warning('Peringatan Stok', 'Kain terpakai tapi gagal memotong stok gudang secara otomatis.');
+          }
+        }
+      }
+
+      setShowBahanModal(false);
+      if (tahap === 'cutting') {
+        setShowQtyModal(true);
+      } else {
+        executeTerima(qtyTerimaDefault);
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -209,60 +230,66 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
   };
 
   const handleQtyConfirm = async (qtySelesai: number, alasan: string, needsKoreksiOld: boolean) => {
-    const now = new Date().toISOString();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const now = new Date().toISOString();
 
-    if (tahap === 'cutting' && currentStatus.status === null) {
-      if (poItem) {
-        await updateItemCuttingStatus(poItem.id, 'finished');
+      if (tahap === 'cutting' && currentStatus.status === null) {
+        if (poItem) {
+          await updateItemCuttingStatus(poItem.id, 'finished');
+        }
+        try {
+          await updateStatusTahap(bundle.barcode, tahap, {
+            status: 'selesai',
+            qtyTerima: bundle.qtyBundle,   // Qty yg MASUK cutting = target dari PO
+            qtySelesai: qtySelesai,         // Qty yg KELUAR cutting = input aktual operator
+            waktuTerima: now,
+            waktuSelesai: now,
+            karyawan: selectedKaryawan,
+          });
+
+          await addRecord({
+            id: `SCAN-${Date.now()}`,
+            barcode: bundle.barcode,
+            po: bundle.po,
+            tahap,
+            aksi: 'selesai',
+            qty: qtySelesai,
+            waktu: now
+          });
+          setShowQtyModal(false);
+          if (onComplete) onComplete();
+        } catch (err) {
+          warning('Gagal Menyimpan', 'Gagal mencatat data scan selesai. Periksa koneksi Anda.');
+        }
+        return;
       }
-      try {
-        await updateStatusTahap(bundle.barcode, tahap, {
-          status: 'selesai',
-          qtyTerima: bundle.qtyBundle,   // Qty yg MASUK cutting = target dari PO
-          qtySelesai: qtySelesai,         // Qty yg KELUAR cutting = input aktual operator
-          waktuTerima: now,
-          waktuSelesai: now,
-          karyawan: selectedKaryawan,
-        });
 
-        await addRecord({
-          id: `SCAN-${Date.now()}`,
-          barcode: bundle.barcode,
-          po: bundle.po,
-          tahap,
-          aksi: 'selesai',
-          qty: qtySelesai,
-          waktu: now
-        });
+      const qtyTarget = currentStatus.qtyTerima ?? qtyTerimaDefault;
+      const diff = qtySelesai - qtyTarget;
+
+      if (diff < 0) {
+        // QTY KURANG → simpan pending qty, buka modal koreksi kurang
+        setPendingQtySelesai(qtySelesai);
         setShowQtyModal(false);
-        if (onComplete) onComplete();
-      } catch (err) {
-        warning('Gagal Menyimpan', 'Gagal mencatat data scan selesai. Periksa koneksi Anda.');
+        setShowKoreksiKurang(true);
+        return;
       }
-      return;
+
+      if (diff > 0) {
+        // QTY LEBIH → buka modal koreksi lebih
+        setPendingQtySelesai(qtySelesai);
+        setShowQtyModal(false);
+        setShowKoreksiLebih(true);
+        return;
+      }
+
+      // QTY tepat → selesai normal
+      await executeSelesai(qtySelesai, null, null);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    const qtyTarget = currentStatus.qtyTerima ?? qtyTerimaDefault;
-    const diff = qtySelesai - qtyTarget;
-
-    if (diff < 0) {
-      // QTY KURANG → simpan pending qty, buka modal koreksi kurang
-      setPendingQtySelesai(qtySelesai);
-      setShowQtyModal(false);
-      setShowKoreksiKurang(true);
-      return;
-    }
-
-    if (diff > 0) {
-      // QTY LEBIH → buka modal koreksi lebih
-      setPendingQtySelesai(qtySelesai);
-      setShowQtyModal(false);
-      setShowKoreksiLebih(true);
-      return;
-    }
-
-    // QTY tepat → selesai normal
-    await executeSelesai(qtySelesai, null, null);
   };
 
   const executeSelesai = async (
@@ -284,8 +311,21 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     const upahPerPcs = calcNominalPotongan('upah_tahap', tahap, 1);
     const totalUpah = upahPerPcs * qtySelesai;
 
-    // ── STEP 1: FINANCE / PAYROLL FIRST ───────────────────────────────────
-    // Kita catat uangnya dulu. Jika gagal di level DB, kita batalkan status Selesai.
+    // ── STEP 1: UPDATE BUNDLE STATUS ──────────────────────────────────────
+    try {
+      await updateStatusTahap(bundle.barcode, tahap, {
+        status: 'selesai',
+        qtySelesai,
+        waktuSelesai: now,
+        koreksiStatus,
+        koreksiAlasan,
+      });
+    } catch (error) {
+      warning('Gagal', 'Gagal menyimpan status. Coba lagi.');
+      return; // Stop — upah belum dicatat, aman
+    }
+
+    // ── STEP 2: FINANCE / PAYROLL (Hanya jika Step 1 Berhasil) ────────────
     if (needsKaryawan && operatorId && operatorId.trim() !== '' && qtySelesai > 0) {
       try {
         await usePayrollStore.getState().addLedgerEntry({
@@ -299,30 +339,25 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
           status: 'belum_lunas'
         });
       } catch (payrollErr) {
-        // BATALKAN seluruh proses jika payroll gagal (DB Connection issue, dsb)
-        console.error('[ScanResult] Gagal catat upah. Transaksi dibatalkan:', payrollErr);
-        warning(
-          'ERROR: Upah Gagal Disimpan',
-          `Sistem gagal mencatat upah ke database. Status bundle TIDAK akan diupdate menjadi selesai. Silakan coba scan ulang atau lapor Admin.`
-        );
-        return; // EXIT EARLY - BUNDLE TETAP 'TERIMA'
+        // Step 1 sudah sukses tapi upah gagal
+        console.error('[ScanResult] Gagal catat upah:', payrollErr);
+        warning('Peringatan', 'Status tersimpan tapi upah gagal dicatat. Hubungi admin.');
+        // Rollback updateStatusTahap (set kembali ke 'terima')
+        await updateStatusTahap(bundle.barcode, tahap, {
+          status: 'terima',
+          qtySelesai: undefined,
+        }).catch(() => {
+          console.error('[ScanResult] KRITIS: Rollback status gagal');
+        });
+        return; // Exit
       }
     } else if (needsKaryawan && (!operatorId || operatorId.trim() === '')) {
        // Guard fallback jika data karyawan hilang di tengah jalan
        warning('Data Operator Hilang', 'Status bundle selesai, tapi upah TIDAK dicatat karena identitas operator tidak ditemukan.');
     }
 
-    // ── STEP 2: UPDATE BUNDLE STATUS (Only if Finance Succeeded) ──────────
+    // ── STEP 3: LOGGING (Non-critical) ─────────────────────────────────────
     try {
-      await updateStatusTahap(bundle.barcode, tahap, {
-        status: 'selesai',
-        qtySelesai,
-        waktuSelesai: now,
-        koreksiStatus,
-        koreksiAlasan,
-      });
-
-      // ── STEP 3: LOGGING (Non-critical) ─────────────────────────────────────
       await addRecord({
         id: `SCAN-${Date.now()}`,
         barcode: bundle.barcode,
@@ -333,196 +368,214 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         waktu: now
       });
       if (onComplete) onComplete();
-    } catch (error) {
-      warning('Gagal Menyimpan', 'Gagal mencatat data scan selesai. Periksa koneksi Anda.');
+    } catch (err) {
+      console.error('[ScanResult] Gagal catat log scan:', err);
     }
   };
 
   const handleKoreksiKurangConfirm = async (result: KoreksiKurangResult) => {
-    const qtyTarget = currentStatus.qtyTerima ?? qtyTerimaDefault;
-    const qtyKurang = qtyTarget - pendingQtySelesai;
-    const now = new Date().toISOString();
-
-    // Tentukan tahap bertanggung jawab
-    let tahapBertanggungJawab: string = tahap;
-    let dampakPotongan: 'upah_tahap' | 'hpp_po' = 'upah_tahap';
-
-    if (result.jenisKoreksi === 'reject' && result.alasanReject) {
-      tahapBertanggungJawab = result.alasanReject.tahapBertanggungJawab;
-      dampakPotongan = result.alasanReject.dampakPotongan;
-    } else {
-      // Hilang / salah hitung → tahap sebelumnya
-      const prev = getPrevTahap(tahap);
-      if (prev) tahapBertanggungJawab = prev;
-    }
-
-    // Cari karyawan di tahap yang bertanggungjawab pada bundle ini
-    const statusBertanggungjawab = bundle.statusTahap[tahapBertanggungJawab as TahapKey] || bundle.statusTahap[tahap];
-    const karyawanBertanggungJawab = statusBertanggungjawab?.karyawan ?? null;
-
-    const nominal = calcNominalPotongan(dampakPotongan, tahapBertanggungJawab, qtyKurang);
-    const koreksiId = `KOR-${Date.now()}`;
-
-    // C-04: Validasi penanggung jawab (terutama untuk Hilang/Salah Hitung)
-    if (nominal > 0 && (!karyawanBertanggungJawab || karyawanBertanggungJawab.trim() === '')) {
-      const targetLabel = TAHAP_LABEL[tahapBertanggungJawab as TahapKey] || tahapBertanggungJawab;
-      warning(
-        'Koreksi Terbatas',
-        `Operator penanggung jawab di tahap ${targetLabel} tidak ditemukan. Koreksi akan dicatat tanpa potongan gaji otomatis.`
-      );
-    }
-
-    // ── STEP 1: DEDUCTION FIRST (Finansial) ──────────────────────────────
-    let ledgerEntryId = '';
-    if (karyawanBertanggungJawab && nominal > 0) {
-      ledgerEntryId = `DED-${Date.now()}-${koreksiId}`;
-      try {
-        await usePayrollStore.getState().addLedgerEntry({
-          id: ledgerEntryId,
-          karyawanId: karyawanBertanggungJawab,
-          tanggal: now,
-          keterangan: `POTONGAN ${result.jenisKoreksi.toUpperCase()} (${TAHAP_LABEL[tahap]}) - ${bundle.barcode}`,
-          sumberId: bundle.barcode,
-          total: -nominal,
-          tipe: 'reject_potong',
-          status: 'belum_lunas'
-        });
-      } catch (err) {
-        warning('Gagal Potong Gaji', 'Koreksi dibatalkan karena gagal menghubungi server payroll.');
-        return;
-      }
-    }
-
-    // ── STEP 2: LOG KOREKSI ─────────────────────────────────────────────
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
-      await addKoreksi({
-        id: koreksiId,
-        barcode: bundle.barcode,
-        poId: bundle.po,
-        tahapDitemukan: tahap,
-        tahapBertanggungJawab,
-        karyawanPelapor: currentUser?.nama || selectedKaryawan || 'SYSTEM',
-        karyawanBertanggungJawab,
-        jenisKoreksi: result.jenisKoreksi,
-        alasanRejectId: result.alasanReject?.id,
-        qtyKoreksi: qtyKurang,
-        nominalPotongan: nominal,
-        statusPotongan: 'pending',
-        waktuLapor: now,
-      });
-    } catch (err) {
-      warning('Gagal Koreksi', 'Gagal mencatat koreksi. Potongan upah otomatis dibatalkan.');
-      if (ledgerEntryId) {
-        const payrollStore = usePayrollStore.getState();
-        usePayrollStore.setState({ 
-          ledger: payrollStore.ledger.filter(l => l.id !== ledgerEntryId) 
-        });
-        
-        const { error: rollbackError } = await supabase
-          .from('gaji_ledger')
-          .delete()
-          .eq('id', ledgerEntryId);
-        
-        if (rollbackError) {
-          console.error('[ScanResult] KRITIS: Rollback gaji gagal, ID:', ledgerEntryId, rollbackError);
+      const qtyTarget = currentStatus.qtyTerima ?? qtyTerimaDefault;
+      const qtyKurang = qtyTarget - pendingQtySelesai;
+      const now = new Date().toISOString();
+
+      // Tentukan tahap bertanggung jawab
+      let tahapBertanggungJawab: string = tahap;
+      let dampakPotongan: 'upah_tahap' | 'hpp_po' = 'upah_tahap';
+
+      if (result.jenisKoreksi === 'reject' && result.alasanReject) {
+        tahapBertanggungJawab = result.alasanReject.tahapBertanggungJawab;
+        dampakPotongan = result.alasanReject.dampakPotongan;
+      } else {
+        // Hilang / salah hitung → tahap sebelumnya
+        const prev = getPrevTahap(tahap);
+        if (prev) tahapBertanggungJawab = prev;
+      }
+
+      // Cari karyawan di tahap yang bertanggungjawab pada bundle ini
+      const statusBertanggungjawab = bundle.statusTahap[tahapBertanggungJawab as TahapKey] || bundle.statusTahap[tahap];
+      const karyawanBertanggungJawab = statusBertanggungjawab?.karyawan ?? null;
+
+      const nominal = calcNominalPotongan(dampakPotongan, tahapBertanggungJawab, qtyKurang);
+      const koreksiId = `KOR-${Date.now()}`;
+
+      // C-04: Validasi penanggung jawab (terutama untuk Hilang/Salah Hitung)
+      if (nominal > 0 && (!karyawanBertanggungJawab || karyawanBertanggungJawab.trim() === '')) {
+        const targetLabel = TAHAP_LABEL[tahapBertanggungJawab as TahapKey] || tahapBertanggungJawab;
+        warning(
+          'Koreksi Terbatas',
+          `Operator penanggung jawab di tahap ${targetLabel} tidak ditemukan. Koreksi akan dicatat tanpa potongan gaji otomatis.`
+        );
+      }
+
+      // ── STEP 1: DEDUCTION FIRST (Finansial) ──────────────────────────────
+      let ledgerEntryId = '';
+      if (karyawanBertanggungJawab && nominal > 0) {
+        ledgerEntryId = `DED-${Date.now()}-${koreksiId}`;
+        try {
+          await usePayrollStore.getState().addLedgerEntry({
+            id: ledgerEntryId,
+            karyawanId: karyawanBertanggungJawab,
+            tanggal: now,
+            keterangan: `POTONGAN ${result.jenisKoreksi.toUpperCase()} (${TAHAP_LABEL[tahap]}) - ${bundle.barcode}`,
+            sumberId: bundle.barcode,
+            total: -nominal,
+            tipe: 'reject_potong',
+            status: 'belum_lunas'
+          });
+        } catch (err) {
+          warning('Gagal Potong Gaji', 'Koreksi dibatalkan karena gagal menghubungi server payroll.');
+          return;
         }
       }
-      return;
-    }
 
-    await executeSelesai(
-      pendingQtySelesai,
-      null, // Fixed: Do not block for shortages (Rejects/Lost). Let the remaining pieces move forward.
-      result.jenisKoreksi === 'reject'
-        ? `Reject: ${result.alasanReject?.nama}`
-        : result.jenisKoreksi === 'hilang'
-        ? 'Hilang'
-        : 'Salah Hitung'
-    );
+      // ── STEP 2: LOG KOREKSI ─────────────────────────────────────────────
+      try {
+        await addKoreksi({
+          id: koreksiId,
+          barcode: bundle.barcode,
+          poId: bundle.po,
+          tahapDitemukan: tahap,
+          tahapBertanggungJawab,
+          karyawanPelapor: currentUser?.nama || selectedKaryawan || 'SYSTEM',
+          karyawanBertanggungJawab,
+          jenisKoreksi: result.jenisKoreksi,
+          alasanRejectId: result.alasanReject?.id,
+          qtyKoreksi: qtyKurang,
+          nominalPotongan: nominal,
+          statusPotongan: 'pending',
+          waktuLapor: now,
+        });
+      } catch (err) {
+        warning('Gagal Koreksi', 'Gagal mencatat koreksi. Potongan upah otomatis dibatalkan.');
+        if (ledgerEntryId) {
+          const payrollStore = usePayrollStore.getState();
+          usePayrollStore.setState({ 
+            ledger: payrollStore.ledger.filter(l => l.id !== ledgerEntryId) 
+          });
+          
+          const { error: rollbackError } = await supabase
+            .from('gaji_ledger')
+            .delete()
+            .eq('id', ledgerEntryId);
+          
+          if (rollbackError) {
+            console.error('[ScanResult] KRITIS: Rollback gaji gagal, ID:', ledgerEntryId, rollbackError);
+          }
+        }
+        return;
+      }
+
+      await executeSelesai(
+        pendingQtySelesai,
+        null, // Fixed: Do not block for shortages (Rejects/Lost). Let the remaining pieces move forward.
+        result.jenisKoreksi === 'reject'
+          ? `Reject: ${result.alasanReject?.nama}`
+          : result.jenisKoreksi === 'hilang'
+          ? 'Hilang'
+          : 'Salah Hitung'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleKoreksiLebihConfirm = async (result: KoreksiLebihResult) => {
-    const qtyTarget = currentStatus.qtyTerima ?? qtyTerimaDefault;
-    const qtyLebih = pendingQtySelesai - qtyTarget;
-    const now = new Date().toISOString();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const qtyTarget = currentStatus.qtyTerima ?? qtyTerimaDefault;
+      const qtyLebih = pendingQtySelesai - qtyTarget;
+      const now = new Date().toISOString();
 
-    await addKoreksi({
-      id: `KOR-${Date.now()}`,
-      barcode: bundle.barcode,
-      poId: bundle.po,
-      tahapDitemukan: tahap,
-      tahapBertanggungJawab: tahap,
-      karyawanPelapor: currentUser?.nama || selectedKaryawan || 'SYSTEM',
-      karyawanBertanggungJawab: currentStatus.karyawan ?? null,
-      jenisKoreksi: 'lebih',
-      alasanLebih: result.alasanLebih,
-      alasanLebihText: result.alasanLebihText,
-      qtyKoreksi: qtyLebih,
-      nominalPotongan: 0,
-      statusPotongan: 'pending',
-      statusApproval: 'menunggu',
-      waktuLapor: now,
-    });
+      await addKoreksi({
+        id: `KOR-${Date.now()}`,
+        barcode: bundle.barcode,
+        poId: bundle.po,
+        tahapDitemukan: tahap,
+        tahapBertanggungJawab: tahap,
+        karyawanPelapor: currentUser?.nama || selectedKaryawan || 'SYSTEM',
+        karyawanBertanggungJawab: currentStatus.karyawan ?? null,
+        jenisKoreksi: 'lebih',
+        alasanLebih: result.alasanLebih,
+        alasanLebihText: result.alasanLebihText,
+        qtyKoreksi: qtyLebih,
+        nominalPotongan: 0,
+        statusPotongan: 'pending',
+        statusApproval: 'menunggu',
+        waktuLapor: now,
+      });
 
-    // QTY tetap sesuai target, bukan qtyLebih, sampai di-approve
-    await executeSelesai(
-      qtyTarget,
-      'pending',
-      `QTY Lebih +${qtyLebih} — Menunggu Approval`
-    );
+      // QTY tetap sesuai target, bukan qtyLebih, sampai di-approve
+      await executeSelesai(
+        qtyTarget,
+        'pending',
+        `QTY Lebih +${qtyLebih} — Menunggu Approval`
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Handle re-scan perbaikan reject
   const handleSelesaiReScan = async () => {
-    const now = new Date().toISOString();
-
-    // Cancel semua koreksi aktif secara paralel — WAJIB di-await
-    await Promise.all(
-      activeRejectForThisBundle.map(k =>
-        useKoreksiStore.getState().cancelKoreksi(k.id)
-      )
-    );
-
-    const totalQtyPerbaikan = activeRejectForThisBundle.reduce((s, k) => s + k.qtyKoreksi, 0);
-
-    // Catat Upah Perbaikan (Rework) — WAJIB di-await
-    const operatorId = currentStatus.karyawan || selectedKaryawan;
-    if (operatorId && totalQtyPerbaikan > 0) {
-      const upahPerPcs = calcNominalPotongan('upah_tahap', tahap, 1);
-      await usePayrollStore.getState().addLedgerEntry({
-        id: `RWK-${Date.now()}-${bundle.barcode}`,
-        karyawanId: operatorId,
-        tanggal: now,
-        keterangan: `Upah Perbaikan (Rework) ${TAHAP_LABEL[tahap]} - ${bundle.barcode}`,
-        sumberId: bundle.barcode,
-        total: upahPerPcs * totalQtyPerbaikan,
-        tipe: 'rework',
-        status: 'belum_lunas'
-      });
-    }
-
-    // Update bundle & catat scan (optimistic + fallback)
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
-      await updateStatusTahap(bundle.barcode, tahap, {
-        status: 'selesai',
-        qtySelesai: totalQtyPerbaikan,
-        waktuSelesai: now,
-        koreksiStatus: null,
-        koreksiAlasan: null,
-      });
+      const now = new Date().toISOString();
 
-      await addRecord({
-        id: `SCAN-${Date.now()}`,
-        barcode: bundle.barcode,
-        po: bundle.po,
-        tahap,
-        aksi: 'selesai',
-        qty: totalQtyPerbaikan,
-        waktu: now
-      });
-      if (onComplete) onComplete();
-    } catch (err) {
-      warning('Gagal Menyimpan', 'Gagal mencatat data scan perbaikan. Periksa koneksi Anda.');
+      // Cancel semua koreksi aktif secara paralel — WAJIB di-await
+      await Promise.all(
+        activeRejectForThisBundle.map(k =>
+          useKoreksiStore.getState().cancelKoreksi(k.id)
+        )
+      );
+
+      const totalQtyPerbaikan = activeRejectForThisBundle.reduce((s, k) => s + k.qtyKoreksi, 0);
+
+      // Catat Upah Perbaikan (Rework) — WAJIB di-await
+      const operatorId = currentStatus.karyawan || selectedKaryawan;
+      if (operatorId && totalQtyPerbaikan > 0) {
+        const upahPerPcs = calcNominalPotongan('upah_tahap', tahap, 1);
+        await usePayrollStore.getState().addLedgerEntry({
+          id: `RWK-${Date.now()}-${bundle.barcode}`,
+          karyawanId: operatorId,
+          tanggal: now,
+          keterangan: `Upah Perbaikan (Rework) ${TAHAP_LABEL[tahap]} - ${bundle.barcode}`,
+          sumberId: bundle.barcode,
+          total: upahPerPcs * totalQtyPerbaikan,
+          tipe: 'rework',
+          status: 'belum_lunas'
+        });
+      }
+
+      // Update bundle & catat scan (optimistic + fallback)
+      try {
+        await updateStatusTahap(bundle.barcode, tahap, {
+          status: 'selesai',
+          qtySelesai: totalQtyPerbaikan,
+          waktuSelesai: now,
+          koreksiStatus: null,
+          koreksiAlasan: null,
+        });
+
+        await addRecord({
+          id: `SCAN-${Date.now()}`,
+          barcode: bundle.barcode,
+          po: bundle.po,
+          tahap,
+          aksi: 'selesai',
+          qty: totalQtyPerbaikan,
+          waktu: now
+        });
+        if (onComplete) onComplete();
+      } catch (err) {
+        warning('Gagal Menyimpan', 'Gagal mencatat data scan perbaikan. Periksa koneksi Anda.');
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -632,18 +685,18 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       {/* Action Buttons */}
       <div className={styles.actions}>
         {tahap !== 'cutting' && (
-          <Button variant="primary" onClick={handleTerima} disabled={!canTerima}>
+          <Button variant="primary" onClick={handleTerima} disabled={!canTerima || isSubmitting}>
             ✅ Terima
           </Button>
         )}
         <Button
           variant={tahap === 'cutting' ? 'primary' : 'secondary'}
           onClick={tahap === 'cutting' ? handleTerima : () => setShowQtyModal(true)}
-          disabled={tahap === 'cutting' ? !canTerima : !canSelesai}
+          disabled={tahap === 'cutting' ? (!canTerima || isSubmitting) : (!canSelesai || isSubmitting)}
         >
           🏁 Selesai
         </Button>
-        <Button variant="danger" onClick={() => setShowRejectModal(true)} disabled={!canReject}>
+        <Button variant="danger" onClick={() => setShowRejectModal(true)} disabled={!canReject || isSubmitting}>
           ❌ Reject
         </Button>
       </div>
