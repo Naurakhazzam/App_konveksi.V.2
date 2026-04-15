@@ -200,3 +200,4 @@ export const useJurnalStore = create<JurnalState>((set, get) => ({
       .entries.filter((e) => (tipe === 'masuk' ? e.jenis === 'masuk' : e.jenis !== 'masuk'))
       .reduce((acc, curr) => acc + curr.nominal, 0),
 }));
+          const detailRows = 

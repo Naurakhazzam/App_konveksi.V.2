@@ -194,6 +194,7 @@ export const useBundleStore = create<BundleState>((set, get) => ({
 
   updateStatusTahap: async (barcode, tahap, updates) => {
     // Optimistic update lokal
+    const backup = get().bundles;
     set((state) => ({
       bundles: state.bundles.map((b) =>
         b.barcode === barcode
@@ -245,6 +246,9 @@ export const useBundleStore = create<BundleState>((set, get) => ({
       if (error) throw error;
     } catch (err) {
       console.error('[useBundleStore] updateStatusTahap error:', err);
+      // Rollback UI
+      set({ bundles: backup });
+      throw err; // Lempar ke pemanggil
     }
   },
 

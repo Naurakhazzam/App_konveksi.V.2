@@ -48,7 +48,7 @@ BEGIN
     v_item_id := (p_batch_row->>'item_id');
     v_qty_new := (p_batch_row->>'qty')::NUMERIC;
     
-    UPDATE items 
+    UPDATE inventory_item 
     SET stok = COALESCE(stok, 0) + v_qty_new 
     WHERE id = v_item_id;
 

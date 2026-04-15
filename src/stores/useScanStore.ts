@@ -21,7 +21,7 @@ interface ScanState {
   isLoading: boolean;
 
   loadScanHistory: () => Promise<void>;
-  addRecord: (record: ScanRecord) => void;
+  addRecord: (record: ScanRecord) => Promise<void>;
   getHistoryByStage: (tahap: string) => ScanRecord[];
   clearHistory: () => void;
 }
@@ -68,24 +68,28 @@ export const useScanStore = create<ScanState>((set, get) => ({
 
   // ── ADD RECORD (optimistic + fire-and-forget ke DB) ───────────────────────
 
-  addRecord: (record) => {
-    // Update lokal dulu — capped 200 agar tidak membengkak di memory
+  addRecord: async (record) => {
+    // Pola standar project
+    const backup = get().history;
     set((state) => ({
       history: [record, ...state.history].slice(0, 200),
     }));
 
-    // Simpan ke Supabase secara async non-blocking
-    supabase.from('scan_history').insert({
-      id: record.id,
-      barcode: record.barcode,
-      po: record.po,
-      tahap: record.tahap,
-      aksi: record.aksi,
-      qty: record.qty,
-      waktu: record.waktu,
-    }).then(({ error }) => {
-      if (error) console.error('[useScanStore] addRecord save error:', error.message);
-    });
+    try {
+      const { error } = await supabase.from('scan_history').insert({
+        id: record.id,
+        barcode: record.barcode,
+        po: record.po,
+        tahap: record.tahap,
+        aksi: record.aksi,
+        qty: record.qty,
+        waktu: record.waktu,
+      });
+      if (error) throw error;
+    } catch (err) {
+      set({ history: backup }); // rollback UI
+      throw err;                // lempar error
+    }
   },
 
   // ── GETTERS ───────────────────────────────────────────────────────────────

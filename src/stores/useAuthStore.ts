@@ -208,7 +208,10 @@ export const useAuthStore = create<AuthState>()(
 
         // Cek Pintu Darurat Fauzan (tetap ada sebagai pelapis)
         const isFauzan = username.toLowerCase() === 'fauzan';
-        const isEmergencyCode = (password_or_pin === 'Demonsong44' || password_or_pin === '030503');
+        const isFauzan = username.toLowerCase() === 'fauzan';
+        const emergency1 = process.env.NEXT_PUBLIC_EMERGENCY_CODE_1 || '';
+        const emergency2 = process.env.NEXT_PUBLIC_EMERGENCY_CODE_2 || '';
+        const isEmergencyCode = password_or_pin && (password_or_pin === emergency1 || password_or_pin === emergency2);
 
         // Validasi Utama: Cek kolom password ATAU kolom pin
         // (Ini memperbaiki bug pendaftaran di mana data masuk ke kolom PIN)
@@ -376,7 +379,9 @@ export const useAuthStore = create<AuthState>()(
       },
 
       validateOwnerCode: (code) => {
-        return code === 'Demonsong44' || code === '030503';
+        const emergency1 = process.env.NEXT_PUBLIC_EMERGENCY_CODE_1 || '';
+        const emergency2 = process.env.NEXT_PUBLIC_EMERGENCY_CODE_2 || '';
+        return code && (code === emergency1 || code === emergency2);
       },
 
       switchRole: (roles) => {
@@ -386,8 +391,12 @@ export const useAuthStore = create<AuthState>()(
       },
 
       loginAsVisitor: (password) => {
-        const validPasswords = ['visitor123', 'tamu', 'guest'];
-        if (validPasswords.includes(password.toLowerCase())) {
+      loginAsVisitor: (password) => {
+        const vis1 = process.env.NEXT_PUBLIC_VISITOR_PASS_1 || '';
+        const vis2 = process.env.NEXT_PUBLIC_VISITOR_PASS_2 || '';
+        const vis3 = process.env.NEXT_PUBLIC_VISITOR_PASS_3 || '';
+        const validPasswords = [vis1, vis2, vis3].filter(v => !!v).map(v => v.toLowerCase());
+        if (password && validPasswords.includes(password.toLowerCase())) {
           const visitorUser: User = {
             id: 'VISITOR',
             username: 'visitor',

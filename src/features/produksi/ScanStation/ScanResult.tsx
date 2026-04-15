@@ -24,6 +24,7 @@ import { ModalKoreksiKurang, ModalKoreksiLebih, KoreksiKurangResult, KoreksiLebi
 import { useSerahTerimaStore } from '@/stores/useSerahTerimaStore';
 import { usePayrollStore } from '@/stores/usePayrollStore';
 import { useToast } from '@/components/molecules/Toast';
+import { supabase } from '@/lib/supabase';
 import styles from './ScanResult.module.css';
 
 interface ScanResultProps {
@@ -134,26 +135,30 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     executeTerima(qtyTerimaDefault);
   };
 
-  const executeTerima = (finalQty: number) => {
+  const executeTerima = async (finalQty: number) => {
     const now = new Date().toISOString();
-    updateStatusTahap(bundle.barcode, tahap, {
-      status: 'terima',
-      qtyTerima: finalQty,
-      waktuTerima: now,
-      karyawan: needsKaryawan ? selectedKaryawan : null,
-    });
 
-    addRecord({
-      id: `SCAN-${Date.now()}`,
-      barcode: bundle.barcode,
-      po: bundle.po,
-      tahap,
-      aksi: 'terima',
-      qty: finalQty,
-      waktu: now
-    });
+    try {
+      await updateStatusTahap(bundle.barcode, tahap, {
+        status: 'terima',
+        qtyTerima: finalQty,
+        waktuTerima: now,
+        karyawan: needsKaryawan ? selectedKaryawan : null,
+      });
 
-    if (onComplete) onComplete();
+      await addRecord({
+        id: `SCAN-${Date.now()}`,
+        barcode: bundle.barcode,
+        po: bundle.po,
+        tahap,
+        aksi: 'terima',
+        qty: finalQty,
+        waktu: now
+      });
+      if (onComplete) onComplete();
+    } catch (error) {
+      warning('Gagal Menyimpan', 'Gagal mencatat data scan terima. Periksa koneksi Anda.');
+    }
   };
 
   const handleBahanConfirm = async (meter: number, gram: number, inventoryItemId: string) => {
@@ -210,25 +215,30 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       if (poItem) {
         await updateItemCuttingStatus(poItem.id, 'finished');
       }
-      updateStatusTahap(bundle.barcode, tahap, {
-        status: 'selesai',
-        qtyTerima: bundle.qtyBundle,   // Qty yg MASUK cutting = target dari PO
-        qtySelesai: qtySelesai,         // Qty yg KELUAR cutting = input aktual operator
-        waktuTerima: now,
-        waktuSelesai: now,
-        karyawan: selectedKaryawan,
-      });
-      addRecord({
-        id: `SCAN-${Date.now()}`,
-        barcode: bundle.barcode,
-        po: bundle.po,
-        tahap,
-        aksi: 'selesai',
-        qty: qtySelesai,
-        waktu: now
-      });
-      setShowQtyModal(false);
-      if (onComplete) onComplete();
+      try {
+        await updateStatusTahap(bundle.barcode, tahap, {
+          status: 'selesai',
+          qtyTerima: bundle.qtyBundle,   // Qty yg MASUK cutting = target dari PO
+          qtySelesai: qtySelesai,         // Qty yg KELUAR cutting = input aktual operator
+          waktuTerima: now,
+          waktuSelesai: now,
+          karyawan: selectedKaryawan,
+        });
+
+        await addRecord({
+          id: `SCAN-${Date.now()}`,
+          barcode: bundle.barcode,
+          po: bundle.po,
+          tahap,
+          aksi: 'selesai',
+          qty: qtySelesai,
+          waktu: now
+        });
+        setShowQtyModal(false);
+        if (onComplete) onComplete();
+      } catch (err) {
+        warning('Gagal Menyimpan', 'Gagal mencatat data scan selesai. Periksa koneksi Anda.');
+      }
       return;
     }
 
@@ -303,26 +313,29 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     }
 
     // ── STEP 2: UPDATE BUNDLE STATUS (Only if Finance Succeeded) ──────────
-    updateStatusTahap(bundle.barcode, tahap, {
-      status: 'selesai',
-      qtySelesai,
-      waktuSelesai: now,
-      koreksiStatus,
-      koreksiAlasan,
-    });
+    try {
+      await updateStatusTahap(bundle.barcode, tahap, {
+        status: 'selesai',
+        qtySelesai,
+        waktuSelesai: now,
+        koreksiStatus,
+        koreksiAlasan,
+      });
 
-    // ── STEP 3: LOGGING (Non-critical) ─────────────────────────────────────
-    addRecord({
-      id: `SCAN-${Date.now()}`,
-      barcode: bundle.barcode,
-      po: bundle.po,
-      tahap,
-      aksi: 'selesai',
-      qty: qtySelesai,
-      waktu: now
-    });
-
-    if (onComplete) onComplete();
+      // ── STEP 3: LOGGING (Non-critical) ─────────────────────────────────────
+      await addRecord({
+        id: `SCAN-${Date.now()}`,
+        barcode: bundle.barcode,
+        po: bundle.po,
+        tahap,
+        aksi: 'selesai',
+        qty: qtySelesai,
+        waktu: now
+      });
+      if (onComplete) onComplete();
+    } catch (error) {
+      warning('Gagal Menyimpan', 'Gagal mencatat data scan selesai. Periksa koneksi Anda.');
+    }
   };
 
   const handleKoreksiKurangConfirm = async (result: KoreksiKurangResult) => {
@@ -360,10 +373,12 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     }
 
     // ── STEP 1: DEDUCTION FIRST (Finansial) ──────────────────────────────
+    let ledgerEntryId = '';
     if (karyawanBertanggungJawab && nominal > 0) {
+      ledgerEntryId = `DED-${Date.now()}-${koreksiId}`;
       try {
         await usePayrollStore.getState().addLedgerEntry({
-          id: `DED-${Date.now()}-${koreksiId}`,
+          id: ledgerEntryId,
           karyawanId: karyawanBertanggungJawab,
           tanggal: now,
           keterangan: `POTONGAN ${result.jenisKoreksi.toUpperCase()} (${TAHAP_LABEL[tahap]}) - ${bundle.barcode}`,
@@ -379,21 +394,41 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     }
 
     // ── STEP 2: LOG KOREKSI ─────────────────────────────────────────────
-    await addKoreksi({
-      id: koreksiId,
-      barcode: bundle.barcode,
-      poId: bundle.po,
-      tahapDitemukan: tahap,
-      tahapBertanggungJawab,
-      karyawanPelapor: currentUser?.nama || selectedKaryawan || 'SYSTEM',
-      karyawanBertanggungJawab,
-      jenisKoreksi: result.jenisKoreksi,
-      alasanRejectId: result.alasanReject?.id,
-      qtyKoreksi: qtyKurang,
-      nominalPotongan: nominal,
-      statusPotongan: 'pending',
-      waktuLapor: now,
-    });
+    try {
+      await addKoreksi({
+        id: koreksiId,
+        barcode: bundle.barcode,
+        poId: bundle.po,
+        tahapDitemukan: tahap,
+        tahapBertanggungJawab,
+        karyawanPelapor: currentUser?.nama || selectedKaryawan || 'SYSTEM',
+        karyawanBertanggungJawab,
+        jenisKoreksi: result.jenisKoreksi,
+        alasanRejectId: result.alasanReject?.id,
+        qtyKoreksi: qtyKurang,
+        nominalPotongan: nominal,
+        statusPotongan: 'pending',
+        waktuLapor: now,
+      });
+    } catch (err) {
+      warning('Gagal Koreksi', 'Gagal mencatat koreksi. Potongan upah otomatis dibatalkan.');
+      if (ledgerEntryId) {
+        const payrollStore = usePayrollStore.getState();
+        usePayrollStore.setState({ 
+          ledger: payrollStore.ledger.filter(l => l.id !== ledgerEntryId) 
+        });
+        
+        const { error: rollbackError } = await supabase
+          .from('gaji_ledger')
+          .delete()
+          .eq('id', ledgerEntryId);
+        
+        if (rollbackError) {
+          console.error('[ScanResult] KRITIS: Rollback gaji gagal, ID:', ledgerEntryId, rollbackError);
+        }
+      }
+      return;
+    }
 
     await executeSelesai(
       pendingQtySelesai,
@@ -466,24 +501,29 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       });
     }
 
-    // Update bundle & catat scan (optimistic + fire-and-forget)
-    updateStatusTahap(bundle.barcode, tahap, {
-      status: 'selesai',
-      qtySelesai: totalQtyPerbaikan,
-      waktuSelesai: now,
-      koreksiStatus: null,
-      koreksiAlasan: null,
-    });
-    addRecord({
-      id: `SCAN-${Date.now()}`,
-      barcode: bundle.barcode,
-      po: bundle.po,
-      tahap,
-      aksi: 'selesai',
-      qty: totalQtyPerbaikan,
-      waktu: now
-    });
-    if (onComplete) onComplete();
+    // Update bundle & catat scan (optimistic + fallback)
+    try {
+      await updateStatusTahap(bundle.barcode, tahap, {
+        status: 'selesai',
+        qtySelesai: totalQtyPerbaikan,
+        waktuSelesai: now,
+        koreksiStatus: null,
+        koreksiAlasan: null,
+      });
+
+      await addRecord({
+        id: `SCAN-${Date.now()}`,
+        barcode: bundle.barcode,
+        po: bundle.po,
+        tahap,
+        aksi: 'selesai',
+        qty: totalQtyPerbaikan,
+        waktu: now
+      });
+      if (onComplete) onComplete();
+    } catch (err) {
+      warning('Gagal Menyimpan', 'Gagal mencatat data scan perbaikan. Periksa koneksi Anda.');
+    }
   };
 
   return (

@@ -604,30 +604,25 @@ export const useMasterStore = create<MasterState>((set, get) => ({
   copyHPP: async (fromProdukId, toProdukId) => {
     const backup = get().produkHPPItems;
     const sourceItems = backup.filter((i) => i.produkId === fromProdukId);
-    
-    // 1. Map ke tipe data DB
+
     const newItems = sourceItems.map((item) => ({
       ...item,
       id: `PHI-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       produkId: toProdukId,
     }));
 
-    // 2. Optimistic Update (Zustand)
     set((state) => ({
       produkHPPItems: [
         ...state.produkHPPItems.filter((i) => i.produkId !== toProdukId),
-        ...newItems
-      ]
+        ...newItems,
+      ],
     }));
 
     try {
-      // 3. Clear existing items in DB for target
       await supabase.from('produk_hpp_item').delete().eq('produk_id', toProdukId);
-      
-      // 4. Insert new items to DB
       if (newItems.length > 0) {
         const { error } = await supabase.from('produk_hpp_item').insert(
-          newItems.map(i => ({
+          newItems.map((i) => ({
             id: i.id,
             produk_id: i.produkId,
             komponen_id: i.komponenId,
@@ -667,22 +662,18 @@ export const useMasterStore = create<MasterState>((set, get) => ({
       });
     });
 
-    // 1. Optimistic Update (Zustand)
     set((state) => ({
       produkHPPItems: [
         ...state.produkHPPItems.filter((i) => !targetIds.includes(i.produkId)),
-        ...newItems
-      ]
+        ...newItems,
+      ],
     }));
 
     try {
-      // 2. Clear existing entries for all targets in DB
       await supabase.from('produk_hpp_item').delete().in('produk_id', targetIds);
-
-      // 3. Bulk Insert
       if (newItems.length > 0) {
         const { error } = await supabase.from('produk_hpp_item').insert(
-          newItems.map(i => ({
+          newItems.map((i) => ({
             id: i.id,
             produk_id: i.produkId,
             komponen_id: i.komponenId,
@@ -700,3 +691,4 @@ export const useMasterStore = create<MasterState>((set, get) => ({
     }
   },
 }));
+      .reduc

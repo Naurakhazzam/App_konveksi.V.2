@@ -131,6 +131,7 @@ export const useKoreksiStore = create<KoreksiState>((set, get) => ({
       karyawanPelapor: data.karyawanPelapor || currentUser.nama 
     };
 
+    const backup = get().koreksiList;
     set((state) => ({ koreksiList: [...state.koreksiList, finalData] }));
     try {
       const { error } = await supabase.from('koreksi').insert({
@@ -157,7 +158,9 @@ export const useKoreksiStore = create<KoreksiState>((set, get) => ({
       if (error) throw error;
     } catch (err) {
       console.error('[useKoreksiStore] addKoreksi error:', err);
-      set((state) => ({ koreksiList: state.koreksiList.filter((k) => k.id !== data.id) }));
+      // Rollback
+      set({ koreksiList: backup });
+      throw err; // Lempar ke pemanggil (ScanResult) agar deduction juga bisa dibatalkan
     }
   },
 
