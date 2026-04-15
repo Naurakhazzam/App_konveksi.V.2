@@ -142,6 +142,7 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
         newBundles.push({
           barcode: barcodeString,
           po: poId,
+          poItemId: item.id,
           model: item.modelId,
           warna: item.warnaId,
           size: item.sizeId,

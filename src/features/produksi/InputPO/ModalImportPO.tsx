@@ -15,7 +15,7 @@ interface ModalImportPOProps {
 
 export default function ModalImportPO({ onClose }: ModalImportPOProps) {
   const masterData = useMasterStore();
-  const { addPO, incrementGlobalSequence } = usePOStore();
+  const { addPO, incrementGlobalSequence, poList } = usePOStore();
   const { addBundles } = useBundleStore();
   const { success, error, warning } = useToast();
 
@@ -37,10 +37,12 @@ export default function ModalImportPO({ onClose }: ModalImportPOProps) {
     Papa.parse(file, {
       skipEmptyLines: true,
       complete: (results) => {
+        const existingNomorPOs = poList.map(p => p.nomorPO);
         const processed = processPOCSV(
           results,
           masterData,
-          incrementGlobalSequence
+          incrementGlobalSequence,
+          existingNomorPOs
         );
         setSummary(processed);
         setLoading(false);

@@ -46,7 +46,8 @@ export interface ProcessedPOData {
 export const processPOCSV = (
   results: Papa.ParseResult<any>,
   masterData: { klien: any[], produk: any[], model: any[], warna: any[], sizes: any[] },
-  incrementGlobalSeq: (count: number) => number
+  incrementGlobalSeq: (count: number) => number,
+  existingNomorPOs: string[] = []
 ): ProcessedPOData => {
   const pos: any[] = [];
   const bundles: any[] = [];
@@ -70,6 +71,12 @@ export const processPOCSV = (
   });
 
   Object.entries(poGroups).forEach(([nomorPO, poRows]) => {
+    // Cek duplikat: Nomor_PO sudah ada di database
+    if (existingNomorPOs.includes(nomorPO)) {
+      errors.push(`Nomor PO "${nomorPO}" sudah ada di database. Impor dibatalkan untuk PO ini agar tidak terjadi duplikasi data.`);
+      return;
+    }
+
     const poId = `PO-IMP-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`;
     const klienIdTemp = poRows[0][1];
     
