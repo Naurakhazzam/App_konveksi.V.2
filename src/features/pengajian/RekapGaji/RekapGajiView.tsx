@@ -60,10 +60,11 @@ export default function RekapGajiView() {
     let totalBelum = 0;
 
     rekapData.forEach(r => {
-      totalUpah += r.upahBersih;
+      const upahKotorAwal = r.upahBersih + (r.gajiPokok || 0);
+      totalUpah += upahKotorAwal;
       sisaKasbon += r.sisaKasbon;
-      if (r.isLunas) totalSudah += r.upahBersih;
-      else totalBelum += r.upahBersih;
+      if (r.isLunas) totalSudah += upahKotorAwal;
+      else totalBelum += upahKotorAwal;
     });
 
     return { totalUpah, sisaKasbon, totalSudah, totalBelum };

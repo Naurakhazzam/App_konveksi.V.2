@@ -72,7 +72,7 @@ export default function RekapGajiTable({ data, onBayar, onViewSlip }: RekapGajiT
       header: 'Aksi',
       render: (_, row) => (
         <div className={styles.actions}>
-          {!row.isLunas && row.upahBersih > 0 && (
+          {!row.isLunas && (row.upahBersih + row.gajiPokok) > 0 && (
             <Button variant="primary" size="sm" onClick={() => onBayar(row)}>
               💸 Bayar
             </Button>

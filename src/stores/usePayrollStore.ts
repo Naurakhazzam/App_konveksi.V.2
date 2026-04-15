@@ -182,7 +182,7 @@ export const usePayrollStore = create<PayrollState>((set, get) => ({
 
   getSisaKasbon: (karyawanId: string) =>
     get().kasbon.filter((k) => k.karyawanId === karyawanId)
-      .reduce((acc, curr) => acc + (curr.status === 'belum_lunas' ? curr.jumlah : 0), 0),
+      .reduce((acc, curr) => acc + curr.jumlah, 0),
 
   // ── PROSES BAYAR (Atomik via RPC) ─────────────────────────────────────────
   prosesBayar: async (karyawanId: string, entryIds: string[], inputKasbon: number, hariKerja?: number) => {
