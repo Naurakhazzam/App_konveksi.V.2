@@ -72,8 +72,12 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
     setItems(newItems);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
     if (!klienId) {
       error('Pilih Klien', 'Harap pilih klien terlebih dahulu sebelum menyimpan PO.');
       return;
@@ -84,90 +88,98 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
       return;
     }
 
-    const poId = `PO-${Date.now()}`;
-    
-    const finalItems: POItem[] = items.map((i, idx) => ({
-      id: `ITM-${Date.now()}-${idx}`,
-      poId,
-      modelId: i.modelId!,
-      warnaId: i.warnaId!,
-      sizeId: i.sizeId!,
-      qty: Number(i.qty),
-      qtyPerBundle: Number(i.qtyPerBundle),
-      jumlahBundle: i.jumlahBundle || Math.ceil(Number(i.qty) / Number(i.qtyPerBundle)),
-      skuKlien: i.skuKlien || '',
-      skuInternal: `LYX-${Date.now().toString().slice(-4)}${idx}`
-    }));
+    setIsSubmitting(true);
 
-    // Save PO and Bundles ATOMICALLY (Preventative Action)
-    const { createPOWithBundles, globalSequence } = usePOStore.getState();
-    const po: any = {
-      id: poId,
-      klienId,
-      nomorPO,
-      tanggalInput: new Date().toISOString().split('T')[0],
-      tanggalDeadline,
-      catatan,
-      status: 'aktif',
-      items: finalItems
-    };
+    try {
+      const poId = `PO-${Date.now()}`;
+      
+      const finalItems: POItem[] = items.map((i, idx) => ({
+        id: `ITM-${Date.now()}-${idx}`,
+        poId,
+        modelId: i.modelId!,
+        warnaId: i.warnaId!,
+        sizeId: i.sizeId!,
+        qty: Number(i.qty),
+        qtyPerBundle: Number(i.qtyPerBundle),
+        jumlahBundle: i.jumlahBundle || Math.ceil(Number(i.qty) / Number(i.qtyPerBundle)),
+        skuKlien: i.skuKlien || '',
+        skuInternal: `LYX-${Date.now().toString().slice(-4)}${idx}`
+      }));
 
-    let totalBundlesCount = finalItems.reduce((acc, curr) => acc + curr.jumlahBundle, 0);
-    let currentGlobalSeq = globalSequence;
+      // Save PO and Bundles ATOMICALLY (Preventative Action)
+      const { createPOWithBundles, globalSequence } = usePOStore.getState();
+      const po: any = {
+        id: poId,
+        klienId,
+        nomorPO,
+        tanggalInput: new Date().toISOString().split('T')[0],
+        tanggalDeadline,
+        catatan,
+        status: 'aktif',
+        items: finalItems
+      };
 
-    const newBundles: Bundle[] = [];
-    const defaultStatus: StatusTahap = { status: null, qtyTerima: 0, qtySelesai: 0, waktuTerima: null, waktuSelesai: null, karyawan: null, koreksiStatus: null, koreksiAlasan: null };
+      let totalBundlesCount = finalItems.reduce((acc, curr) => acc + curr.jumlahBundle, 0);
+      let currentGlobalSeq = globalSequence;
 
-    finalItems.forEach(item => {
-      const modelName = model.find(m => m.id === item.modelId)?.nama || 'MDL';
-      const warnaName = warna.find(w => w.id === item.warnaId)?.nama || 'WRN';
-      const sizeName = sizes.find((s: any) => s.id === item.sizeId)?.nama || 'SZ';
+      const newBundles: Bundle[] = [];
+      const defaultStatus: StatusTahap = { status: null, qtyTerima: 0, qtySelesai: 0, waktuTerima: null, waktuSelesai: null, karyawan: null, koreksiStatus: null, koreksiAlasan: null };
 
-      let qtyLeft = item.qty;
+      finalItems.forEach(item => {
+        const modelName = model.find(m => m.id === item.modelId)?.nama || 'MDL';
+        const warnaName = warna.find(w => w.id === item.warnaId)?.nama || 'WRN';
+        const sizeName = sizes.find((s: any) => s.id === item.sizeId)?.nama || 'SZ';
 
-      for (let i = 1; i <= item.jumlahBundle; i++) {
-        const bundleQty = Math.min(qtyLeft, item.qtyPerBundle);
-        qtyLeft -= bundleQty;
-        
-        const barcodeString = generateBarcode({
-          nomorPO,
-          model: modelName,
-          warna: warnaName,
-          size: sizeName,
-          globalSequence: currentGlobalSeq,
-          bundleIndex: i,
-          tanggal: new Date()
-        });
+        let qtyLeft = item.qty;
 
-        newBundles.push({
-          barcode: barcodeString,
-          po: poId,
-          poItemId: item.id,
-          model: item.modelId,
-          warna: item.warnaId,
-          size: item.sizeId,
-          qtyBundle: bundleQty,
-          skuKlien: item.skuKlien,
-          skuInternal: item.skuInternal,
-          statusTahap: {
-            cutting: { ...defaultStatus },
-            jahit: { ...defaultStatus },
-            lkancing: { ...defaultStatus },
-            bbenang: { ...defaultStatus },
-            qc: { ...defaultStatus },
-            steam: { ...defaultStatus },
-            packing: { ...defaultStatus },
-          }
-        });
+        for (let i = 1; i <= item.jumlahBundle; i++) {
+          const bundleQty = Math.min(qtyLeft, item.qtyPerBundle);
+          qtyLeft -= bundleQty;
+          
+          const barcodeString = generateBarcode({
+            nomorPO,
+            model: modelName,
+            warna: warnaName,
+            size: sizeName,
+            globalSequence: currentGlobalSeq,
+            bundleIndex: i,
+            tanggal: new Date()
+          });
 
-        currentGlobalSeq++;
-      }
-    });
+          newBundles.push({
+            barcode: barcodeString,
+            po: poId,
+            poItemId: item.id,
+            model: item.modelId,
+            warna: item.warnaId,
+            size: item.sizeId,
+            qtyBundle: bundleQty,
+            skuKlien: item.skuKlien,
+            skuInternal: item.skuInternal,
+            statusTahap: {
+              cutting: { ...defaultStatus },
+              jahit: { ...defaultStatus },
+              lkancing: { ...defaultStatus },
+              bbenang: { ...defaultStatus },
+              qc: { ...defaultStatus },
+              steam: { ...defaultStatus },
+              packing: { ...defaultStatus },
+            }
+          });
 
-    createPOWithBundles(po, newBundles);
-    
-    success('PO Berhasil Simpan', `Purchase Order ${nomorPO} telah dibuat dengan ${totalBundlesCount} bundle tiket.`);
-    onSuccess(poId);
+          currentGlobalSeq++;
+        }
+      });
+
+      await createPOWithBundles(po, newBundles);
+      
+      success('PO Berhasil Simpan', `Purchase Order ${nomorPO} telah dibuat dengan ${totalBundlesCount} bundle tiket.`);
+      onSuccess(poId);
+    } catch (err: any) {
+      error('Gagal Menyimpan PO', err?.message || 'Terjadi kesalahan saat menyimpan data. Coba lagi.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const totalQty = items.reduce((acc, curr) => acc + Number(curr.qty || 0), 0);
@@ -183,18 +195,18 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
           </div>
           <div className={styles.field}>
             <Label>Klien <span className={styles.req}>*</span></Label>
-            <select className={styles.select} value={klienId} onChange={e => setKlienId(e.target.value)} required>
+            <select className={styles.select} value={klienId} onChange={e => setKlienId(e.target.value)} required disabled={isSubmitting}>
               <option value="">Pilih klien...</option>
               {klien.map(k => <option key={k.id} value={k.id}>{k.nama}</option>)}
             </select>
           </div>
           <div className={styles.field}>
             <Label>Tenggat Waktu / Deadline (Opsional)</Label>
-            <TextInput type="date" value={tanggalDeadline} onChange={setTanggalDeadline} />
+            <TextInput type="date" value={tanggalDeadline} onChange={setTanggalDeadline} disabled={isSubmitting} />
           </div>
           <div className={styles.field} style={{ gridColumn: '1 / -1' }}>
             <Label>Catatan Order</Label>
-            <TextInput value={catatan} onChange={setCatatan} placeholder="Misal: bordir timbul lapis..." />
+            <TextInput value={catatan} onChange={setCatatan} placeholder="Misal: bordir timbul lapis..." disabled={isSubmitting} />
           </div>
         </div>
       </Panel>
@@ -217,7 +229,7 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
                 <div className={styles.itemGrid}>
                   <div className={styles.field}>
                     <Label>Model <span className={styles.req}>*</span></Label>
-                    <select className={styles.select} value={item.modelId || ''} onChange={e => handleItemChange(index, 'modelId', e.target.value)} required>
+                    <select className={styles.select} value={item.modelId || ''} onChange={e => handleItemChange(index, 'modelId', e.target.value)} required disabled={isSubmitting}>
                       <option value="">-- Model --</option>
                       {model.map(m => <option key={m.id} value={m.id}>{m.nama}</option>)}
                     </select>
@@ -229,7 +241,7 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
                       value={item.warnaId || ''} 
                       onChange={e => handleItemChange(index, 'warnaId', e.target.value)} 
                       required
-                      disabled={!item.modelId}
+                      disabled={!item.modelId || isSubmitting}
                     >
                       <option value="">-- Warna --</option>
                       {availableWarna.map(w => <option key={w.id} value={w.id}>{w.nama}</option>)}
@@ -242,7 +254,7 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
                       value={item.sizeId || ''} 
                       onChange={e => handleItemChange(index, 'sizeId', e.target.value)} 
                       required
-                      disabled={!item.warnaId}
+                      disabled={!item.warnaId || isSubmitting}
                     >
                       <option value="">-- Size --</option>
                       {availableSizes.map((s: any) => <option key={s.id} value={s.id}>{s.nama}</option>)}
@@ -250,15 +262,15 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
                   </div>
                   <div className={styles.field}>
                     <Label>SKU Klien (Opsional)</Label>
-                    <TextInput value={item.skuKlien || ''} onChange={v => handleItemChange(index, 'skuKlien', v)} placeholder="SKU" />
+                    <TextInput value={item.skuKlien || ''} onChange={v => handleItemChange(index, 'skuKlien', v)} placeholder="SKU" disabled={isSubmitting} />
                   </div>
                   <div className={styles.field}>
                     <Label>QTY Order <span className={styles.req}>*</span></Label>
-                    <NumberInput value={item.qty || ''} onChange={v => handleItemChange(index, 'qty', v)} />
+                    <NumberInput value={item.qty || ''} onChange={v => handleItemChange(index, 'qty', v)} disabled={isSubmitting} />
                   </div>
                   <div className={styles.field}>
                     <Label>Isi/Bundle <span className={styles.req}>*</span></Label>
-                    <NumberInput value={item.qtyPerBundle || ''} onChange={v => handleItemChange(index, 'qtyPerBundle', v)} />
+                    <NumberInput value={item.qtyPerBundle || ''} onChange={v => handleItemChange(index, 'qtyPerBundle', v)} disabled={isSubmitting} />
                   </div>
                   <div className={styles.field}>
                     <Label>Bundles</Label>
@@ -266,7 +278,7 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
                   </div>
                   {items.length > 1 && (
                     <div className={styles.actionCol}>
-                      <Button type="button" variant="ghost" className={styles.delBtn} onClick={() => handleRemoveItem(index)}>✕</Button>
+                      <Button type="button" variant="ghost" className={styles.delBtn} onClick={() => handleRemoveItem(index)} disabled={isSubmitting}>✕</Button>
                     </div>
                   )}
                 </div>
@@ -276,7 +288,7 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
         </div>
         
         <div style={{ marginTop: '16px' }}>
-          <Button type="button" variant="ghost" onClick={handleAddItem}>+ Tambah Artikel</Button>
+          <Button type="button" variant="ghost" onClick={handleAddItem} disabled={isSubmitting}>+ Tambah Artikel</Button>
         </div>
       </Panel>
 
@@ -286,8 +298,8 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
           <span>Total: <strong>{totalBundles}</strong> tiket bundle</span>
         </div>
         <div className={styles.actions}>
-          <Button type="button" variant="ghost" onClick={onCancel}>Batal</Button>
-          <Button type="submit" variant="primary">Simpan & Generate Barcode</Button>
+          <Button type="button" variant="ghost" onClick={onCancel} disabled={isSubmitting}>Batal</Button>
+          <Button type="submit" variant="primary" disabled={isSubmitting}>{isSubmitting ? 'Menyimpan...' : 'Simpan & Generate Barcode'}</Button>
         </div>
       </div>
     </form>
