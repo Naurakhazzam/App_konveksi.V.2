@@ -91,6 +91,7 @@ interface MasterState {
   getMargin: (produkId: string) => { nominal: number; persen: number };
   copyHPP: (fromProdukId: string, toProdukId: string) => void;
   copyHPPToAllSizes: (fromProdukId: string) => void;
+  resetFactory: () => Promise<void>;
 }
 
 // ── Helper generik untuk CRUD ────────────────────────────────────────────────
@@ -725,6 +726,46 @@ export const useMasterStore = create<MasterState>((set, get) => ({
     } catch (err) {
       console.error('[MasterStore] copyHPPToAllSizes failed, rolling back:', err);
       set({ produkHPPItems: backup });
+    }
+  },
+
+  resetFactory: async () => {
+    set({ isLoading: true });
+    try {
+      const { error } = await supabase.rpc('reset_factory_data');
+      if (error) throw error;
+
+      const { usePOStore } = require('./usePOStore');
+      const { useBundleStore } = require('./useBundleStore');
+      const { useInventoryStore } = require('./useInventoryStore');
+      const { useJurnalStore } = require('./useJurnalStore');
+      const { usePayrollStore } = require('./usePayrollStore');
+      const { useSerahTerimaStore } = require('./useSerahTerimaStore');
+      const { usePengirimanStore } = require('./usePengirimanStore');
+      const { useLogStore } = require('./useLogStore');
+      const { useTrashStore } = require('./useTrashStore');
+      const { useKoreksiStore } = require('./useKoreksiStore');
+
+      await get().initializeMasterData();
+
+      await Promise.all([
+        usePOStore.getState().loadPOs(),
+        useBundleStore.getState().loadBundles(),
+        useInventoryStore.getState().loadInventory(),
+        useJurnalStore.getState().loadJurnal(),
+        usePayrollStore.getState().loadPayroll(),
+        useSerahTerimaStore.getState().loadSerahTerima(),
+        usePengirimanStore.getState().loadPengiriman(),
+        useLogStore.getState().loadLogs(),
+        useTrashStore.getState().loadTrash(),
+        useKoreksiStore.getState().loadKoreksi(),
+      ]);
+
+      set({ isLoading: false });
+    } catch (err) {
+      console.error('[MasterStore] resetFactory error:', err);
+      set({ isLoading: false });
+      throw err;
     }
   },
 }));

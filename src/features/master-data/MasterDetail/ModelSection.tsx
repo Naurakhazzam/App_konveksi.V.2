@@ -5,23 +5,12 @@ import MasterFormModal, { FormFieldConfig } from './MasterFormModal';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { Model } from '@/types';
 
-import { getModAlias } from '@/lib/utils/master-helpers';
-
 export default function ModelSection() {
   const { model, kategori, addModel, updateModel, removeModel } = useMasterStore();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Model | null>(null);
 
   const columns: Column<Model>[] = [
-    { 
-      key: 'id', 
-      header: 'ID', 
-      render: (val) => (
-        <span title={val} style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-cyan)', fontWeight: 'bold' }}>
-          {getModAlias(val, model)}
-        </span>
-      ) 
-    },
     { key: 'nama', header: 'Nama Model', render: (val) => <span style={{ fontWeight: 600 }}>{val}</span> },
     { key: 'kategoriId', header: 'Kategori', render: (val) => kategori.find(k => k.id === val)?.nama || val },
     { key: 'targetPoin', header: 'Target Poin', render: (val) => <span style={{ fontFamily: 'var(--font-mono)' }}>{val}</span> },

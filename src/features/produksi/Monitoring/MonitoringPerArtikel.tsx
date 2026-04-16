@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import DataTable, { Column } from '@/components/organisms/DataTable';
 import { PurchaseOrder, Bundle } from '@/types';
 import { useMasterStore } from '@/stores/useMasterStore';
-import { getModAlias, getWrnAlias, getSzAlias } from '@/lib/utils/master-helpers';
 import ProgressTimeline from './ProgressTimeline';
 import styles from './MonitoringPerArtikel.module.css';
 
@@ -41,9 +40,9 @@ export default function MonitoringPerArtikel({ poList, bundles, sequenceIndex }:
 
   const columns: Column<any>[] = [
     { key: 'nomorPO', header: 'Nomor PO' },
-    { key: 'modelId', header: 'Model', render: (val) => `[${getModAlias(val, model)}] ${model.find(m => m.id === val)?.nama || val}` },
-    { key: 'warnaId', header: 'Warna', render: (val) => `[${getWrnAlias(val, warna)}] ${warna.find(w => w.id === val)?.nama || val}` },
-    { key: 'sizeId', header: 'Size', render: (val) => `[${getSzAlias(val, sizes)}] ${(sizes as any[]).find(s => s.id === val)?.nama || val}` },
+    { key: 'modelId', header: 'Model', render: (val) => model.find(m => m.id === val)?.nama || val },
+    { key: 'warnaId', header: 'Warna', render: (val) => warna.find(w => w.id === val)?.nama || val },
+    { key: 'sizeId', header: 'Size', render: (val) => (sizes as any[]).find(s => s.id === val)?.nama || val },
     { key: 'qtyTarget', header: 'Target (pcs)', align: 'center' },
     { key: 'bundleCount', header: 'Bundel', align: 'center' },
     { 

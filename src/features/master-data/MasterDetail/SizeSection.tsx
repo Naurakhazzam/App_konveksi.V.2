@@ -5,23 +5,12 @@ import MasterFormModal, { FormFieldConfig } from './MasterFormModal';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { Size } from '@/types';
 
-import { getSzAlias } from '@/lib/utils/master-helpers';
-
 export default function SizeSection() {
   const { sizes, addSize, updateSize, removeSize } = useMasterStore();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Size | null>(null);
 
   const columns: Column<Size>[] = [
-    { 
-      key: 'id', 
-      header: 'ID', 
-      render: (val) => (
-        <span title={val} style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-cyan)', fontWeight: 'bold' }}>
-          {getSzAlias(val, sizes)}
-        </span>
-      ) 
-    },
     { key: 'nama', header: 'Nama Size', render: (val) => <span style={{ fontWeight: 600 }}>{val}</span> },
     { key: 'action', header: '', align: 'right', render: (_, row) => (
       <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>

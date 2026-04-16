@@ -5,23 +5,12 @@ import MasterFormModal, { FormFieldConfig } from './MasterFormModal';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { Warna } from '@/types';
 
-import { getWrnAlias } from '@/lib/utils/master-helpers';
-
 export default function WarnaSection() {
   const { warna, addWarna, updateWarna, removeWarna } = useMasterStore();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Warna | null>(null);
 
   const columns: Column<Warna>[] = [
-    { 
-      key: 'id', 
-      header: 'ID', 
-      render: (val) => (
-        <span title={val} style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-cyan)', fontWeight: 'bold' }}>
-          {getWrnAlias(val, warna)}
-        </span>
-      ) 
-    },
     { key: 'nama', header: 'Nama Warna', render: (val) => <span style={{ fontWeight: 600 }}>{val}</span> },
     { key: 'kodeHex', header: 'Kode Warna', render: (val) => (
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
