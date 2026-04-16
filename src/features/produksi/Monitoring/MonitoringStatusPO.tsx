@@ -8,6 +8,7 @@ import { useMasterStore } from '@/stores/useMasterStore';
 import { useBundleStore } from '@/stores/useBundleStore';
 import { TAHAP_ORDER, getProgressByPO, TAHAP_LABEL, TahapKey } from '@/lib/utils/production-helpers';
 import ProductionFlowBoard from './ProductionFlowBoard';
+import { usePOStore } from '@/stores/usePOStore';
 import styles from './MonitoringStatusPO.module.css';
 
 interface MonitoringStatusPOProps {
@@ -79,7 +80,31 @@ export default function MonitoringStatusPO({ poList, bundles, sequenceIndex }: M
     { key: 'klienId', header: 'Klien', render: (v) => getKlienName(v) },
     { key: 'tanggalInput', header: 'Tgl Input', render: (val) => val ? new Date(val).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-' },
     { key: 'items', header: 'Total QTY', render: (v: any[]) => v.reduce((sum, i) => sum + i.qty, 0) + ' pcs' },
-    { key: 'id', header: 'Action', render: (v) => <Badge variant="neutral">Antri</Badge> }
+    { 
+      key: 'id', 
+      header: 'Action', 
+      render: (id, row) => (
+        <div className={styles.actions}>
+          <Badge variant="neutral">Antri</Badge>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            color="red"
+            onClick={async () => {
+              if (window.confirm(`Hapus PO "${row.nomorPO}"? Seluruh data bundle dan progres akan melenyap.`)) {
+                try {
+                  await usePOStore.getState().removePO(id);
+                } catch (err: any) {
+                  alert(err.message);
+                }
+              }
+            }}
+          >
+            🗑️ Hapus
+          </Button>
+        </div>
+      )
+    }
   ];
 
   const columnsProses: Column<PurchaseOrder>[] = [
