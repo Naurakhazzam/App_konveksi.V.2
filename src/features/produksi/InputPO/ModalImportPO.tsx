@@ -106,9 +106,10 @@ export default function ModalImportPO({ onClose }: ModalImportPOProps) {
                 </Button>
              </div>
              <ul style={{ paddingLeft: '20px', color: 'var(--color-text-sub)', fontSize: '13px', marginTop: '8px' }}>
-                <li>Header kolom harus sesuai urutan: <strong>Nomor_PO, ID_Klien, SKU_Klien, Nama_produk, Total_QTY, QTY_Per_Bundle, Catatan</strong></li>
+                <li>Header kolom harus sesuai urutan: <strong>Nomor_PO, ID_Klien, SKU_Klien, Nama_produk, Total_QTY, QTY_Per_Bundle, Catatan, Tanggal_Deadline</strong></li>
                 <li><strong>SKU_Klien</strong> wajib terdaftar di Master Data Produk agar sistem dapat mengidentifikasi Model/Warna/Size.</li>
                 <li><strong>ID_Klien</strong> bisa diisi dengan ID (C-xxx) atau Nama Klien yang ada di database.</li>
+                <li><strong>Tanggal_Deadline</strong> format YYYY-MM-DD (Contoh: 2026-05-30). Kosongkan jika tidak ada deadline.</li>
                 <li>Gunakan format angka bulat untuk kolom QTY.</li>
              </ul>
           </div>

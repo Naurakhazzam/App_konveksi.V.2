@@ -55,7 +55,7 @@ export default function ScanStationView({ tahapSlug }: ScanStationViewProps) {
     },
     { 
       key: 'barcode', 
-      header: 'Barcode', 
+      header: 'KODE UNIK', 
       render: (val) => <code style={{ fontSize: '11px' }}>{val}</code> 
     },
     { 
@@ -73,13 +73,13 @@ export default function ScanStationView({ tahapSlug }: ScanStationViewProps) {
   return (
     <PageWrapper 
       title={`Scan — ${TAHAP_LABEL[tahap]}`} 
-      subtitle={`Stasiun kerja produksi pemindaian barcode bundle`}
+      subtitle={`Stasiun kerja produksi pemindaian kode unik bundle`}
     >
       <div className={styles.container}>
         
         {/* Area Scan & Hasil */}
         <div className={styles.scanArea}>
-          <Panel title="Scan Barcode" overflowVisible={true}>
+          <Panel title="Scan KODE UNIK" overflowVisible={true}>
             <ScanInput onFound={handleFound} onError={handleError} tahap={tahap} />
             {errorMsg && <div className={styles.errorMsg}>{errorMsg}</div>}
           </Panel>

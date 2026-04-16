@@ -606,7 +606,7 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
             }
           </strong>
         </div>
-        <div className={styles.infoItem}><Label color="sub">Barcode</Label><code className={styles.barcode}>{bundle.barcode}</code></div>
+        <div className={styles.infoItem}><Label color="sub">KODE UNIK</Label><code className={styles.barcode}>{bundle.barcode}</code></div>
       </div>
 
       {/* Warning Banner untuk Riwayat Masalah (Histori Reject/Hilang) */}

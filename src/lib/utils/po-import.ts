@@ -9,7 +9,8 @@ export const PO_CSV_HEADER = [
   'Nama_produk',
   'Total_QTY',
   'QTY_Per_Bundle',
-  'Catatan'
+  'Catatan',
+  'Tanggal_Deadline'
 ];
 
 export const generatePOMassTemplate = () => {
@@ -21,7 +22,8 @@ export const generatePOMassTemplate = () => {
       'Nama_produk': 'Contoh Produk A',
       'Total_QTY': '100',
       'QTY_Per_Bundle': '20',
-      'Catatan': 'Segera kirim'
+      'Catatan': 'Segera kirim',
+      'Tanggal_Deadline': '2026-05-01'
     },
     {
       'Nomor_PO': 'PO-100',
@@ -30,7 +32,8 @@ export const generatePOMassTemplate = () => {
       'Nama_produk': 'Contoh Produk B',
       'Total_QTY': '50',
       'QTY_Per_Bundle': '25',
-      'Catatan': ''
+      'Catatan': '',
+      'Tanggal_Deadline': ''
     }
   ];
   
@@ -63,11 +66,17 @@ export const processPOCSV = (
     return { entries, errors: ['File CSV kosong'], totalBundles: 0 };
   }
 
+  // Helper to parse date or return null
+  const parseDate = (val: any) => {
+    if (!val || val.toString().trim() === '') return null;
+    const d = new Date(val);
+    return isNaN(d.getTime()) ? null : d.toISOString();
+  };
+
   // Group by Nomor_PO
   const poGroups: { [key: string]: any[] } = {};
   rows.forEach((row, index) => {
     // Skip header and empty rows
-    // Also skip Excel's "sep=," line if present
     if (index === 0 || !row[0] || (typeof row[0] === 'string' && row[0].startsWith('sep='))) return;
     
     const nopo = row[0];
@@ -84,6 +93,8 @@ export const processPOCSV = (
 
     const poId = `PO-IMP-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`;
     const klienIdTemp = poRows[0][1];
+    const deadlineRaw = poRows[0][7];
+    const tanggalDeadline = parseDate(deadlineRaw);
     
     // Find Klien
     const matchKlien = masterData.klien.find(k => k.id === klienIdTemp || k.nama === klienIdTemp);
@@ -99,7 +110,6 @@ export const processPOCSV = (
       const skuKlien = row[2];
       const totalQty = Number(row[4] || 0);
       const qtyPerBdl = Number(row[5] || 0);
-      const catatanRow = row[6] || '';
 
       // Find Produk by SKU
       const matchProduk = masterData.produk.find(p => p.skuKlien === skuKlien || p.skuInternal === skuKlien);
@@ -135,7 +145,8 @@ export const processPOCSV = (
       id: poId,
       klienId: matchKlien.id,
       nomorPO,
-      tanggalInput: new Date().toISOString().split('T')[0],
+      tanggalInput: new Date().toISOString(),
+      tanggalDeadline,
       items,
       status: 'aktif',
       catatan: poRows[0][6] || ''
@@ -145,7 +156,8 @@ export const processPOCSV = (
     const poBundles: any[] = [];
 
     items.forEach(item => {
-      const modelName = masterData.model.find(m => m.id === item.modelId)?.nama || 'MDL';
+      const mMatch = masterData.model.find(m => m.id === item.modelId);
+      const modelName = mMatch?.nama || 'MDL';
       const warnaName = masterData.warna.find(w => w.id === item.warnaId)?.nama || 'WRN';
       const sizeName = masterData.sizes.find(s => s.id === item.sizeId)?.nama || 'SZ';
       
@@ -168,6 +180,7 @@ export const processPOCSV = (
         });
 
         poBundles.push({
+          id: `BNL-IMP-${Date.now()}-${item.id}-${i}`,
           barcode: barcodeString,
           po: poId,
           poItemId: item.id, // K3: Wajib isi poItemId

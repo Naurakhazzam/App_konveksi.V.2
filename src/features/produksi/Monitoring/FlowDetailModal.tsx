@@ -22,7 +22,7 @@ export default function FlowDetailModal({ open, onClose, bundles, stage, type }:
 
   const columns: Column<Bundle>[] = [
     { key: 'po', header: 'No. PO', render: (v) => <strong>{v}</strong> },
-    { key: 'barcode', header: 'Barcode', render: (v) => <code style={{ fontSize: '11px' }}>{v}</code> },
+    { key: 'barcode', header: 'KODE UNIK', render: (v) => <code style={{ fontSize: '11px' }}>{v}</code> },
     { key: 'model', header: 'Model', render: (v) => model.find(m => m.id === v)?.nama || v },
     { key: 'warna', header: 'Warna', render: (v) => warna.find(w => w.id === v)?.nama || v },
     { key: 'size', header: 'Size', render: (v) => (sizes as any[]).find(s => s.id === v)?.nama || v },

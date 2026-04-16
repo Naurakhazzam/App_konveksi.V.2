@@ -482,8 +482,8 @@ export const usePOStore = create<POState>((set, get) => ({
     if (seqError || startSeq === null) throw new Error('Gagal mendapat sequence dari server');
 
     function replaceSequenceInBarcode(originalBarcode: string, newSeq: number): string {
-      // Ganti HANYA segmen 5-digit sequence sebelum -BDL
-      return originalBarcode.replace(/-(\d{5})-BDL/, `-${String(newSeq).padStart(5, '0')}-BDL`);
+      // Ganti HANYA segmen 5-digit sequence sebelum -bdl
+      return originalBarcode.replace(/-(\d{5})-bdl/, `-${String(newSeq).padStart(5, '0')}-bdl`);
     }
     
     let currentGlobalSeq = startSeq;
