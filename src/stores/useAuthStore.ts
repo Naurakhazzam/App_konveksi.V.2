@@ -125,7 +125,13 @@ export const useAuthStore = create<AuthState>()(
       ownerPin: '0000',
 
       setHasHydrated: (val) => set({ _hasHydrated: val }),
-      setPreviewRole: (role) => set({ previewRole: role }),
+
+      setPreviewRole: (role) => {
+        const user = get().currentUser;
+        const isGodAdmin = user?.id === 'USR-FAUZAN' || user?.roles?.includes('godadmin');
+        if (!isGodAdmin) return; // Hanya godadmin yang boleh simulasi role
+        set({ previewRole: role });
+      },
 
       // Load semua users dari Supabase
       loadUsers: async () => {
@@ -208,9 +214,22 @@ export const useAuthStore = create<AuthState>()(
 
         // Cek Pintu Darurat Fauzan (tetap ada sebagai pelapis)
         const isFauzan = username.toLowerCase() === 'fauzan';
-        const emergency1 = process.env.NEXT_PUBLIC_EMERGENCY_CODE_1 || '';
-        const emergency2 = process.env.NEXT_PUBLIC_EMERGENCY_CODE_2 || '';
-        const isEmergencyCode = password_or_pin && (password_or_pin === emergency1 || password_or_pin === emergency2);
+
+        // Cek emergency code via server (kode tidak ter-expose ke browser)
+        let isEmergencyCode = false;
+        if (isFauzan && password_or_pin) {
+          try {
+            const res = await fetch('/api/auth/emergency', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username, code: password_or_pin }),
+            });
+            const data = await res.json();
+            isEmergencyCode = data.valid === true;
+          } catch {
+            isEmergencyCode = false;
+          }
+        }
 
         // Validasi Utama: Cek kolom password ATAU kolom pin
         // (Ini memperbaiki bug pendaftaran di mana data masuk ke kolom PIN)
@@ -236,6 +255,17 @@ export const useAuthStore = create<AuthState>()(
 
       // Tambah user baru ke Supabase
       addUser: async (item) => {
+        // Cek apakah username sudah digunakan
+        const { data: existing } = await supabase
+          .from('users')
+          .select('id')
+          .ilike('username', item.username)
+          .maybeSingle();
+
+        if (existing) {
+          throw new Error(`Username "${item.username}" sudah digunakan. Pilih username lain.`);
+        }
+
         const { error } = await supabase.from('users').insert([{
           id: item.id,
           username: item.username,
@@ -259,6 +289,7 @@ export const useAuthStore = create<AuthState>()(
         if (data.username) updateData.username = data.username;
         if (data.roles) updateData.roles = data.roles;
         if (data.pin !== undefined) updateData.pin = data.pin;
+        if (data.isPending !== undefined) updateData.is_pending = data.isPending;
 
         const { error } = await supabase.from('users').update(updateData).eq('id', id);
         if (error) {
@@ -378,9 +409,9 @@ export const useAuthStore = create<AuthState>()(
       },
 
       validateOwnerCode: (code) => {
-        const emergency1 = process.env.NEXT_PUBLIC_EMERGENCY_CODE_1 || '';
-        const emergency2 = process.env.NEXT_PUBLIC_EMERGENCY_CODE_2 || '';
-        return !!(code && (code === emergency1 || code === emergency2));
+        // Emergency code validation now handled server-side via /api/auth/emergency
+        // This client-side function is kept for backward compatibility but always returns false
+        return false;
       },
 
       switchRole: (roles) => {

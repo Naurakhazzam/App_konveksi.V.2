@@ -64,7 +64,6 @@ export default function HPPEditorPanel({ produkId }: HPPEditorPanelProps) {
             );
           })}
         </div>
-      </div>
     );
   };
 

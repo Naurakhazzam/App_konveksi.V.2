@@ -16,7 +16,7 @@ import styles from './UserRoleView.module.css';
 
 export default function UserRoleView() {
   const { 
-    users, addUser, updateUser, removeUser, 
+    users, addUser, updateUser, removeUser, approveUser, 
     roleDefinitions, addRole, updateRole, removeRole 
   } = useAuthStore();
   
@@ -117,7 +117,7 @@ export default function UserRoleView() {
     { key: 'action', header: '', align: 'right', render: (_, row) => (
       <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
         {row.isPending && (
-          <Button variant="primary" size="sm" onClick={() => updateUser(row.id, { isPending: false })}>
+          <Button variant="primary" size="sm" onClick={() => approveUser(row.id)}>
             Setujui Akun
           </Button>
         )}

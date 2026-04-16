@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Modal, ModalFooter } from '@/components/organisms/Modal';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '@/components/organisms/Modal';
 import Button from '@/components/atoms/Button';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { supabase } from '@/lib/supabase';
@@ -181,7 +181,9 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
   if (!open) return null;
 
   return (
-    <Modal open={open} onClose={handleClose} title="Upload Massal HPP dari CSV">
+    <Modal open={open} onClose={handleClose}>
+      <ModalHeader title="Upload Massal HPP dari CSV" onClose={handleClose} />
+      <ModalBody>
       <div style={{ padding: '8px 0', minWidth: '580px', maxWidth: '720px' }}>
 
         {/* Format Info */}
@@ -261,6 +263,7 @@ export default function BulkUploadModal({ open, onClose }: BulkUploadModalProps)
           </div>
         )}
       </div>
+      </ModalBody>
 
       <ModalFooter>
         <Button variant="ghost" onClick={handleClose}>{isDone ? 'Tutup' : 'Batal'}</Button>

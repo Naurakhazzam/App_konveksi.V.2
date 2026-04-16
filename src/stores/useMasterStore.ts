@@ -147,11 +147,14 @@ export const useMasterStore = create<MasterState>((set, get) => ({
         supabase.from('kategori_trx').select('*').order('nama'),
         supabase.from('jenis_reject').select('*').order('nama'),
         supabase.from('alasan_reject').select('*').order('nama'),
-        supabase.from('produk').select('*'),
+        supabase.from('produk').select('*').limit(10000),
         supabase.from('hpp_komponen').select('*').order('nama'),
-        supabase.from('produk_hpp_item').select('*'),
+        supabase.from('produk_hpp_item').select('*').limit(50000),
         supabase.from('jabatan').select('*').order('nama'),
       ]);
+
+      if (produkHPPItemRes.error) console.error('[MasterStore] ❌ Error HPP Item:', produkHPPItemRes.error);
+      if (produkRes.error) console.error('[MasterStore] ❌ Error Produk:', produkRes.error);
 
       set({
         karyawan: (karyawanRes.data ?? []).map((r: any) => ({
@@ -393,6 +396,25 @@ export const useMasterStore = create<MasterState>((set, get) => ({
     }
   },
   removeKaryawan: async (id) => {
+    // Guard: cek apakah ada kasbon aktif (belum lunas)
+    const { usePayrollStore } = require('./usePayrollStore');
+    const { kasbon } = usePayrollStore.getState();
+    const activeKasbon = kasbon.filter((k: any) => k.karyawanId === id && k.status === 'belum_lunas');
+    if (activeKasbon.length > 0) {
+      throw new Error(`Karyawan tidak bisa dihapus. Masih ada ${activeKasbon.length} kasbon belum lunas.`);
+    }
+
+    // Guard: cek apakah ada upah yang belum dibayar di gaji_ledger
+    const { data: unpaidLedger } = await supabase
+      .from('gaji_ledger')
+      .select('id')
+      .eq('karyawan_id', id)
+      .eq('status', 'belum_lunas')
+      .limit(1);
+    if (unpaidLedger && unpaidLedger.length > 0) {
+      throw new Error('Karyawan tidak bisa dihapus. Masih ada upah yang belum dibayarkan.');
+    }
+
     const backup = get().karyawan;
     set((s) => ({ karyawan: s.karyawan.filter((i) => i.id !== id) }));
     try {
@@ -401,6 +423,7 @@ export const useMasterStore = create<MasterState>((set, get) => ({
     } catch (err) {
       console.error('[MasterStore] removeKaryawan:', (err as any).message);
       set({ karyawan: backup });
+      throw err;
     }
   },
 
@@ -428,8 +451,22 @@ export const useMasterStore = create<MasterState>((set, get) => ({
     await dbUpdate('klien', id, data);
   },
   removeKlien: async (id) => {
+    // Guard: cek apakah ada PO aktif dari klien ini
+    const { usePOStore } = require('./usePOStore');
+    const { poList } = usePOStore.getState();
+    const activePO = poList.filter((po: any) => po.klienId === id);
+    if (activePO.length > 0) {
+      throw new Error(`Klien tidak bisa dihapus. Masih ada ${activePO.length} PO terkait klien ini.`);
+    }
+
+    const backup = get().klien;
     set((s) => ({ klien: s.klien.filter((i) => i.id !== id) }));
-    await dbDelete('klien', id);
+    try {
+      await dbDelete('klien', id);
+    } catch (err) {
+      set({ klien: backup });
+      throw err;
+    }
   },
 
   // ── JENIS REJECT ──────────────────────────────────────────────────────────
