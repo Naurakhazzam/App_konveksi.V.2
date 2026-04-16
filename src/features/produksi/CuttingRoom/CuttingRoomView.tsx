@@ -10,6 +10,7 @@ import Badge from '@/components/atoms/Badge';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '@/components/organisms/Modal';
 import { usePOStore } from '@/stores/usePOStore';
 import { useMasterStore } from '@/stores/useMasterStore';
+import { getModAlias, getWrnAlias, getSzAlias } from '@/lib/utils/master-helpers';
 import { useBundleStore } from '@/stores/useBundleStore';
 import BarcodeVisual from '../InputPO/BarcodeVisual';
 import TextInput from '@/components/atoms/Input/TextInput';
@@ -142,9 +143,30 @@ export default function CuttingRoomView() {
         return <span title={v} className={styles.poBadge} style={{ cursor: 'help' }}>{display}</span>;
       }
     },
-    { key: 'modelId', header: 'Model', render: (v) => model.find(m => m.id === v)?.nama || v },
-    { key: 'warnaId', header: 'Warna', render: (v) => warna.find(w => w.id === v)?.nama || v },
-    { key: 'sizeId', header: 'Size', render: (v) => (sizes as any[]).find(s => s.id === v)?.nama || v },
+    { 
+      key: 'modelId', 
+      header: 'Model', 
+      render: (id) => {
+        const item = model.find(m => m.id === id);
+        return `${getModAlias(id, model)} - ${item?.nama || id}`;
+      }
+    },
+    { 
+      key: 'warnaId', 
+      header: 'Warna', 
+      render: (id) => {
+        const item = warna.find(w => w.id === id);
+        return `${getWrnAlias(id, warna)} - ${item?.nama || id}`;
+      }
+    },
+    { 
+      key: 'sizeId', 
+      header: 'Size', 
+      render: (id) => {
+        const item = sizes.find(s => s.id === id);
+        return `${getSzAlias(id, sizes)} - ${item?.nama || id}`;
+      }
+    },
     { key: 'qtyBundle', header: 'QTY', render: (v: any) => <strong>{v} pcs</strong> },
     { 
       key: 'statusCutting', 

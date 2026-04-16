@@ -8,6 +8,7 @@ import Badge from '@/components/atoms/Badge';
 import { useKoreksiStore } from '@/stores/useKoreksiStore';
 import { TahapKey, TAHAP_ORDER, TAHAP_LABEL, getBundleIssueSummary, getExpectedQTY } from '@/lib/utils/production-helpers';
 import Panel from '@/components/molecules/Panel';
+import { getModAlias, getWrnAlias, getSzAlias } from '@/lib/utils/master-helpers';
 import styles from './ListAntrianTahap.module.css';
 
 interface ListAntrianTahapProps {
@@ -121,10 +122,14 @@ export default function ListAntrianTahap({ tahap }: ListAntrianTahapProps) {
       key: 'artikel', 
       header: 'Artikel & Size', 
       render: (_, row) => {
+        const ma = getModAlias(row.model, model);
+        const wa = getWrnAlias(row.warna, warna);
+        const sa = getSzAlias(row.size, sizes);
+
         const m = model.find(xm => xm.id === row.model)?.nama || row.model;
         const w = warna.find(xw => xw.id === row.warna)?.nama || row.warna;
-        const s = (sizes as any[]).find(xs => xs.id === row.size)?.nama || row.size;
-        return `${m} - ${w} - ${s}`;
+        const s = sizes.find(xs => xs.id === row.size)?.nama || row.size;
+        return `[${ma}] ${m} - [${wa}] ${w} - [${sa}] ${s}`;
       } 
     },
     { 

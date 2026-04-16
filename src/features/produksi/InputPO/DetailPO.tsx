@@ -7,6 +7,7 @@ import DataTable, { Column } from '@/components/organisms/DataTable';
 import Button from '@/components/atoms/Button';
 import { Heading, MonoText } from '@/components/atoms/Typography';
 import TiketBarcode from './TiketBarcode';
+import { getModAlias, getWrnAlias, getSzAlias } from '@/lib/utils/master-helpers';
 import styles from './DetailPO.module.css';
 
 interface DetailPOProps {
@@ -81,9 +82,9 @@ export default function DetailPO({ poId }: DetailPOProps) {
 
     return {
       id: item.id,
-      model: model.find(m => m.id === item.modelId)?.nama,
-      warna: warna.find(w => w.id === item.warnaId)?.nama,
-      size: sizes.find((s: any) => s.id === item.sizeId)?.nama,
+      model: `[${getModAlias(item.modelId, model)}] ${model.find(m => m.id === item.modelId)?.nama || item.modelId}`,
+      warna: `[${getWrnAlias(item.warnaId, warna)}] ${warna.find(w => w.id === item.warnaId)?.nama || item.warnaId}`,
+      size: `[${getSzAlias(item.sizeId, sizes)}] ${sizes.find((s: any) => s.id === item.sizeId)?.nama || item.sizeId}`,
       qty: item.qty,
       isiBundle: item.qtyPerBundle,
       totalBundle: item.jumlahBundle,

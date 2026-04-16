@@ -5,13 +5,23 @@ import MasterFormModal, { FormFieldConfig } from './MasterFormModal';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { Kategori } from '@/types';
 
+import { getKatAlias } from '@/lib/utils/master-helpers';
+
 export default function KategoriSection() {
   const { kategori, addKategori, updateKategori, removeKategori } = useMasterStore();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Kategori | null>(null);
 
   const columns: Column<Kategori>[] = [
-    { key: 'id', header: 'ID', render: (val) => <span style={{ fontFamily: 'var(--font-mono)' }}>{val}</span> },
+    { 
+      key: 'id', 
+      header: 'ID', 
+      render: (val) => (
+        <span title={val} style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-cyan)', fontWeight: 'bold' }}>
+          {getKatAlias(val, kategori)}
+        </span>
+      ) 
+    },
     { key: 'nama', header: 'Nama Kategori', render: (val) => <span style={{ fontWeight: 600 }}>{val}</span> },
     { key: 'action', header: '', align: 'right', render: (_, row) => (
       <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>

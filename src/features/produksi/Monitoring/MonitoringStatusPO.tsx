@@ -6,6 +6,7 @@ import ProgressBar from '@/components/atoms/ProgressBar';
 import { PurchaseOrder, Bundle } from '@/types';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { useBundleStore } from '@/stores/useBundleStore';
+import { getModAlias, getSzAlias } from '@/lib/utils/master-helpers';
 import { TAHAP_ORDER, getProgressByPO, TAHAP_LABEL, TahapKey } from '@/lib/utils/production-helpers';
 import ProductionFlowBoard from './ProductionFlowBoard';
 import { usePOStore } from '@/stores/usePOStore';
@@ -159,8 +160,13 @@ export default function MonitoringStatusPO({ poList, bundles, sequenceIndex }: M
       }
     },
     { key: 'detail', header: 'Artikel & Size', render: (_, row) => {
-       const itemSummary = row.items.map(i => `${i.qty}pcs`).join(', ');
-       return <span className={styles.muted}>{itemSummary}</span>;
+       const { model: mList, sizes: sList } = useMasterStore.getState();
+       const itemSummary = row.items.map(i => {
+         const ma = getModAlias(i.modelId, mList);
+         const sa = getSzAlias(i.sizeId, sList);
+         return `[${ma}/${sa}] ${i.qty}pcs`;
+       }).join(', ');
+       return <span className={styles.muted} style={{ fontSize: '11px' }}>{itemSummary}</span>;
     }},
     { key: 'karyawan', header: 'Pengerja', render: (_, row) => getSelesaiDetail(row.id) },
     { key: 'status', header: 'Payroll', render: () => <Badge variant="warning">Tagihan Upah</Badge> },
