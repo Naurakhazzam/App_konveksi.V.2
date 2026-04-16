@@ -35,10 +35,28 @@ export default function ListAntrianTahap({ tahap }: ListAntrianTahapProps) {
       // W-05: Hitung expected qty sekali saja di sini (memoized)
       const expectedQty = getExpectedQTY(b, tahap, koreksiList);
 
-      // 1. ANTRIAN MASUK (Sudah selesai di tahap sebelumnya, tapi belum di-terima di tahap ini)
-      if (prevStage && b.statusTahap[prevStage].status === 'selesai' && currentST.status === null) {
-        list.push({ ...b, viewStatus: `Menunggu Antrian ${TAHAP_LABEL[tahap]}`, viewStatusType: 'warning', expectedQty });
-        return;
+      // 1. ANTRIAN MASUK
+      // Untuk Tahap Pertama (Cutting): Munculkan jika status masih NULL (berarti baru di-import)
+      // Untuk Tahap lainnya: Munculkan jika tahap sebelumnya sudah SELESAI
+      const isAntrianMasuk = tahap === 'cutting' 
+        ? currentST.status === null 
+        : (prevStage && b.statusTahap[prevStage].status === 'selesai' && currentST.status === null);
+
+      if (isAntrianMasuk) {
+        // Khusus Cutting: Jika status item artikel sudah 'started' (karena cetak SPK), maka dia masuk kategori PROSES, bukan ANTRIAN
+        let actuallyProses = false;
+        if (tahap === 'cutting') {
+          const po = poList.find(p => p.id === b.po);
+          const item = po?.items.find(i => i.modelId === b.model && i.warnaId === b.warna && i.sizeId === b.size);
+          if (item?.statusCutting === 'started' || currentST.status === 'terima') {
+            actuallyProses = true;
+          }
+        }
+
+        if (!actuallyProses) {
+          list.push({ ...b, viewStatus: `Menunggu Antrian ${TAHAP_LABEL[tahap]}`, viewStatusType: 'warning', expectedQty });
+          return;
+        }
       }
 
       // 2. PROSES (Sedang dikerjakan di tahap ini)
