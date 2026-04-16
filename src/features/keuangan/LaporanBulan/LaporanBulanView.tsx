@@ -71,7 +71,7 @@ export default function LaporanBulanView() {
       }
     >
       <div className={styles.container}>
-        <div className={styles.filterBar}>
+        <div className={`${styles.filterBar} no-print`}>
           <label>Pilih Periode:</label>
           <input 
             type="month" 

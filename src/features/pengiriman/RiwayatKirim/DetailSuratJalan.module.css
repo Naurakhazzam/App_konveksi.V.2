@@ -56,23 +56,17 @@
 }
 
 @media print {
-  body * {
-    visibility: hidden;
-  }
-  
-  .container, .container * {
-    visibility: visible;
+  .container {
+    position: static !important;
+    width: 100% !important;
+    background: white !important;
+    color: black !important;
+    padding: 0 !important;
   }
 
-  /* Make container fill the page */
-  .container {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    background: white;
-    color: black;
-    padding: 0;
+  /* Hide UI elements during print */
+  .headerInfo, .tableTitle, .footerPrint {
+    display: none !important;
   }
 
   /* Hide UI elements during print */

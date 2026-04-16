@@ -146,7 +146,7 @@ export default function LaporanRejectView() {
         </div>
 
         {/* Dashboard Cards */}
-        <div className={styles.dashboard}>
+        <div className={`${styles.dashboard} no-print`}>
           <div className={styles.statsGrid}>
             <div className={styles.statCard} data-type="total">
               <span className={styles.statLabel}>Total Kejadian</span>

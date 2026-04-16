@@ -158,7 +158,7 @@ export default function LaporanPerPOView() {
             onRowClick={handleRowClick}
           />
           {expandedPO && (
-            <div className={styles.expandArea}>
+            <div className={`${styles.expandArea} no-print`}>
               <ArticleDetailPanel 
                 items={poList.find(p => p.id === expandedPO)?.items || []} 
                 allHppItems={produkHPPItems}

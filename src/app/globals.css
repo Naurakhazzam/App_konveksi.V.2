@@ -282,14 +282,15 @@ select option {
 }
 
 @media print {
-  .no-print { display: none !important; }
-  
-  /* Isolate the portal-based print-area from the rest of the Next.js app */
-  body > *:not(#print-area):not(script):not(style) {
+  .no-print,
+  [class*="no-print"],
+  button,
+  nav,
+  aside,
+  header {
     display: none !important;
   }
-
-
+  
   body, html { 
     background: white !important; 
     color: black !important; 
@@ -301,9 +302,31 @@ select option {
     padding: 0 !important;
   }
 
-  #print-area {
+  /* Force parents and wrappers to be visible and correctly sized */
+  main,
+  [class*="layout"],
+  [class*="wrapper"],
+  [class*="content"],
+  [class*="mainContent"] {
+    display: block !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    position: static !important;
+    transform: none !important;
+  }
+
+  #print-area,
+  .print-area,
+  [class*="printArea"] {
     display: block !important;
     visibility: visible !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   * { 
@@ -311,6 +334,7 @@ select option {
     print-color-adjust: exact !important; 
     text-shadow: none !important; 
     box-shadow: none !important; 
+    transition: none !important;
   }
 }
 

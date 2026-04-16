@@ -7,11 +7,12 @@ export interface ModalHeaderProps {
   title: string;
   subtitle?: string;
   onClose?: () => void;
+  className?: string; // Added support for custom classes
 }
 
-export default function ModalHeader({ title, subtitle, onClose }: ModalHeaderProps) {
+export default function ModalHeader({ title, subtitle, onClose, className }: ModalHeaderProps) {
   return (
-    <div className={styles.header}>
+    <div className={`${styles.header} ${className || ''}`}>
       <div className={styles.titleWrap}>
         <Heading level={3}>{title}</Heading>
         {subtitle && <Label size="sm" color="sub">{subtitle}</Label>}

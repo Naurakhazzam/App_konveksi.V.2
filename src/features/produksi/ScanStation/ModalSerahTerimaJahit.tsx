@@ -159,7 +159,7 @@ export default function ModalSerahTerimaJahit({
           <Button variant="ghost" size="sm" onClick={onClose}>&times;</Button>
         </div>
 
-        <div className={styles.content}>
+        <div className={styles.content} id="print-area">
           <div className={styles.bundleInfo}>
             <div><span className={styles.infoLabel}>PO</span><span className={styles.infoValue}>{bundle.po}</span></div>
             <div><span className={styles.infoLabel}>Tanggal</span><span className={styles.infoValue}>{formatDate(new Date().toISOString())}</span></div>
@@ -203,7 +203,7 @@ export default function ModalSerahTerimaJahit({
                             min="0"
                           />
                         </td>
-                        <td className={styles.screenOnly}>
+                        <td className={`${styles.screenOnly} no-print`}>
                           {stokInfo && <span className={stokInfo.className}>{stokInfo.status}</span>}
                         </td>
                       </tr>
@@ -261,7 +261,7 @@ export default function ModalSerahTerimaJahit({
           </div>
 
           {anyStokWarning && (
-            <div className={`${styles.alert} ${styles.screenOnly}`}>
+            <div className={`${styles.alert} ${styles.screenOnly} no-print`}>
               ⚠️ <strong>Perhatian:</strong> Beberapa stok aksesori/bahan menipis atau habis. 
               Pastikan ketersediaan fisik sebelum menyerahkan ke penjahit.
             </div>
@@ -285,9 +285,9 @@ export default function ModalSerahTerimaJahit({
           </div>
         </div>
 
-        <div className={`${styles.footer} ${styles.screenOnly}`}>
+        <div className={`${styles.footer} ${styles.screenOnly} no-print`}>
           <Button variant="ghost" onClick={onClose}>Batal</Button>
-          <Button variant="ghost" onClick={() => window.print()}>🖨️ Print</Button>
+          <Button variant="ghost" className="no-print" onClick={() => window.print()}>🖨️ Print</Button>
           <Button 
             variant="primary" 
             onClick={handleApprove} 

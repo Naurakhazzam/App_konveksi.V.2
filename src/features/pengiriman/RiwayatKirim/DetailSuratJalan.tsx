@@ -41,9 +41,9 @@ export default function DetailSuratJalan({ sj, onClose, onUpdateStatus }: Detail
 
   return (
     <Modal open={true} onClose={onClose} size="lg">
-      <ModalHeader title={`Detail Surat Jalan: ${sj.nomorSJ}`} onClose={onClose} />
+      <ModalHeader title={`Detail Surat Jalan: ${sj.nomorSJ}`} onClose={onClose} className="no-print" />
       <ModalBody>
-        <div className={styles.container}>
+        <div className={styles.container} id="print-area">
           {/* Print Only Header */}
           <div className={styles.printHeader}>
             <div className={styles.brandRow}>

@@ -116,8 +116,8 @@ function SlipGajiContent() {
   ];
 
   return (
-    <div className={styles.container}>
-      <Panel title="Filter Periode Pembayaran">
+    <div className={`${styles.container} print-parent`}>
+      <Panel title="Filter Periode Pembayaran" className="no-print">
         <div className={styles.selector}>
           <div className={styles.field}>
             <Label>Mulai</Label>
@@ -132,7 +132,7 @@ function SlipGajiContent() {
 
       <div className={styles.mainGrid}>
         <div className={styles.listSection}>
-          <Panel title="Daftar Pembayaran Selesai">
+          <Panel title="Daftar Pembayaran Selesai" className="no-print">
             <DataTable 
               columns={columns} 
               data={paidEmployees} 
@@ -271,7 +271,7 @@ function SlipGajiContent() {
                 </div>
               </div>
               
-              <div className={styles.actions}>
+              <div className={`${styles.actions} no-print`}>
                 <Button variant="primary" onClick={handlePrint}>
                   🖨️ Cetak Slip Gaji
                 </Button>
