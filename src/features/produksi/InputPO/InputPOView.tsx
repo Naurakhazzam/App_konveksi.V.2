@@ -57,11 +57,24 @@ export default function InputPOView() {
   );
 
   const columns: Column<PurchaseOrder>[] = [
-    { key: 'nomorPO', header: 'No. PO', render: (val, row) => (
-      <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-primary)', cursor: 'pointer', fontWeight: 600 }} onClick={() => handleView(row.id)}>
-        {val}
-      </span>
-    )},
+    { key: 'nomorPO', header: 'No. PO', render: (val, row) => {
+      const isLong = val.length > 15 && val.startsWith('PO-IMP');
+      let display = val;
+      if (isLong) {
+        const sorted = [...poList].sort((a, b) => new Date(a.tanggalInput).getTime() - new Date(b.tanggalInput).getTime());
+        const idx = sorted.findIndex(p => p.id === row.id);
+        display = `PO-${String(idx + 1).padStart(3, '0')}`;
+      }
+      return (
+        <span 
+          title={val}
+          style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-primary)', cursor: 'pointer', fontWeight: 600 }} 
+          onClick={() => handleView(row.id)}
+        >
+          {display}
+        </span>
+      );
+    }},
     { key: 'klienId', header: 'Klien' }, // normally map to client name
     { key: 'tanggalInput', header: 'Tanggal Input', render: (val) => val ? new Date(val).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : '-' },
     { key: 'itemsCount', header: 'Jumlah Artikel', render: (_, row: any) => row.items?.length || 0 },

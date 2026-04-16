@@ -76,10 +76,20 @@ export default function MonitoringStatusPO({ poList, bundles, sequenceIndex }: M
   };
 
   const columnsBelum: Column<PurchaseOrder>[] = [
-    { key: 'nomorPO', header: 'Nomor PO', render: (v) => <strong>{v}</strong> },
-    { key: 'klienId', header: 'Klien', render: (v) => getKlienName(v) },
-    { key: 'tanggalInput', header: 'Tgl Input', render: (val) => val ? new Date(val).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-' },
-    { key: 'items', header: 'Total QTY', render: (v: any[]) => v.reduce((sum, i) => sum + i.qty, 0) + ' pcs' },
+    { 
+      key: 'nomorPO', 
+      header: 'Nomor PO', 
+      render: (v, row) => {
+        const isLong = v.length > 15 && v.startsWith('PO-IMP');
+        if (isLong) {
+          const sorted = [...poList].sort((a, b) => new Date(a.tanggalInput).getTime() - new Date(b.tanggalInput).getTime());
+          const idx = sorted.findIndex(p => p.id === row.id);
+          const alias = `PO-${String(idx + 1).padStart(3, '0')}`;
+          return <strong title={v} style={{ cursor: 'help', color: 'var(--color-cyan)' }}>{alias}</strong>;
+        }
+        return <strong>{v}</strong>;
+      }
+    },
     { 
       key: 'id', 
       header: 'Action', 
@@ -108,7 +118,20 @@ export default function MonitoringStatusPO({ poList, bundles, sequenceIndex }: M
   ];
 
   const columnsProses: Column<PurchaseOrder>[] = [
-    { key: 'nomorPO', header: 'Nomor PO', render: (v) => <strong>{v}</strong> },
+    { 
+      key: 'nomorPO', 
+      header: 'Nomor PO', 
+      render: (v, row) => {
+        const isLong = v.length > 15 && v.startsWith('PO-IMP');
+        if (isLong) {
+          const sorted = [...poList].sort((a, b) => new Date(a.tanggalInput).getTime() - new Date(b.tanggalInput).getTime());
+          const idx = sorted.findIndex(p => p.id === row.id);
+          const alias = `PO-${String(idx + 1).padStart(3, '0')}`;
+          return <strong title={v} style={{ cursor: 'help', color: 'var(--color-cyan)' }}>{alias}</strong>;
+        }
+        return <strong>{v}</strong>;
+      }
+    },
     { key: 'klienId', header: 'Klien', render: (v) => getKlienName(v) },
     ...TAHAP_ORDER.map((t): Column<PurchaseOrder> => ({
       key: t,
@@ -121,7 +144,20 @@ export default function MonitoringStatusPO({ poList, bundles, sequenceIndex }: M
   ];
 
   const columnsSelesai: Column<PurchaseOrder>[] = [
-    { key: 'nomorPO', header: 'Nomor PO', render: (v) => <strong>{v}</strong> },
+    { 
+      key: 'nomorPO', 
+      header: 'Nomor PO', 
+      render: (v, row) => {
+        const isLong = v.length > 15 && v.startsWith('PO-IMP');
+        if (isLong) {
+          const sorted = [...poList].sort((a, b) => new Date(a.tanggalInput).getTime() - new Date(b.tanggalInput).getTime());
+          const idx = sorted.findIndex(p => p.id === row.id);
+          const alias = `PO-${String(idx + 1).padStart(3, '0')}`;
+          return <strong title={v} style={{ cursor: 'help', color: 'var(--color-cyan)' }}>{alias}</strong>;
+        }
+        return <strong>{v}</strong>;
+      }
+    },
     { key: 'detail', header: 'Artikel & Size', render: (_, row) => {
        const itemSummary = row.items.map(i => `${i.qty}pcs`).join(', ');
        return <span className={styles.muted}>{itemSummary}</span>;

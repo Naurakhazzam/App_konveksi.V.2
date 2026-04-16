@@ -101,7 +101,22 @@ export default function ListAntrianTahap({ tahap }: ListAntrianTahapProps) {
 
 
   const columns: Column<any>[] = [
-    { key: 'po', header: 'Nomor PO', render: (val) => <strong>{val}</strong> },
+    { 
+      key: 'po', 
+      header: 'Nomor PO', 
+      render: (id) => {
+        const po = poList.find(p => p.id === id);
+        const val = po?.nomorPO || id;
+        const isLong = val.length > 15 && val.startsWith('PO-IMP');
+        if (isLong) {
+          const sorted = [...poList].sort((a, b) => new Date(a.tanggalInput).getTime() - new Date(b.tanggalInput).getTime());
+          const idx = sorted.findIndex(p => p.id === id);
+          const alias = `PO-${String(idx + 1).padStart(3, '0')}`;
+          return <strong title={val} style={{ cursor: 'help', color: 'var(--color-cyan)' }}>{alias}</strong>;
+        }
+        return <strong title={val}>{val}</strong>;
+      }
+    },
     { 
       key: 'artikel', 
       header: 'Artikel & Size', 

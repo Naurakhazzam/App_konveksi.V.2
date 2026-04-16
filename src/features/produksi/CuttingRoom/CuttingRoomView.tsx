@@ -128,7 +128,20 @@ export default function CuttingRoomView() {
       header: 'KODE UNIK', 
       render: (v) => <code style={{ fontSize: '11px', fontWeight: 'bold' }}>{v}</code>
     },
-    { key: 'nomorPO', header: 'Nomor PO', render: (v: any) => <span className={styles.poBadge}>{v}</span> },
+    { 
+      key: 'nomorPO', 
+      header: 'Nomor PO', 
+      render: (v: any, row: any) => {
+        const isLong = v.length > 15 && v.startsWith('PO-IMP');
+        let display = v;
+        if (isLong) {
+          const sorted = [...poList].sort((a, b) => new Date(a.tanggalInput).getTime() - new Date(b.tanggalInput).getTime());
+          const idx = sorted.findIndex(p => p.id === row.poId);
+          display = `PO-${String(idx + 1).padStart(3, '0')}`;
+        }
+        return <span title={v} className={styles.poBadge} style={{ cursor: 'help' }}>{display}</span>;
+      }
+    },
     { key: 'modelId', header: 'Model', render: (v) => model.find(m => m.id === v)?.nama || v },
     { key: 'warnaId', header: 'Warna', render: (v) => warna.find(w => w.id === v)?.nama || v },
     { key: 'sizeId', header: 'Size', render: (v) => (sizes as any[]).find(s => s.id === v)?.nama || v },
