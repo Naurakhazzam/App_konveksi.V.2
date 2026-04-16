@@ -14,7 +14,15 @@ export interface HPPEditorPanelProps {
 }
 
 export default function HPPEditorPanel({ produkId }: HPPEditorPanelProps) {
-  const { produk, hppKomponen, getHPPItemsByProduk, updateProdukHPPItem, removeProdukHPPItem, copyHPPToAllSizes } = useMasterStore();
+  const { 
+    produk, 
+    hppKomponen, 
+    getHPPItemsByProduk, 
+    updateProdukHPPItem, 
+    removeProdukHPPItem, 
+    copyHPPToAllSizes 
+  } = useMasterStore();
+  
   const { canSeeFinance } = useFinanceAccess();
 
   const [addModalOpen, setAddModalOpen] = useState(false);
@@ -37,7 +45,7 @@ export default function HPPEditorPanel({ produkId }: HPPEditorPanelProps) {
 
   const renderSection = (title: string, kategori: string) => {
     const sectionItems = items.filter(i => {
-      const k = hppKomponen.find(k => k.id === i.komponenId);
+      const k = hppKomponen.find(komp => komp.id === i.komponenId);
       return k?.kategori === kategori;
     });
 
@@ -69,7 +77,7 @@ export default function HPPEditorPanel({ produkId }: HPPEditorPanelProps) {
   };
 
   const handleCopyAllSizes = () => {
-    if (confirm('Terapkan struktur HPP ini ke SELURUH ukuran untuk model yang sama?')) {
+    if (window.confirm('Terapkan struktur HPP ini ke SELURUH ukuran untuk model yang sama?')) {
       copyHPPToAllSizes(produkId);
       alert('Berhasil diterapkan ke semua ukuran.');
     }
@@ -110,9 +118,20 @@ export default function HPPEditorPanel({ produkId }: HPPEditorPanelProps) {
         )}
       </div>
 
-      <AddKomponenModal open={addModalOpen} onClose={() => setAddModalOpen(false)} produkId={produkId} />
-      <CopyHPPModal open={copyModalOpen} onClose={() => setCopyModalOpen(false)} targetProdukId={produkId} />
-      <BulkUploadModal open={bulkModalOpen} onClose={() => setBulkModalOpen(false)} />
+      <AddKomponenModal 
+        open={addModalOpen} 
+        onClose={() => setAddModalOpen(false)} 
+        produkId={produkId} 
+      />
+      <CopyHPPModal 
+        open={copyModalOpen} 
+        onClose={() => setCopyModalOpen(false)} 
+        targetProdukId={produkId} 
+      />
+      <BulkUploadModal 
+        open={bulkModalOpen} 
+        onClose={() => setBulkModalOpen(false)} 
+      />
     </div>
   );
 }
