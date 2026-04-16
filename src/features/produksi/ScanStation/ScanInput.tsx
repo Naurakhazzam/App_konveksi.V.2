@@ -59,18 +59,11 @@ export default function ScanInput({ onFound, onError, tahap }: ScanInputProps) {
     const v = e.target.value;
     setValue(v);
     if (v.length >= 2) {
-      let eligible = bundles;
-      if (tahap) {
-        eligible = bundles.filter(b => {
-          const val = validateCanTerima(b, tahap);
-          const isOngoing = b.statusTahap[tahap].status === 'terima';
-          return val.canTerima || isOngoing;
-        });
-      }
-
-      const filtered = eligible
+      // Show all matches in suggestions, regardless of eligibility, 
+      // so users can search for finished bundles to view history.
+      const filtered = bundles
         .filter(b => matchesSearch(b.barcode, v))
-        .slice(0, 6);
+        .slice(0, 8); // Slightly more suggestions
       setSuggestions(filtered);
     } else {
       setSuggestions([]);

@@ -56,7 +56,7 @@ export default function ScanStationView({ tahapSlug }: ScanStationViewProps) {
     { 
       key: 'barcode', 
       header: 'KODE UNIK', 
-      render: (val) => <code style={{ fontSize: '11px' }}>{val}</code> 
+      render: (val) => <code style={{ fontSize: '11px', fontWeight: 'bold' }}>{val}</code> 
     },
     { 
       key: 'aksi', 

@@ -20,7 +20,7 @@ export default function DetailSuratJalan({ sj, onClose, onUpdateStatus }: Detail
     { 
       key: 'bundleBarcode', 
       header: 'KODE UNIK', 
-      render: (v) => <code style={{ fontSize: '11px' }}>{v}</code> 
+      render: (val) => <code style={{ fontSize: '11px', fontWeight: 'bold' }}>{val}</code> 
     },
     { key: 'poId', header: 'No. PO' },
     { 

@@ -97,7 +97,7 @@ export default function ListAntrianTahap({ tahap }: ListAntrianTahapProps) {
     { 
       key: 'barcode', 
       header: 'KODE UNIK', 
-      render: (val) => <code style={{ fontSize: '11px' }}>{val}</code> 
+      render: (val) => <code style={{ fontSize: '11px', fontWeight: 'bold' }}>{val}</code> 
     },
     { 
       key: 'qtyBundle', 

@@ -335,6 +335,14 @@ select option {
     text-shadow: none !important; 
     box-shadow: none !important; 
     transition: none !important;
+    animation: none !important;
+  }
+
+  .beam-border,
+  [class*="beam-border"],
+  [class*="Glow"],
+  [class*="Shimmer"] {
+    display: none !important;
   }
 }
 

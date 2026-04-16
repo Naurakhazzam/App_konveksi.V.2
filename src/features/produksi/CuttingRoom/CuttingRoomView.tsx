@@ -17,22 +17,29 @@ import Select from '@/components/atoms/Select/Select';
 import { POItem } from '@/types';
 import styles from './CuttingRoomView.module.css';
 
-interface CuttingQueueItem extends POItem {
+interface CuttingQueueItem {
+  barcode: string;
   nomorPO: string;
-  artikelNama: string;
+  poId: string;
+  modelId: string;
+  warnaId: string;
+  sizeId: string;
+  qtyBundle: number;
+  skuKlien: string;
+  statusCutting: string; // From bundle.statusTahap.cutting.status
   selected: boolean;
 }
 
 export default function CuttingRoomView() {
-  const { poList, updateItemCuttingStatus } = usePOStore();
+  const { poList } = usePOStore();
   const { model, warna, sizes } = useMasterStore();
-  const { bundles } = useBundleStore();
+  const { bundles, updateStatusTahap } = useBundleStore();
   
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedBarcodes, setSelectedBarcodes] = useState<string[]>([]);
   const [isMounted, setIsMounted] = useState(false);
   const [previewMode, setPreviewMode] = useState<'spk' | 'barcode' | null>(null);
   const [printMode, setPrintMode] = useState<'spk' | 'barcode' | null>(null);
-  const [searchPO, setSearchPO] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
 
   useEffect(() => {
@@ -40,45 +47,49 @@ export default function CuttingRoomView() {
   }, []);
 
   const queue = useMemo(() => {
-    const items: CuttingQueueItem[] = [];
-    poList.forEach(po => {
-      po.items.forEach(item => {
-        if (item.statusCutting !== 'finished') {
-          const m = model.find(mod => mod.id === item.modelId)?.nama || item.modelId;
-          const w = warna.find(wor => wor.id === item.warnaId)?.nama || item.warnaId;
-          const s = (sizes as any[]).find(sz => sz.id === item.sizeId)?.nama || item.sizeId;
-          
-          items.push({
-            ...item,
-            nomorPO: po.nomorPO,
-            artikelNama: `${m} - ${w} - ${s}`,
-            selected: selectedIds.includes(item.id)
-          });
-        }
+    // Flatten bundle list into queue items
+    const items: CuttingQueueItem[] = bundles
+      .filter(b => b.statusTahap.cutting.status !== 'selesai')
+      .map(b => {
+        const po = poList.find(p => p.id === b.po);
+        return {
+          barcode: b.barcode,
+          nomorPO: po?.nomorPO || b.po,
+          poId: b.po,
+          modelId: b.model,
+          warnaId: b.warna,
+          sizeId: b.size,
+          qtyBundle: b.qtyBundle,
+          skuKlien: b.skuKlien || '',
+          statusCutting: b.statusTahap.cutting.status || 'waiting',
+          selected: selectedBarcodes.includes(b.barcode)
+        };
       });
-    });
 
     // Apply Filters
     return items.filter(item => {
-      const matchPO = item.nomorPO.toLowerCase().includes(searchPO.toLowerCase());
+      const matchSearch = 
+        item.nomorPO.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.barcode.toLowerCase().includes(searchQuery.toLowerCase());
       const matchStatus = filterStatus === 'all' || item.statusCutting === filterStatus;
-      return matchPO && matchStatus;
+      return matchSearch && matchStatus;
     });
-  }, [poList, model, warna, sizes, selectedIds, searchPO, filterStatus]);
+  }, [bundles, poList, selectedBarcodes, searchQuery, filterStatus]);
 
-  const toggleSelect = (id: string) => {
-    setSelectedIds(prev => 
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+  const toggleSelect = (barcode: string) => {
+    setSelectedBarcodes(prev => 
+      prev.includes(barcode) ? prev.filter(x => x !== barcode) : [...prev, barcode]
     );
   };
 
-  const handlePrint = (mode: 'spk' | 'barcode') => {
-    if (selectedIds.length === 0) return;
+  const handlePrint = async (mode: 'spk' | 'barcode') => {
+    if (selectedBarcodes.length === 0) return;
     
     if (mode === 'spk') {
-      selectedIds.forEach(id => {
-        updateItemCuttingStatus(id, 'started');
-      });
+      // Mark selected bundles as 'started' (terima)
+      for (const barcode of selectedBarcodes) {
+        await updateStatusTahap(barcode, 'cutting', { status: 'terima' });
+      }
     }
 
     setPreviewMode(null);
@@ -88,7 +99,7 @@ export default function CuttingRoomView() {
       window.print();
       setTimeout(() => {
         if (mode === 'spk') {
-          setSelectedIds([]);
+          setSelectedBarcodes([]);
         }
         setPrintMode(null);
       }, 500);
@@ -96,19 +107,8 @@ export default function CuttingRoomView() {
   };
 
   const bundlesToPrint = useMemo(() => {
-    if (selectedIds.length === 0) return [];
-    const selectedItems = queue.filter(q => selectedIds.includes(q.id));
-    
-    return bundles.filter(b => {
-      const matchPo = selectedItems.find(i => i.poId === b.po);
-      if (!matchPo) return false;
-      return (
-        matchPo.modelId === b.model &&
-        matchPo.warnaId === b.warna &&
-        matchPo.sizeId === b.size
-      );
-    });
-  }, [bundles, selectedIds, queue]);
+    return bundles.filter(b => selectedBarcodes.includes(b.barcode));
+  }, [bundles, selectedBarcodes]);
 
   const columns: Column<CuttingQueueItem>[] = [
     { 
@@ -118,21 +118,27 @@ export default function CuttingRoomView() {
         <input 
           type="checkbox" 
           checked={v as boolean} 
-          onChange={() => toggleSelect(row.id)}
+          onChange={() => toggleSelect(row.barcode)}
           className={styles.checkbox}
         />
       )
     },
+    { 
+      key: 'barcode', 
+      header: 'KODE UNIK', 
+      render: (v) => <code style={{ fontSize: '11px', fontWeight: 'bold' }}>{v}</code>
+    },
     { key: 'nomorPO', header: 'Nomor PO', render: (v: any) => <span className={styles.poBadge}>{v}</span> },
-    { key: 'artikelNama', header: 'Artikel / Size' },
-    { key: 'qty', header: 'Target QTY', render: (v: any) => <strong>{v} pcs</strong> },
-    { key: 'jumlahBundle', header: 'Bundle', render: (v: any, row: CuttingQueueItem) => `${v} bdl (@${row.qtyPerBundle})` },
+    { key: 'modelId', header: 'Model', render: (v) => model.find(m => m.id === v)?.nama || v },
+    { key: 'warnaId', header: 'Warna', render: (v) => warna.find(w => w.id === v)?.nama || v },
+    { key: 'sizeId', header: 'Size', render: (v) => (sizes as any[]).find(s => s.id === v)?.nama || v },
+    { key: 'qtyBundle', header: 'QTY', render: (v: any) => <strong>{v} pcs</strong> },
     { 
       key: 'statusCutting', 
       header: 'Status', 
       render: (v: any) => (
-        <Badge variant={v === 'started' ? 'info' : 'warning'}>
-          {v === 'started' ? 'Sedang Dipotong' : 'Menunggu'}
+        <Badge variant={v === 'terima' || v === 'started' ? 'info' : 'warning'}>
+          {v === 'terima' || v === 'started' ? 'Sedang Dipotong' : 'Menunggu'}
         </Badge>
       )
     }
@@ -153,7 +159,8 @@ export default function CuttingRoomView() {
         <thead>
           <tr>
             <th rowSpan={2}>No</th>
-            <th rowSpan={2}>Kode Barcode</th>
+            <th rowSpan={2}>Kode PO</th>
+            <th rowSpan={2}>KODE UNIK (Range)</th>
             <th rowSpan={2}>Artikel</th>
             <th rowSpan={2}>Size</th>
             <th rowSpan={2}>Warna</th>
@@ -170,20 +177,21 @@ export default function CuttingRoomView() {
           </tr>
         </thead>
         <tbody>
-          {queue.filter(i => selectedIds.includes(i.id)).map((item, index) => {
-            const modelName = model.find(m => m.id === item.modelId)?.nama || item.modelId;
-            const sizeName = (sizes as any[]).find(s => s.id === item.sizeId)?.nama || item.sizeId;
-            const warnaName = warna.find(w => w.id === item.warnaId)?.nama || item.warnaId;
+          {groupSelectedForSPK(queue.filter(i => selectedBarcodes.includes(i.barcode))).map((g, index) => {
+            const modelName = model.find(m => m.id === g.modelId)?.nama || g.modelId;
+            const sizeName = (sizes as any[]).find(s => s.id === g.sizeId)?.nama || g.sizeId;
+            const warnaName = warna.find(w => w.id === g.warnaId)?.nama || g.warnaId;
 
             return (
-              <tr key={item.id}>
+              <tr key={index}>
                 <td className={styles.center}>{index + 1}</td>
-                <td className={styles.bold}>{item.nomorPO}</td>
+                <td className={styles.bold}>{g.nomorPO}</td>
+                <td style={{ fontSize: '11px', whiteSpace: 'nowrap' }}>{g.range}</td>
                 <td>{modelName}</td>
                 <td className={styles.center}>{sizeName}</td>
                 <td className={styles.center}>{warnaName}</td>
-                <td className={styles.center}>{item.qty}</td>
-                <td className={styles.center}>{item.jumlahBundle}</td>
+                <td className={styles.center}>{g.totalQty}</td>
+                <td className={styles.center}>{g.count}</td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -235,7 +243,7 @@ export default function CuttingRoomView() {
       subtitle="Pilih artikel untuk mulai dipotong dan cetak SPK"
       action={
         <div className={styles.actions} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-           {selectedIds.length > 0 && (
+           {selectedBarcodes.length > 0 && (
              <>
                <Button variant="secondary" onClick={() => setPreviewMode('spk')}>
                  👁️ Preview SPK
@@ -257,11 +265,11 @@ export default function CuttingRoomView() {
       <div className={styles.container}>
         <div className={styles.filterBar}>
           <div className={styles.filterGroup}>
-            <label>Cari Nomor PO</label>
+            <label>Cari Nomor PO / KODE UNIK</label>
             <TextInput 
-              placeholder="Contoh: PO-0001..." 
-              value={searchPO} 
-              onChange={setSearchPO} 
+              placeholder="Contoh: PO-001 atau bdl001..." 
+              value={searchQuery} 
+              onChange={setSearchQuery} 
             />
           </div>
           <div className={styles.filterGroup}>
@@ -272,7 +280,7 @@ export default function CuttingRoomView() {
               options={[
                 { value: 'all', label: 'Semua Status' },
                 { value: 'waiting', label: 'Menunggu' },
-                { value: 'started', label: 'Sedang Dipotong' },
+                { value: 'terima', label: 'Sedang Dipotong' },
               ]}
             />
           </div>
@@ -282,7 +290,7 @@ export default function CuttingRoomView() {
           <DataTable 
             columns={columns} 
             data={queue} 
-            keyField="id" 
+            keyField="barcode" 
             emptyMessage="Tidak ada antrian cutting saat ini."
             reverse={true}
           />
@@ -316,4 +324,48 @@ export default function CuttingRoomView() {
       </div>
     </PageWrapper>
   );
+}
+
+// Logic for SPK grouping (Option 2)
+function groupSelectedForSPK(selectedBundles: CuttingQueueItem[]) {
+  const groups: Record<string, {
+    nomorPO: string;
+    modelId: string;
+    warnaId: string;
+    sizeId: string;
+    totalQty: number;
+    count: number;
+    barcodes: string[];
+    poId: string;
+  }> = {};
+
+  selectedBundles.forEach(b => {
+    // Unique key per article/item
+    const key = `${b.poId}-${b.modelId}-${b.warnaId}-${b.sizeId}`;
+    if (!groups[key]) {
+      groups[key] = {
+        nomorPO: b.nomorPO,
+        modelId: b.modelId,
+        warnaId: b.warnaId,
+        sizeId: b.sizeId,
+        totalQty: 0,
+        count: 0,
+        barcodes: [],
+        poId: b.poId
+      };
+    }
+    groups[key].totalQty += b.qtyBundle;
+    groups[key].count += 1;
+    groups[key].barcodes.push(b.barcode);
+  });
+
+  return Object.values(groups).map(g => {
+    // Extract range info from full barcodes as requested ("jangan sepotong")
+    const sorted = g.barcodes.sort();
+    const range = sorted.length > 1 
+      ? `${sorted[0]} s/d ${sorted[sorted.length-1]}`
+      : sorted[0];
+    
+    return { ...g, range };
+  });
 }
