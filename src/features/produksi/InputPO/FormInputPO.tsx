@@ -147,6 +147,7 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
           });
 
           newBundles.push({
+            id: `BNL-${Date.now()}-${item.modelId.slice(-4)}-${i}`,
             barcode: barcodeString,
             po: poId,
             poItemId: item.id,
