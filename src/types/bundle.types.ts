@@ -11,7 +11,7 @@ export interface StatusTahap {
 }
 
 export interface Bundle {
-  id: string;
+  id?: string;
   barcode: string;
   po: string;
   poItemId?: string;
