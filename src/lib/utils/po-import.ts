@@ -185,8 +185,11 @@ export const processPOCSV = (
           po: poId,
           poItemId: item.id, // K3: Wajib isi poItemId
           model: item.modelId,
+          modelName,
           warna: item.warnaId,
+          warnaName,
           size: item.sizeId,
+          sizeName,
           qtyBundle: bundleQty,
           skuKlien: item.skuKlien,
           skuInternal: item.skuInternal,

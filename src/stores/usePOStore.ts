@@ -481,14 +481,27 @@ export const usePOStore = create<POState>((set, get) => ({
     
     if (seqError || startSeq === null) throw new Error('Gagal mendapat sequence dari server');
 
-    function replaceSequenceInBarcode(originalBarcode: string, newSeq: number): string {
-      // Ganti HANYA segmen 5-digit sequence sebelum -bdl
-      return originalBarcode.replace(/-(\d{5})-bdl/, `-${String(newSeq).padStart(5, '0')}-bdl`);
-    }
+    const { generateBarcode } = require('../lib/utils/barcode-generator');
     
     let currentGlobalSeq = startSeq;
     bundles.forEach((b: any) => {
-      b.barcode = replaceSequenceInBarcode(b.barcode, currentGlobalSeq);
+      // Ekstrak bundleIndex dari barcode placeholder (misal: TEMP-001 -> 001)
+      let bundleIndex = 1;
+      if (b.barcode && b.barcode.startsWith('TEMP-')) {
+        bundleIndex = parseInt(b.barcode.split('-')[1], 10);
+      } else if (b.barcode && b.barcode.includes('-bdl')) {
+        bundleIndex = parseInt(b.barcode.split('-bdl')[1], 10);
+      }
+
+      b.barcode = generateBarcode({
+        nomorPO: po.nomorPO,
+        model: b.modelName || 'MDL', 
+        warna: b.warnaName || 'WRN',
+        size: b.sizeName || 'SZ',
+        globalSequence: currentGlobalSeq,
+        bundleIndex: bundleIndex,
+        tanggal: new Date()
+      });
       currentGlobalSeq++;
     });
 
