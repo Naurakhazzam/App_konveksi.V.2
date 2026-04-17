@@ -146,7 +146,7 @@ export const processPOCSV = (
       klienId: matchKlien.id,
       nomorPO,
       tanggalInput: new Date().toISOString(),
-      tanggalDeadline,
+      tanggalDeadline: tanggalDeadline || null,
       items,
       status: 'aktif',
       catatan: poRows[0][6] || ''

@@ -113,7 +113,7 @@ export default function FormInputPO({ onCancel, onSuccess }: FormInputPOProps) {
         klienId,
         nomorPO,
         tanggalInput: new Date().toISOString().split('T')[0],
-        tanggalDeadline,
+        tanggalDeadline: tanggalDeadline || null,
         catatan,
         status: 'aktif',
         items: finalItems
