@@ -495,9 +495,9 @@ export const usePOStore = create<POState>((set, get) => ({
 
       b.barcode = generateBarcode({
         nomorPO: po.nomorPO,
-        model: b.modelName || 'MDL', 
-        warna: b.warnaName || 'WRN',
-        size: b.sizeName || 'SZ',
+        model: 'MDL', 
+        warna: 'WRN',
+        size: 'SZ',
         globalSequence: currentGlobalSeq,
         bundleIndex: bundleIndex,
         tanggal: new Date()
