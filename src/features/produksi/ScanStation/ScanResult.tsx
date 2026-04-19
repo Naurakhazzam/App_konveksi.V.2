@@ -111,13 +111,14 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
   );
 
   const handleTerima = () => {
+    // Cutting: cek bahan dulu, lalu TERIMA (bukan langsung selesai)
     if (tahap === 'cutting') {
       const existingBahan = getPemakaianBahan(bundle.po, bundle.model, bundle.warna, bundle.size);
       if (!existingBahan) {
-        setShowBahanModal(true);
+        setShowBahanModal(true); // Modal bahan → lalu executeTerima
         return;
       }
-      setShowQtyModal(true);
+      executeTerima(bundle.qtyBundle); // Bahan sudah ada, langsung terima
       return;
     }
 
@@ -204,7 +205,11 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       }
 
       setShowBahanModal(false);
-      if (tahap === 'cutting') {
+
+      // Jika status cutting sudah 'terima' (dari print SPK di CuttingRoom),
+      // langsung buka ModalQtySelesai tanpa executeTerima lagi.
+      // Jika belum terima (flow manual Terima), panggil executeTerima.
+      if (tahap === 'cutting' && currentStatus.status === 'terima') {
         setShowQtyModal(true);
       } else {
         executeTerima(qtyTerimaDefault);
@@ -243,44 +248,12 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
-      const now = new Date().toISOString();
-
-      if (tahap === 'cutting' && currentStatus.status === null) {
-        if (poItem) {
-          await updateItemCuttingStatus(poItem.id, 'finished');
-        }
-        try {
-          await updateStatusTahap(bundle.barcode, tahap, {
-            status: 'selesai',
-            qtyTerima: bundle.qtyBundle,   // Qty yg MASUK cutting = target dari PO
-            qtySelesai: qtySelesai,         // Qty yg KELUAR cutting = input aktual operator
-            waktuTerima: now,
-            waktuSelesai: now,
-            karyawan: selectedKaryawan,
-          });
-
-          await addRecord({
-            id: `SCAN-${Date.now()}`,
-            barcode: bundle.barcode,
-            po: bundle.po,
-            tahap,
-            aksi: 'selesai',
-            qty: qtySelesai,
-            waktu: now
-          });
-          setShowQtyModal(false);
-          if (onComplete) onComplete();
-        } catch (err) {
-          warning('Gagal Menyimpan', 'Gagal mencatat data scan selesai. Periksa koneksi Anda.');
-        }
-        return;
-      }
-
+      // Semua tahap (termasuk cutting) pakai alur yang sama:
+      // diff < 0 → KoreksiKurang, diff > 0 → KoreksiLebih, diff = 0 → Selesai normal
       const qtyTarget = currentStatus.qtyTerima ?? qtyTerimaDefault;
       const diff = qtySelesai - qtyTarget;
 
       if (diff < 0) {
-        // QTY KURANG → simpan pending qty, buka modal koreksi kurang
         setPendingQtySelesai(qtySelesai);
         setShowQtyModal(false);
         setShowKoreksiKurang(true);
@@ -288,7 +261,6 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
       }
 
       if (diff > 0) {
-        // QTY LEBIH → buka modal koreksi lebih
         setPendingQtySelesai(qtySelesai);
         setShowQtyModal(false);
         setShowKoreksiLebih(true);
@@ -329,6 +301,8 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         waktuSelesai: now,
         koreksiStatus,
         koreksiAlasan,
+        // Simpan karyawan jika belum tercatat (cutting via SPK tidak menyimpan karyawan di step terima)
+        ...(operatorId && !currentStatus.karyawan ? { karyawan: operatorId } : {}),
       });
     } catch (error) {
       warning('Gagal', 'Gagal menyimpan status. Coba lagi.');
@@ -682,8 +656,8 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         </div>
       )}
 
-      {/* Select Karyawan */}
-      {needsKaryawan && currentStatus.status === null && (
+      {/* Pilih Karyawan — saat status null (tahap lain) ATAU cutting status 'terima' tapi karyawan belum dipilih */}
+      {needsKaryawan && (currentStatus.status === null || (tahap === 'cutting' && currentStatus.status === 'terima' && !currentStatus.karyawan)) && (
         <div className={styles.karyawanField}>
           <Label>Operator / Karyawan <span className={styles.req}>*</span></Label>
           <select className={styles.select} value={selectedKaryawan} onChange={e => setSelectedKaryawan(e.target.value)}>
@@ -695,20 +669,49 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         </div>
       )}
 
+      {/* Info Operator — saat status 'terima' dan karyawan sudah tercatat */}
+      {needsKaryawan && currentStatus.status === 'terima' && currentStatus.karyawan && (
+        <div className={styles.karyawanField}>
+          <Label>Operator Bertugas</Label>
+          <span style={{ color: 'var(--color-cyan)', fontWeight: 600 }}>
+            {karyawan.find(k => k.id === currentStatus.karyawan)?.nama || currentStatus.karyawan}
+          </span>
+        </div>
+      )}
+
       {/* Action Buttons */}
       <div className={styles.actions}>
-        {tahap !== 'cutting' && (
-          <Button variant="primary" onClick={handleTerima} disabled={!canTerima || isSubmitting}>
-            ✅ Terima
-          </Button>
-        )}
+        {/* Tombol Terima: semua tahap termasuk cutting (saat status null) */}
         <Button
-          variant={tahap === 'cutting' ? 'primary' : 'secondary'}
-          onClick={tahap === 'cutting' ? handleTerima : () => setShowQtyModal(true)}
-          disabled={tahap === 'cutting' ? (!canTerima || isSubmitting) : (!canSelesai || isSubmitting)}
+          variant="primary"
+          onClick={handleTerima}
+          disabled={!canTerima || isSubmitting}
+        >
+          ✅ Terima
+        </Button>
+
+        {/* Tombol Selesai: semua tahap saat status === 'terima' */}
+        <Button
+          variant="secondary"
+          onClick={() => {
+            // Cutting: SELALU tampilkan modal bahan (pre-fill jika sudah ada data)
+            // agar operator dapat mengkonfirmasi pemakaian bahan setiap bundle
+            if (tahap === 'cutting') {
+              setShowBahanModal(true);
+              return;
+            }
+            setShowQtyModal(true);
+          }}
+          disabled={
+            !canSelesai ||
+            isSubmitting ||
+            // Cutting: operator wajib dipilih (karena SPK tidak menyimpan karyawan)
+            (tahap === 'cutting' && needsKaryawan && !currentStatus.karyawan && !selectedKaryawan)
+          }
         >
           🏁 Selesai
         </Button>
+
         <Button variant="danger" onClick={() => setShowRejectModal(true)} disabled={!canReject || isSubmitting}>
           ❌ Reject
         </Button>
@@ -736,6 +739,15 @@ export default function ScanResult({ bundle, tahap, onComplete }: ScanResultProp
         artikelNama={`${modelName} - ${warnaName} - ${sizeName}`}
         poNomor={bundle.po}
         onConfirm={handleBahanConfirm}
+        initialData={(() => {
+          const existing = getPemakaianBahan(bundle.po, bundle.model, bundle.warna, bundle.size);
+          if (!existing) return null;
+          return {
+            meter: existing.pemakaianKainMeter,
+            gram: existing.pemakaianBeratGram,
+            inventoryItemId: existing.inventoryItemId || '',
+          };
+        })()}
       />
 
       <ModalSerahTerimaJahit

@@ -11,13 +11,16 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '@/components/organis
 import { usePOStore } from '@/stores/usePOStore';
 import { useMasterStore } from '@/stores/useMasterStore';
 import { useBundleStore } from '@/stores/useBundleStore';
-import BarcodeVisual from '../InputPO/BarcodeVisual';
 import TextInput from '@/components/atoms/Input/TextInput';
-import Select from '@/components/atoms/Select/Select';
-import { POItem } from '@/types';
+import BarcodeVisual from '../InputPO/BarcodeVisual';
+import { Bundle } from '@/types';
 import styles from './CuttingRoomView.module.css';
 
-interface CuttingQueueItem {
+// ─────────────────────────────────────────────────────────────────────────────
+// Type
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface CuttingArticleItem {
   barcode: string;
   nomorPO: string;
   poId: string;
@@ -26,157 +29,194 @@ interface CuttingQueueItem {
   sizeId: string;
   qtyBundle: number;
   skuKlien: string;
-  statusCutting: string; // From bundle.statusTahap.cutting.status
-  selected: boolean;
+  bundle: Bundle;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Komponen
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function CuttingRoomView() {
-  const { poList } = usePOStore();
+  const { poList, updateItemCuttingStatus } = usePOStore();
   const { model, warna, sizes } = useMasterStore();
   const { bundles, updateStatusTahap } = useBundleStore();
-  
+
+  const [activeTab, setActiveTab] = useState<'antrian' | 'cutting'>('antrian');
   const [selectedBarcodes, setSelectedBarcodes] = useState<string[]>([]);
   const [isMounted, setIsMounted] = useState(false);
   const [previewMode, setPreviewMode] = useState<'spk' | 'barcode' | null>(null);
   const [printMode, setPrintMode] = useState<'spk' | 'barcode' | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const queue = useMemo(() => {
-    // Flatten bundle list into queue items
-    const items: CuttingQueueItem[] = bundles
-      .filter(b => b.statusTahap.cutting.status !== 'selesai')
-      .map(b => {
-        const po = poList.find(p => p.id === b.po);
-        return {
-          barcode: b.barcode,
-          nomorPO: po?.nomorPO || b.po,
-          poId: b.po,
-          modelId: b.model,
-          warnaId: b.warna,
-          sizeId: b.size,
-          qtyBundle: b.qtyBundle,
-          skuKlien: b.skuKlien || '',
-          statusCutting: b.statusTahap.cutting.status || 'waiting',
-          selected: selectedBarcodes.includes(b.barcode)
-        };
-      });
+  // ── Data ──────────────────────────────────────────────────────────────────
 
-    // Apply Filters
-    return items.filter(item => {
-      const matchSearch = 
-        item.nomorPO.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.barcode.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchStatus = filterStatus === 'all' || item.statusCutting === filterStatus;
-      return matchSearch && matchStatus;
+  const allQueueItems = useMemo<CuttingArticleItem[]>(() => {
+    return bundles.map(b => {
+      const po = poList.find(p => p.id === b.po);
+      return {
+        barcode: b.barcode,
+        nomorPO: po?.nomorPO || b.po,
+        poId: b.po,
+        modelId: b.model,
+        warnaId: b.warna,
+        sizeId: b.size,
+        qtyBundle: b.qtyBundle,
+        skuKlien: b.skuKlien || '',
+        bundle: b,
+      };
     });
-  }, [bundles, poList, selectedBarcodes, searchQuery, filterStatus]);
+  }, [bundles, poList]);
+
+  // Tab Antrian: bundle belum dipilih untuk dipotong (status null)
+  const queueAntrian = useMemo(() => {
+    return allQueueItems.filter(item =>
+      item.bundle.statusTahap.cutting.status === null &&
+      item.nomorPO.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [allQueueItems, searchQuery]);
+
+  // Tab Cutting: bundle sedang dipotong (status 'terima')
+  const queueCutting = useMemo(() => {
+    return allQueueItems.filter(item =>
+      item.bundle.statusTahap.cutting.status === 'terima' &&
+      item.nomorPO.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [allQueueItems, searchQuery]);
+
+  // Bersihkan selectedBarcodes yang sudah tidak ada di antrian
+  useEffect(() => {
+    const availableBarcodes = queueAntrian.map(i => i.barcode);
+    setSelectedBarcodes(prev => {
+      const filtered = prev.filter(b => availableBarcodes.includes(b));
+      if (filtered.length === prev.length) return prev;
+      return filtered;
+    });
+  }, [queueAntrian]);
+
+  // ── Aksi ──────────────────────────────────────────────────────────────────
 
   const toggleSelect = (barcode: string) => {
-    setSelectedBarcodes(prev => 
+    setSelectedBarcodes(prev =>
       prev.includes(barcode) ? prev.filter(x => x !== barcode) : [...prev, barcode]
     );
   };
 
+  const toggleSelectAll = () => {
+    if (selectedBarcodes.length === queueAntrian.length) {
+      setSelectedBarcodes([]);
+    } else {
+      setSelectedBarcodes(queueAntrian.map(i => i.barcode));
+    }
+  };
+
   const handlePrint = async (mode: 'spk' | 'barcode') => {
     if (selectedBarcodes.length === 0) return;
-    
+
     if (mode === 'spk') {
-      // Mark selected bundles as 'started' (terima)
+      // Update bundle status ke 'terima' dan PO item ke 'started'
       for (const barcode of selectedBarcodes) {
         await updateStatusTahap(barcode, 'cutting', { status: 'terima' });
+
+        const b = bundles.find(bx => bx.barcode === barcode);
+        if (b) {
+          const po = poList.find(p => p.id === b.po);
+          const poItem = po?.items.find(
+            i => i.modelId === b.model && i.warnaId === b.warna && i.sizeId === b.size
+          );
+          if (poItem && poItem.statusCutting === 'waiting') {
+            await updateItemCuttingStatus(poItem.id, 'started');
+          }
+        }
       }
     }
 
     setPreviewMode(null);
     setPrintMode(mode);
-    
+
     setTimeout(() => {
       window.print();
       setTimeout(() => {
         if (mode === 'spk') {
           setSelectedBarcodes([]);
+          setActiveTab('cutting'); // Auto-pindah ke Tab Cutting
         }
         setPrintMode(null);
       }, 500);
     }, 100);
   };
 
+  // ── Data Print ────────────────────────────────────────────────────────────
+
   const bundlesToPrint = useMemo(() => {
     return bundles.filter(b => selectedBarcodes.includes(b.barcode));
   }, [bundles, selectedBarcodes]);
 
-  const columns: Column<CuttingQueueItem>[] = [
-    { 
-      key: 'selected', 
-      header: '✅', 
-      render: (v: any, row: CuttingQueueItem) => (
-        <input 
-          type="checkbox" 
-          checked={v as boolean} 
+  // ── Kolom Tabel ───────────────────────────────────────────────────────────
+
+  const columnsAntrian: Column<CuttingArticleItem>[] = [
+    {
+      key: '_select' as any,
+      header: '✓',
+      width: '40px',
+      render: (_, row) => (
+        <input
+          type="checkbox"
+          checked={selectedBarcodes.includes(row.barcode)}
           onChange={() => toggleSelect(row.barcode)}
           className={styles.checkbox}
         />
-      )
+      ),
     },
-    { 
-      key: 'barcode', 
-      header: 'KODE UNIK', 
-      render: (v) => <code style={{ fontSize: '11px', fontWeight: 'bold' }}>{v}</code>
+    {
+      key: 'barcode',
+      header: 'KODE UNIK',
+      render: (v) => <code style={{ fontSize: '11px' }}>{v}</code>,
     },
-    { 
-      key: 'nomorPO', 
-      header: 'Nomor PO', 
-      render: (v: any, row: any) => {
-        const isLong = v.length > 15 && v.startsWith('PO-IMP');
-        let display = v;
-        if (isLong) {
-          const sorted = [...poList].sort((a, b) => new Date(a.tanggalInput).getTime() - new Date(b.tanggalInput).getTime());
-          const idx = sorted.findIndex(p => p.id === row.poId);
-          display = `PO-${String(idx + 1).padStart(3, '0')}`;
-        }
-        return <span title={v} className={styles.poBadge} style={{ cursor: 'help' }}>{display}</span>;
-      }
+    {
+      key: 'nomorPO',
+      header: 'Nomor PO',
+      render: (v) => <span className={styles.poBadge}>{v}</span>,
     },
-    { 
-      key: 'modelId', 
-      header: 'Model', 
-      render: (id) => {
-        const item = model.find(m => m.id === id);
-        return item?.nama || id;
-      }
-    },
-    { 
-      key: 'warnaId', 
-      header: 'Warna', 
-      render: (id) => {
-        const item = warna.find(w => w.id === id);
-        return item?.nama || id;
-      }
-    },
-    { 
-      key: 'sizeId', 
-      header: 'Size', 
-      render: (id) => {
-        const item = sizes.find(s => s.id === id);
-        return item?.nama || id;
-      }
-    },
+    { key: 'modelId', header: 'Model', render: (id) => model.find(m => m.id === id)?.nama || id },
+    { key: 'warnaId', header: 'Warna', render: (id) => warna.find(w => w.id === id)?.nama || id },
+    { key: 'sizeId', header: 'Size', render: (id) => (sizes as any[]).find(s => s.id === id)?.nama || id },
     { key: 'qtyBundle', header: 'QTY', render: (v: any) => <strong>{v} pcs</strong> },
-    { 
-      key: 'statusCutting', 
-      header: 'Status', 
-      render: (v: any) => (
-        <Badge variant={v === 'terima' || v === 'started' ? 'info' : 'warning'}>
-          {v === 'terima' || v === 'started' ? 'Sedang Dipotong' : 'Menunggu'}
-        </Badge>
-      )
-    }
+    {
+      key: 'bundle',
+      header: 'Status',
+      render: () => <Badge variant="warning">Menunggu</Badge>,
+    },
   ];
+
+  const columnsCutting: Column<CuttingArticleItem>[] = [
+    {
+      key: 'barcode',
+      header: 'KODE UNIK',
+      render: (v) => <code style={{ fontSize: '11px' }}>{v}</code>,
+    },
+    {
+      key: 'nomorPO',
+      header: 'Nomor PO',
+      render: (v) => <span className={styles.poBadge}>{v}</span>,
+    },
+    { key: 'modelId', header: 'Model', render: (id) => model.find(m => m.id === id)?.nama || id },
+    { key: 'warnaId', header: 'Warna', render: (id) => warna.find(w => w.id === id)?.nama || id },
+    { key: 'sizeId', header: 'Size', render: (id) => (sizes as any[]).find(s => s.id === id)?.nama || id },
+    { key: 'qtyBundle', header: 'Target', render: (v: any) => <strong>{v} pcs</strong> },
+    {
+      key: 'bundle',
+      header: 'Status',
+      render: () => <Badge variant="info">Sedang Dipotong</Badge>,
+    },
+  ];
+
+  // ── Konten Print ──────────────────────────────────────────────────────────
+
+  const selectedItems = queueAntrian.filter(i => selectedBarcodes.includes(i.barcode));
 
   const spkContent = (
     <div className={styles.printableArea} id="print-area">
@@ -188,75 +228,50 @@ export default function CuttingRoomView() {
           <span>ID Dokumen: SPK-{isMounted ? Date.now().toString().slice(-6) : ''}</span>
         </div>
       </div>
-
       <table className={styles.printTable}>
         <thead>
           <tr>
-            <th rowSpan={2}>No</th>
-            <th rowSpan={2}>Kode PO</th>
-            <th rowSpan={2}>KODE UNIK (Range)</th>
-            <th rowSpan={2}>Artikel</th>
-            <th rowSpan={2}>Size</th>
-            <th rowSpan={2}>Warna</th>
-            <th colSpan={2} className={styles.center}>Target (Generate)</th>
-            <th colSpan={2} className={styles.center}>Aktual (Kosongkan)</th>
-            <th rowSpan={2}>Pemakaian Bahan</th>
-            <th rowSpan={2}>Keterangan</th>
-          </tr>
-          <tr>
-            <th className={styles.center}>QTY Order</th>
-            <th className={styles.center}>Bundle</th>
-            <th className={styles.center}>QTY real</th>
-            <th className={styles.center}>Bundle</th>
+            <th>No</th>
+            <th>Kode PO</th>
+            <th>KODE UNIK (Range)</th>
+            <th>Artikel</th>
+            <th>Size</th>
+            <th>Warna</th>
+            <th>Target QTY</th>
+            <th>Bundle</th>
           </tr>
         </thead>
         <tbody>
-          {groupSelectedForSPK(queue.filter(i => selectedBarcodes.includes(i.barcode))).map((g, index) => {
-            const modelName = model.find(m => m.id === g.modelId)?.nama || g.modelId;
-            const sizeName = (sizes as any[]).find(s => s.id === g.sizeId)?.nama || g.sizeId;
-            const warnaName = warna.find(w => w.id === g.warnaId)?.nama || g.warnaId;
-
-            return (
-              <tr key={index}>
-                <td className={styles.center}>{index + 1}</td>
-                <td className={styles.bold}>{g.nomorPO}</td>
-                <td style={{ fontSize: '11px', whiteSpace: 'nowrap' }}>{g.range}</td>
-                <td>{modelName}</td>
-                <td className={styles.center}>{sizeName}</td>
-                <td className={styles.center}>{warnaName}</td>
-                <td className={styles.center}>{g.totalQty}</td>
-                <td className={styles.center}>{g.count}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            );
-          })}
+          {groupForSPK(selectedItems).map((g, index) => (
+            <tr key={index}>
+              <td className={styles.center}>{index + 1}</td>
+              <td className={styles.bold}>{g.nomorPO}</td>
+              <td style={{ fontSize: '11px' }}>{g.range}</td>
+              <td>{model.find(m => m.id === g.modelId)?.nama || g.modelId}</td>
+              <td className={styles.center}>{(sizes as any[]).find(s => s.id === g.sizeId)?.nama || g.sizeId}</td>
+              <td className={styles.center}>{warna.find(w => w.id === g.warnaId)?.nama || g.warnaId}</td>
+              <td className={styles.center}>{g.totalQty}</td>
+              <td className={styles.center}>{g.count}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
-
       <div className={styles.validationGrid}>
         <div className={styles.signBox}>
-          <p>Bagian Produksi / Admin</p>
+          <p>Admin Produksi</p>
           <div className={styles.signSpace}></div>
-          <p className={styles.bold}>( ________________ )</p>
+          <p>( ________________ )</p>
         </div>
         <div className={styles.signBox}>
-          <p>Kepala Tim Cutting</p>
+          <p>Kepala Cutting</p>
           <div className={styles.signSpace}></div>
-          <p className={styles.bold}>( ________________ )</p>
+          <p>( ________________ )</p>
         </div>
         <div className={styles.signBox}>
-          <p>Mengetahui</p>
+          <p>Bagian Jahit</p>
           <div className={styles.signSpace}></div>
-          <p className={styles.bold}>( ________________ )</p>
+          <p>( ________________ )</p>
         </div>
-      </div>
-
-      <div className={styles.printFooter}>
-         <p>Catatan: Harap lampirkan lembar ini saat penyerahan hasil potong ke bagian Jahit.</p>
-         <p>Dicetak otomatis oleh Stitchlyx Syncore GOS pada {isMounted ? new Date().toLocaleString('id-ID') : ''}</p>
       </div>
     </div>
   );
@@ -271,110 +286,135 @@ export default function CuttingRoomView() {
     </div>
   );
 
+  // ── Render ─────────────────────────────────────────────────────────────────
+
   return (
-    <PageWrapper 
-      title="Cutting Room (Antrian Potong)" 
-      subtitle="Pilih artikel untuk mulai dipotong dan cetak SPK"
-      action={
-        <div className={styles.actions} style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-           {selectedBarcodes.length > 0 && (
-             <>
-               <Button variant="secondary" onClick={() => setPreviewMode('spk')}>
-                 👁️ Preview SPK
-               </Button>
-               <Button variant="primary" onClick={() => handlePrint('spk')}>
-                 🖨️ Cetak SPK Mulai Potong
-               </Button>
-               <Button variant="secondary" onClick={() => setPreviewMode('barcode')}>
-                 👁️ Preview Barcode
-               </Button>
-               <Button variant="primary" onClick={() => handlePrint('barcode')}>
-                 🖨️ Cetak Label Barcode
-               </Button>
-             </>
-           )}
-        </div>
-      }
-    >
+    <PageWrapper title="Cutting Room" subtitle="Kelola antrian potong kain produksi">
       <div className={styles.container}>
-        <div className={styles.filterBar}>
-          <div className={styles.filterGroup}>
-            <label>Cari Nomor PO / KODE UNIK</label>
-            <TextInput 
-              placeholder="Contoh: PO-001 atau bdl001..." 
-              value={searchQuery} 
-              onChange={setSearchQuery} 
-            />
-          </div>
-          <div className={styles.filterGroup}>
-            <label>Filter Status</label>
-            <Select 
-              value={filterStatus} 
-              onChange={setFilterStatus}
-              options={[
-                { value: 'all', label: 'Semua Status' },
-                { value: 'waiting', label: 'Menunggu' },
-                { value: 'terima', label: 'Sedang Dipotong' },
-              ]}
-            />
-          </div>
+
+        {/* Tab Switch */}
+        <div className={styles.tabs}>
+          <button
+            className={`${styles.tabBtn} ${activeTab === 'antrian' ? styles.active : ''}`}
+            onClick={() => setActiveTab('antrian')}
+          >
+            📋 Antrian Menunggu <span className={styles.count}>{queueAntrian.length}</span>
+          </button>
+          <button
+            className={`${styles.tabBtn} ${activeTab === 'cutting' ? styles.active : ''}`}
+            onClick={() => setActiveTab('cutting')}
+          >
+            ✂️ Sedang Dipotong <span className={styles.count}>{queueCutting.length}</span>
+          </button>
         </div>
 
-        <Panel title="Antrian Cutting">
-          <DataTable 
-            columns={columns} 
-            data={queue} 
-            keyField="barcode" 
-            emptyMessage="Tidak ada antrian cutting saat ini."
-            reverse={true}
+        {/* Filter Bar */}
+        <div className={styles.filterBar}>
+          <TextInput
+            placeholder="Cari Nomor PO..."
+            value={searchQuery}
+            onChange={setSearchQuery}
           />
-        </Panel>
+          {activeTab === 'antrian' && selectedBarcodes.length > 0 && (
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <Button variant="secondary" onClick={() => setPreviewMode('spk')}>👁️ Preview SPK</Button>
+              <Button variant="primary" onClick={() => handlePrint('spk')}>
+                🖨️ Cetak SPK & Mulai ({selectedBarcodes.length})
+              </Button>
+              <Button variant="secondary" onClick={() => setPreviewMode('barcode')}>👁️ Preview Barcode</Button>
+              <Button variant="primary" onClick={() => handlePrint('barcode')}>🖨️ Cetak Barcode</Button>
+            </div>
+          )}
+        </div>
 
+        {/* Tab Antrian */}
+        {activeTab === 'antrian' && (
+          <Panel title={`Antrian Menunggu SPK (${queueAntrian.length})`}>
+            {queueAntrian.length > 0 && (
+              <div className={styles.selectAllRow}>
+                <label className={styles.selectAllLabel}>
+                  <input
+                    type="checkbox"
+                    className={styles.checkbox}
+                    checked={selectedBarcodes.length === queueAntrian.length}
+                    onChange={toggleSelectAll}
+                  />
+                  {selectedBarcodes.length > 0
+                    ? `${selectedBarcodes.length} bundle dipilih`
+                    : 'Pilih Semua'}
+                </label>
+              </div>
+            )}
+            <DataTable
+              columns={columnsAntrian}
+              data={queueAntrian}
+              keyField="barcode"
+              emptyMessage="Tidak ada antrian. Buat PO baru untuk memulai produksi."
+            />
+          </Panel>
+        )}
+
+        {/* Tab Cutting — Read-Only Monitoring */}
+        {activeTab === 'cutting' && (
+          <>
+            {/* Info Callout */}
+            <div className={styles.infoBanner}>
+              <span className={styles.infoBannerIcon}>✂️</span>
+              <div>
+                <strong>Proses sedang berjalan di lantai produksi</strong>
+                <p>
+                  Untuk menyelesaikan proses, operator wajib scan barcode bundle di halaman{' '}
+                  <strong>Scan → Cutting</strong>{' '}
+                  setelah selesai memotong setiap bundle.
+                </p>
+              </div>
+            </div>
+
+            <Panel title={`Sedang Dipotong (${queueCutting.length})`}>
+              <DataTable
+                columns={columnsCutting}
+                data={queueCutting}
+                keyField="barcode"
+                emptyMessage="Tidak ada bundle yang sedang dipotong. Pilih bundle dan cetak SPK terlebih dahulu."
+              />
+            </Panel>
+          </>
+        )}
+
+        {/* Modal Preview */}
         {previewMode && isMounted && (
           <Modal open={true} onClose={() => setPreviewMode(null)} size="xl">
-            <ModalHeader 
-              title={previewMode === 'spk' ? "Preview Visual SPK Cutting" : "Preview Visual Label Barcode"} 
-              onClose={() => setPreviewMode(null)} 
-            />
+            <ModalHeader title={`Preview ${previewMode === 'spk' ? 'SPK' : 'Barcode'}`} onClose={() => setPreviewMode(null)} />
             <ModalBody>
-              <div className="previewWrapper" style={{ background: 'white', color: 'black', padding: '20px', borderRadius: '8px', border: '1px solid #ccc' }}>
-                <div style={{ fontFamily: 'Arial, sans-serif' }}>
-                  {previewMode === 'spk' ? spkContent : barcodeContent}
-                </div>
+              <div style={{ background: 'white', color: 'black', padding: '20px', borderRadius: '8px' }}>
+                {previewMode === 'spk' ? spkContent : barcodeContent}
               </div>
             </ModalBody>
             <ModalFooter>
-              <Button variant="secondary" onClick={() => setPreviewMode(null)}>Tutup Preview</Button>
-              <Button variant="primary" onClick={() => handlePrint(previewMode)}>
-                Mulai Cetak Sesungguhnya
-              </Button>
+              <Button variant="secondary" onClick={() => setPreviewMode(null)}>Tutup</Button>
+              <Button variant="primary" onClick={() => handlePrint(previewMode)}>Cetak</Button>
             </ModalFooter>
           </Modal>
         )}
 
-        {isMounted && printMode && typeof document !== 'undefined'
-          ? createPortal(printMode === 'spk' ? spkContent : barcodeContent, document.body)
-          : null}
+        {/* Portal Print */}
+        {isMounted && printMode && createPortal(
+          printMode === 'spk' ? spkContent : barcodeContent,
+          document.body
+        )}
+
       </div>
     </PageWrapper>
   );
 }
 
-// Logic for SPK grouping (Option 2)
-function groupSelectedForSPK(selectedBundles: CuttingQueueItem[]) {
-  const groups: Record<string, {
-    nomorPO: string;
-    modelId: string;
-    warnaId: string;
-    sizeId: string;
-    totalQty: number;
-    count: number;
-    barcodes: string[];
-    poId: string;
-  }> = {};
+// ─────────────────────────────────────────────────────────────────────────────
+// Helper
+// ─────────────────────────────────────────────────────────────────────────────
 
-  selectedBundles.forEach(b => {
-    // Unique key per article/item
+function groupForSPK(items: CuttingArticleItem[]) {
+  const groups: Record<string, any> = {};
+  items.forEach(b => {
     const key = `${b.poId}-${b.modelId}-${b.warnaId}-${b.sizeId}`;
     if (!groups[key]) {
       groups[key] = {
@@ -385,21 +425,17 @@ function groupSelectedForSPK(selectedBundles: CuttingQueueItem[]) {
         totalQty: 0,
         count: 0,
         barcodes: [],
-        poId: b.poId
       };
     }
     groups[key].totalQty += b.qtyBundle;
     groups[key].count += 1;
     groups[key].barcodes.push(b.barcode);
   });
-
   return Object.values(groups).map(g => {
-    // Extract range info from full barcodes as requested ("jangan sepotong")
-    const sorted = g.barcodes.sort();
-    const range = sorted.length > 1 
-      ? `${sorted[0]} s/d ${sorted[sorted.length-1]}`
-      : sorted[0];
-    
-    return { ...g, range };
+    const sorted = [...g.barcodes].sort();
+    return {
+      ...g,
+      range: sorted.length > 1 ? `${sorted[0]} … ${sorted[sorted.length - 1]}` : sorted[0],
+    };
   });
 }

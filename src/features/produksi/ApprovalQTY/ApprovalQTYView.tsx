@@ -12,6 +12,7 @@ import { useBundleStore } from '@/stores/useBundleStore';
 import { KoreksiQTY } from '@/types';
 import { TAHAP_LABEL, TahapKey } from '@/lib/utils/production-helpers';
 import { useToast } from '@/components/molecules/Toast';
+import { useAuthStore } from '@/stores/useAuthStore';
 import KpiRow from '@/components/organisms/KpiRow';
 import KpiCard from '@/components/molecules/KpiCard';
 import { Clock, CheckCircle, XCircle } from 'lucide-react';
@@ -28,6 +29,7 @@ export default function ApprovalQTYView() {
   const { karyawan } = useMasterStore();
   const { bundles, updateStatusTahap } = useBundleStore();
   const { success, error: toastError } = useToast();
+  const { currentUser } = useAuthStore();
 
   const pending = useMemo(
     () =>
@@ -127,7 +129,7 @@ export default function ApprovalQTYView() {
             variant="primary"
             size="sm"
             onClick={() => {
-              resolveKoreksiLebih(row.id, 'approve', 'OWNER');
+              resolveKoreksiLebih(row.id, 'approve', currentUser?.nama || 'OWNER');
               success('Disetujui', `QTY Lebih untuk bundle ${row.barcode} telah disetujui.`);
             }}
           >

@@ -1,13 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '@/components/organisms/Modal';
 import Button from '@/components/atoms/Button';
 import { Label, Heading } from '@/components/atoms/Typography';
 import NumberInput from '@/components/atoms/Input/NumberInput';
 import styles from './ModalPemakaianBahan.module.css';
-
 import { useInventoryStore } from '@/stores/useInventoryStore';
+
+interface InitialBahanData {
+  meter: number;
+  gram: number;
+  inventoryItemId: string;
+}
 
 interface ModalPemakaianBahanProps {
   open: boolean;
@@ -15,6 +20,8 @@ interface ModalPemakaianBahanProps {
   artikelNama: string;
   poNomor: string;
   onConfirm: (meter: number, gram: number, inventoryItemId: string) => void;
+  /** Jika bahan sudah pernah diisi, kirim data lama — modal tampil dalam mode ringkas */
+  initialData?: InitialBahanData | null;
 }
 
 export default function ModalPemakaianBahan({ 
@@ -22,32 +29,69 @@ export default function ModalPemakaianBahan({
   onClose, 
   artikelNama, 
   poNomor, 
-  onConfirm 
+  onConfirm,
+  initialData,
 }: ModalPemakaianBahanProps) {
   const { items } = useInventoryStore();
-  const [meter, setMeter] = useState<number | ''>('');
-  const [gram, setGram] = useState<number | ''>('');
-  const [selectedItem, setSelectedItem] = useState('');
+  const [meter, setMeter] = useState<number | ''>(initialData?.meter || '');
+  const [gram, setGram] = useState<number | ''>(initialData?.gram || '');
+  const [selectedItem, setSelectedItem] = useState(initialData?.inventoryItemId || '');
 
-  // Filter only fabric items from inventory
+  // Sync state ketika modal dibuka ulang
+  useEffect(() => {
+    if (open) {
+      setMeter(initialData?.meter || '');
+      setGram(initialData?.gram || '');
+      setSelectedItem(initialData?.inventoryItemId || '');
+    }
+  }, [open, initialData]);
+
   const kainItems = items.filter(i => i.jenisBahan === 'kain');
-
-  // At least one field (meter/gram) AND a material must be selected
   const isValid = ((meter !== '' && Number(meter) > 0) || (gram !== '' && Number(gram) > 0)) && !!selectedItem;
 
-  const handleConfirm = () => {
-    if (isValid) {
-      onConfirm(Number(meter || 0), Number(gram || 0), selectedItem);
-    }
-  };
+  const namaKain = kainItems.find(i => i.id === initialData?.inventoryItemId)?.nama;
 
-  const handleCancel = () => {
-    onClose();
-  };
+  // ── Mode Ringkas: data sudah pernah diisi ────────────────────────────────
+  if (initialData) {
+    return (
+      <Modal open={open} onClose={onClose} size="sm" closeOnBackdrop={true} closeOnEsc={true}>
+        <ModalHeader title="🧵 Pemakaian Bahan" onClose={onClose} />
+        <ModalBody>
+          <div className={styles.container}>
+            <div className={styles.header}>
+              <Heading level={4}>{poNomor}</Heading>
+              <p className={styles.artikel}>{artikelNama}</p>
+            </div>
 
+            <div className={styles.alreadyFilled}>
+              <span className={styles.alreadyFilledIcon}>✅</span>
+              <div>
+                <strong>Pemakaian bahan sudah pernah diisi</strong>
+                <ul className={styles.alreadyFilledList}>
+                  {namaKain && <li>Bahan: <strong>{namaKain}</strong></li>}
+                  {initialData.meter > 0 && <li>Kain: <strong>{initialData.meter} meter/pcs</strong></li>}
+                  {initialData.gram > 0 && <li>Berat: <strong>{initialData.gram} gram/pcs</strong></li>}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            variant="primary"
+            onClick={() => onConfirm(initialData.meter, initialData.gram, initialData.inventoryItemId)}
+          >
+            ✅ OK, Lanjutkan
+          </Button>
+        </ModalFooter>
+      </Modal>
+    );
+  }
+
+  // ── Mode Normal: belum ada data ───────────────────────────────────────────
   return (
     <Modal open={open} onClose={onClose} size="sm" closeOnBackdrop={true} closeOnEsc={true}>
-      <ModalHeader title="🧵 Input Pemakaian Bahan" onClose={handleCancel} />
+      <ModalHeader title="🧵 Input Pemakaian Bahan" onClose={onClose} />
       <ModalBody>
         <div className={styles.container}>
           <div className={styles.header}>
@@ -97,8 +141,8 @@ export default function ModalPemakaianBahan({
         </div>
       </ModalBody>
       <ModalFooter>
-        <Button variant="ghost" onClick={handleCancel}>Batal Scan</Button>
-        <Button variant="primary" onClick={handleConfirm} disabled={!isValid}>
+        <Button variant="ghost" onClick={onClose}>Batal Scan</Button>
+        <Button variant="primary" onClick={() => onConfirm(Number(meter || 0), Number(gram || 0), selectedItem)} disabled={!isValid}>
           💾 Simpan Data Bahan
         </Button>
       </ModalFooter>

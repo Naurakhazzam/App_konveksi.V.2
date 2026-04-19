@@ -41,3 +41,58 @@
   font-size: 12px;
   line-height: 1.5;
 }
+
+.existingAlert {
+  background: rgba(99, 179, 237, 0.08);
+  border: 1px solid rgba(99, 179, 237, 0.25);
+  color: var(--color-cyan);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Mode ringkas ketika data sudah diisi */
+.alreadyFilled {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: rgba(74, 222, 128, 0.06);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.alreadyFilledIcon {
+  font-size: 24px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.alreadyFilled strong {
+  display: block;
+  font-size: 14px;
+  color: #4ade80;
+  margin-bottom: 8px;
+}
+
+.alreadyFilledList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.alreadyFilledList li {
+  font-size: 13px;
+  color: var(--color-text-sub);
+}
+
+.alreadyFilledList li strong {
+  display: inline;
+  color: var(--color-text);
+  font-size: 13px;
+  margin-bottom: 0;
+}

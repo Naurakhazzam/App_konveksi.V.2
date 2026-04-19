@@ -93,7 +93,8 @@ export default function ScanStationView({ tahapSlug }: ScanStationViewProps) {
           )}
         </div>
 
-        <ListAntrianTahap tahap={tahap} />
+        {/* Sembunyikan ListAntrian untuk cutting — sudah ada di CuttingRoom */}
+        {tahap !== 'cutting' && <ListAntrianTahap tahap={tahap} />}
 
         <RejectListTahap tahap={tahap} />
 
